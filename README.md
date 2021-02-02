@@ -2,11 +2,11 @@
 
 1. 前端博客
   
-   https://segmentfault.com/u/andypinet
+   [https://segmentfault.com/u/andypinet](https://segmentfault.com/u/andypinet)
 
    [https://gitee.com/lbc19920615](https://gitee.com/lbc19920615)
 
-   https://zhuanlan.zhihu.com/c_114049504 
+   [https://zhuanlan.zhihu.com/c_114049504](https://zhuanlan.zhihu.com/c_114049504)
 
 2. 熟悉使用vue 和 layui  熟悉使用elementui
 vant uniapp
