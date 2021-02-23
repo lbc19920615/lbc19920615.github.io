@@ -13,11 +13,16 @@ vant uniapp
 
 3. 熟悉微信小程序开发流程
 
+## fed-tool
+1. h5页面快速生成
+2. echarts表格生成
+    ![](assets/fedtool/images/w20210223135234.png)
+
 
 ## 文章列表
 
 1. [web单页面可视化编辑器](articles/s1.md)
-1. [mongodb安装](articles/mongo.md)
+2. [mongodb安装](articles/mongo.md)
 
 ## bug处理积累
 
