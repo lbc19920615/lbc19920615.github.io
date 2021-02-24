@@ -11,7 +11,33 @@
 <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
 <script>
   new Docute({
-    target: '#docute'
+    target: '#docute',
+    nav: [
+      {
+        title: 'Home',
+        link: '/'
+      },
+      {
+        title: 'GitHub',
+        link: 'https://github.com/lbc19920615'
+      },
+    ],
+    sidebar: [
+      // A sidebar item, with child links
+      {
+        title: '文章列表',
+        children: [
+          {
+            title: 'web单页面可视化编辑器',
+            link: '/articles/s1.md'
+          },
+          {
+            title: 'mongodb安装',
+            link: '/articles/mongo.md'
+          }
+        ]
+      },
+    ]
   })
 </script>
 </body>
