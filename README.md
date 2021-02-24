@@ -22,7 +22,12 @@ vant uniapp
 ## fed-tool
 1. h5页面快速生成
 2. echarts表格生成 
-    ![](/assets/fedtool/images/w20210223135234.png)
+
+   <ImageZoom
+   src="/assets/fedtool/images/w20210223135234.png"
+   :border="true"
+   width="600"
+   />
    
 
 ## bug处理积累
