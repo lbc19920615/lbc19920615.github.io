@@ -15,6 +15,10 @@ vant uniapp
 
 3. 熟悉微信小程序开发流程
 
+## 后台系统展示
+
+[图片展示地址](crm/images.md)
+
 ## fed-tool
 1. h5页面快速生成
 2. echarts表格生成 
