@@ -10,6 +10,6 @@
     
 3. js object get属性前缀可以实现计算属性
 
-   ![](/articles/images/w2021-02-24 153415.png)
+   ![](/articles/images/w2021-02-24153415.png)
 
    [DEMO](https://codepen.io/andypinet/pen/YzpEgOO)
