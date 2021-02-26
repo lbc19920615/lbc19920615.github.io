@@ -1,5 +1,9 @@
 # 凌柏超的个人简历
 
+## PDF
+
+<a href="/crm/凌柏超-web前端-个人简历.pdf" download="凌柏超的个人简历">下载个人简历</a>
+
 ## 主要技术合集
 
 1. jquery 
@@ -37,7 +41,7 @@ https://m.kaoyanvip.cn/
 <ImageZoom
 src="/crm/images/w2021-02-22132.png"
 :border="true"
-width="600"
+width="300"
 />
 
 ### 课程学习
@@ -45,7 +49,7 @@ width="600"
 <ImageZoom
 src="/crm/images/w2021-02-12321.png"
 :border="true"
-width="600"
+width="300"
 />
 
 ## fed-tool
