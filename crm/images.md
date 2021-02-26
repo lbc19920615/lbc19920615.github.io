@@ -6,6 +6,16 @@
 2. echarts 
 3. vue 
 
+## PC站
+
+### 个人中心
+
+<ImageZoom
+src="/crm/images/w2021-02-22351212.png"
+:border="true"
+width="600"
+/>
+
 ## M站
 
 ### 个人中心
