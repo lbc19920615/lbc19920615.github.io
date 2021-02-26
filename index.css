@@ -1,4 +1,19 @@
+/* reset */
+.page-content h2 {
+  margin-top: 3.5rem;
+}
+
+.page-content.has-page-title>h2:first-child {
+  margin-top: 3.5rem;
+}
+
 .a-iframe {
   display: block;
   width: 100%;
+}
+
+@media print {
+  #live2d-widget {
+    display: none;
+  }
 }
