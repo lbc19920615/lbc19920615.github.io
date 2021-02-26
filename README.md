@@ -19,8 +19,18 @@ vant uniapp
 
 [图片展示地址](crm/images.md)
 
-## fed-tool
+## fed-tool 
+
+快速生成活动页的开发工具
+
 1. h5页面快速生成
+
+   <ImageZoom
+   src="/assets/fedtool/images/2021-02-26122251.png"
+   :border="true"
+   width="600"
+   />
+
 2. echarts表格生成 
 
    <ImageZoom
