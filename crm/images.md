@@ -5,8 +5,16 @@
 1. jquery 
 2. echarts 
 3. vue 
+4. layui
+5. element-ui
+6. day.js
+等等很多
+   
+会简单的node.js框架 egg.js的开发
 
 ## PC站
+
+使用egg开发  
 
 ### 个人中心
 
