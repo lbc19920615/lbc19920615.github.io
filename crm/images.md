@@ -1,6 +1,6 @@
-# 项目系统展示
+# 凌柏超的个人简历
 
-### 主要技术合集
+## 主要技术合集
 
 1. jquery 
 2. echarts 
@@ -16,7 +16,7 @@
 
 https://www.kaoyanvip.cn/
 
-使用egg.js开发  前端兼容到IE11 个人中心使用element开发
+使用egg.js开发  前端兼容到IE11 个人中心使用element-ui开发
 
 ### 个人中心
 
@@ -27,6 +27,8 @@ width="600"
 />
 
 ## M站
+
+https://m.kaoyanvip.cn/
 
 使用vue开发的单页面 适配微信环境
 
@@ -46,11 +48,36 @@ src="/crm/images/w2021-02-12321.png"
 width="600"
 />
 
+## fed-tool
+
+自己推进的快速生成活动页的开发工具 用于公司H5页面的快速响应
+
+1. h5页面快速生成
+
+   <ImageZoom
+   src="/assets/fedtool/images/2021-02-26122251.png"
+   :border="true"
+   width="600"
+   />
+
+2. echarts表格生成
+
+   <ImageZoom
+   src="/assets/fedtool/images/w20210223135234.png"
+   :border="true"
+   width="600"
+   />
+
+
 ## 品牌宣传官网
+
+egg.js 开发的静态网页
 
 http://info.kaoyanvip.com/
 
-## 直播系统
+## 后台单页系统
+
+### 直播系统
 
 vue element-ui
 
@@ -60,7 +87,7 @@ src="/crm/images/sssds2w22ssdsds.png"
 width="600"
 />
 
-## 教务系统
+### 教务系统
 
 vue element-ui
 
@@ -76,7 +103,7 @@ src="/crm/images/w2021-02-22 104253.png"
 width="600"
 />
 
-## 营销系统
+### 营销系统
 
 layui  quill
 
@@ -86,7 +113,7 @@ src="/crm/images/w2021-02-22121212.png"
 width="600"
 />
 
-## 产品系统
+### 产品系统
 
 layui  quill
 
@@ -96,7 +123,7 @@ src="/crm/images/w2021-02-223412.png"
 width="600"
 />
 
-## 院校系统
+### 院校系统
 
 <ImageZoom
 src="/crm/images/w2021-02-31111212.png"
