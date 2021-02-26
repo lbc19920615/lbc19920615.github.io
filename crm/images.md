@@ -14,6 +14,8 @@
 
 ## PC站
 
+https://www.kaoyanvip.cn/
+
 使用egg.js开发  前端兼容到IE11 个人中心使用element开发
 
 ### 个人中心
@@ -43,6 +45,10 @@ src="/crm/images/w2021-02-12321.png"
 :border="true"
 width="600"
 />
+
+## 品牌宣传官网
+
+http://info.kaoyanvip.com/
 
 ## 直播系统
 
@@ -90,3 +96,10 @@ src="/crm/images/w2021-02-223412.png"
 width="600"
 />
 
+## 院校系统
+
+<ImageZoom
+src="/crm/images/w2021-02-31111212.png"
+:border="true"
+width="600"
+/>
