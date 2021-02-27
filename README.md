@@ -2,8 +2,10 @@
 
 ## 自我介绍
 
-1. 前端博客
+1. 前端博客链接
+   
    [https://segmentfault.com/u/andypinet](https://segmentfault.com/u/andypinet)
+   
    [https://zhuanlan.zhihu.com/c_114049504](https://zhuanlan.zhihu.com/c_114049504)
 
 2. 熟悉使用vue 和 layui  
