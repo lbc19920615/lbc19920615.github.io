@@ -125,9 +125,9 @@ void main() {
 
     // First let's make some variables
     // to hold the translation,
-    var translation = [0, 0];
-    var rotationInRadians = 0;
-    var scale = [1, 1];
+    var translation = [60, 40];
+    var rotationInRadians = 0 * Math.PI / 180;
+    var scale = [0.85, 0.85];
     var color = [Math.random(), Math.random(), Math.random(), 1];
 
     drawScene();
@@ -188,18 +188,24 @@ void main() {
       var rotationMatrix = m3.rotation(rotationInRadians);
       var scaleMatrix = m3.scaling(scale[0], scale[1]);
 
-      // Multiply the matrices.
-      var matrix = m3.multiply(translationMatrix, rotationMatrix);
-      matrix = m3.multiply(matrix, scaleMatrix);
+      // Starting Matrix.
+      var matrix = m3.identity();
 
-      // Set the matrix.
-      gl.uniformMatrix3fv(matrixLocation, false, matrix);
+      for (var i = 0; i < 5; ++i) {
+        // Multiply the matrices.
+        matrix = m3.multiply(matrix, translationMatrix);
+        matrix = m3.multiply(matrix, rotationMatrix);
+        matrix = m3.multiply(matrix, scaleMatrix);
 
-      // Draw the geometry.
-      var primitiveType = gl.TRIANGLES;
-      var offset = 0;
-      var count = 18;
-      gl.drawArrays(primitiveType, offset, count);
+        // Set the matrix.
+        gl.uniformMatrix3fv(matrixLocation, false, matrix);
+
+        // Draw the geometry.
+        var primitiveType = gl.TRIANGLES;
+        var offset = 0;
+        var count = 18;
+        gl.drawArrays(primitiveType, offset, count);
+      }
     }
   }
 
@@ -239,6 +245,14 @@ void main() {
 
 
   var m3 = {
+    identity: function identity() {
+      return [
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1,
+      ];
+    },
+
     translation: function translation(tx, ty) {
       return [
         1, 0, 0,
@@ -284,6 +298,7 @@ void main() {
       var b20 = b[2 * 3 + 0];
       var b21 = b[2 * 3 + 1];
       var b22 = b[2 * 3 + 2];
+
       return [
         b00 * a00 + b01 * a10 + b02 * a20,
         b00 * a01 + b01 * a11 + b02 * a21,
