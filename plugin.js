@@ -50,13 +50,15 @@ const showAuthor = {
     addTocItem: addTocItem,
     get: function() {
       return TocItems
+    },
+    reset: function() {
+      TocItems = []
     }
   }
 
 })();
 
 (function() {
-
   // marked.use({ renderer });
   window.extCurPage = {
     // 插件名称
@@ -64,9 +66,11 @@ const showAuthor = {
     // 扩展核心功能
     extend(api) {
       window.curPageInfo = {
-        toc: []
+        toc: [],
+        router: api.router
       }
       api.processMarkdown(text => {
+        window.TocManager.reset()
         // text
         const tokens = marked.lexer(text);
         tokens.forEach(element => {
