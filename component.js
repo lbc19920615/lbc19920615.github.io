@@ -13,9 +13,9 @@ Vue.component('TocTree', {
           }
         }
 
-
         .toc-tree .el-tree {
           background: transparent;
+          font-size: 14px;
         }
       </v-style>
       <el-tree :data="data" :props="defaultProps"
