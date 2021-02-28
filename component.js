@@ -9,7 +9,7 @@ Vue.component('TocTree', {
             right: calc((100vw - 1180px) / 2);
             transform: translateX(100%);
             z-index: 1000111;
-            top:  var(--header-height);
+            top: calc(var(--header-height) + 20px);
           }
         }
 
