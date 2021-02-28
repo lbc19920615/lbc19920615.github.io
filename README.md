@@ -15,11 +15,14 @@
 3. 熟悉微信小程序开发流程
 
 
-## 后台系统展示
+## 简历
 
 [图片展示地址](crm/images.md)
 
-   
-## bug处理积累
+## 微信
 
-1. [json](bug/json.md)
+<ImageZoom
+src="https://raw.githubusercontent.com/lbc19920615/lbc19920615/master/assets/wechat_qrcode.jpg"
+:border="true"
+width="600"
+/>
