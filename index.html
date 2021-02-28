@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>My Docs</title>
   <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/marked/1.2.7/marked.min.js"></script>
   <link rel="stylesheet" href="./index.css?v=3">
   <script>
     var _hmt = _hmt || [];
@@ -51,14 +52,19 @@
   });
 </script>
 
+<script src="plugin.js?v=1"></script>
 <script>
   new Docute({
     target: '#docute',
-    highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'vue'],
+    highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python'],
     darkThemeToggler: true,
+    plugins: [
+      showAuthor,
+      extCurPage,
+    ],
     nav: [
       {
-        title: 'Home',
+        title: '首页',
         link: '/'
       },
       {
