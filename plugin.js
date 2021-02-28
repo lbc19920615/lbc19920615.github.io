@@ -63,7 +63,7 @@ const showAuthor = {
     name: 'showAuthor',
     // 扩展核心功能
     extend(api) {
-      window.curPageExtendInfo = {
+      window.curPageInfo = {
         toc: []
       }
       api.processMarkdown(text => {
@@ -74,7 +74,7 @@ const showAuthor = {
             window.TocManager.addTocItem(element.text, element.depth, element.text)
           }
         });
-        window.curPageExtendInfo.toc = window.TocManager.get()
+        window.curPageInfo.toc = window.TocManager.get()
       })
     }
   }
