@@ -10,6 +10,7 @@ const showAuthor = {
 };
 
 (function() {
+
   let TocItems  = []
 
   function last(items) {
@@ -45,20 +46,35 @@ const showAuthor = {
     }
   }
 
+  window.TocManager = {
+    addTocItem: addTocItem,
+    get: function() {
+      return TocItems
+    }
+  }
+
+})();
+
+(function() {
+
   // marked.use({ renderer });
   window.extCurPage = {
     // 插件名称
     name: 'showAuthor',
     // 扩展核心功能
     extend(api) {
+      window.curPageExtendInfo = {
+        toc: []
+      }
       api.processMarkdown(text => {
         // text
         const tokens = marked.lexer(text);
         tokens.forEach(element => {
           if (element.type === "heading") {
-            addTocItem(element.text, element.depth, element.text)
+            window.TocManager.addTocItem(element.text, element.depth, element.text)
           }
         });
+        window.curPageExtendInfo.toc = window.TocManager.get()
       })
     }
   }
