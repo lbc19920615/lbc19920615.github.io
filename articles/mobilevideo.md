@@ -1,5 +1,8 @@
 # 移动端video封装 兼容大部分手机
 
+![](/articles/images/w2021-01213415.png)
+
+html
 
 ```html
 <template>
@@ -22,6 +25,8 @@
   </div>
 </template>
 ```
+
+js
 
 ```js
 export default {
