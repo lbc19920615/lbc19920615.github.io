@@ -23,3 +23,9 @@
     display: none;
   }
 }
+
+@media screen and (min-width: 1024px) {
+  .medium-zoom-image--opened, .medium-zoom-overlay {
+    z-index: 10000011;
+  }
+}
