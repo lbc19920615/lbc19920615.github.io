@@ -19,6 +19,7 @@
 </head>
 <body>
 <div id="docute"></div>
+<link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
 <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
 
 <!-- live2d -->
@@ -53,10 +54,10 @@
 </script>
 
 
-<link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
 <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
 <script src="plugin.js?v=311122"></script>
 
+<script src="assets/article.toc.js?v=1111221"></script>
 <script src="component.js?v=143312"></script>
 <script>
   new Docute({
@@ -86,25 +87,10 @@
       {
         title: '文章列表',
         children: [
-          {
-            title: 'web单页面可视化编辑器',
-            link: '/articles/s1.md'
-          },
-          {
-            title: 'mongodb安装',
-            link: '/articles/mongo.md'
-          },
-          {
-            title: '移动端video封装 兼容大部分手机',
-            link: '/articles/mobilevideo.md'
-          },
+          ...window.articleToc,
           {
             title: 'bug处理积累',
             link: '/bug/README.md'
-          },
-          {
-            title: 'JavaScript tip',
-            link: '/articles/jstips.md'
           },
           {
             title: '项目系统展示',
