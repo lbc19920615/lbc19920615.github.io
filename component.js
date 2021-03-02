@@ -53,3 +53,56 @@ Vue.component('TocTree', {
     }
   }
 })
+
+
+window.AppSearchComponent = Vue.component('AppSearch', {
+  template: `
+  <div class="app-search">
+  <v-style>
+    .app-search   {
+      margin-top: .6vh
+    }
+  </v-style>
+  <el-autocomplete
+  class="inline-input"
+  v-model="searchInput"
+  :fetch-suggestions="querySearch"
+  placeholder="请输入内容"
+  :trigger-on-focus="false"
+  @select="handleSelect"
+>
+<template slot-scope="{ item }">
+<div class="title">{{ item.title }}</div>
+</template>
+</el-autocomplete>
+  </div>
+  `,
+  data() {
+    return {
+      searchInput: '',
+      restaurants: []
+    }
+  },
+  mounted() {
+    this.restaurants = window.articleToc
+  },
+  methods: {
+    querySearch(queryString, cb) {
+      var restaurants = this.restaurants;
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelect(item) {
+      console.log(item.link)
+      window.curPageInfo.router.push({
+        path: item.link
+      }).catch(err => {err})
+    }
+  }
+})

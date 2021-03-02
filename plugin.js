@@ -1,6 +1,6 @@
-const showAuthor = {
+const showAuthorPlugin = {
   // 插件名称
-  name: 'showAuthor',
+  name: 'showAuthorPlugin',
   // 扩展核心功能
   extend(api) {
     api.processMarkdown(text => {
@@ -59,10 +59,9 @@ const showAuthor = {
 })();
 
 (function() {
-  // marked.use({ renderer });
-  window.extCurPage = {
+  window.extCurPagePlugin = {
     // 插件名称
-    name: 'showAuthor',
+    name: 'extCurPagePlugin',
     // 扩展核心功能
     extend(api) {
       window.curPageInfo = {
@@ -80,6 +79,14 @@ const showAuthor = {
         });
         window.curPageInfo.toc = window.TocManager.get()
       })
+    }
+  }
+})();
+
+(function() {
+  window.appSearchsPlugin = {
+    extend(api) {
+      api.registerComponent("header-right:start", AppSearchComponent)
     }
   }
 })();

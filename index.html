@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>凌柏超的个人博客</title>
   <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
-  <script src="https://cdn.bootcdn.net/ajax/libs/marked/1.2.7/marked.min.js"></script>
+  
+  <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
   <link rel="stylesheet" href="./index.css?v=122121">
   <script>
     var _hmt = _hmt || [];
@@ -16,10 +17,13 @@
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/marked/1.2.7/marked.min.js"></script>
+ 
+<script async src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.20/lodash.core.js"></script>
 </head>
 <body>
 <div id="docute"></div>
-<link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
+
 <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
 
 
@@ -56,10 +60,9 @@
 
 
 <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
-<script src="plugin.js?v=311122"></script>
+<script src="plugin.js?v=312122"></script>
+<script src="component.js?v=143412"></script>
 
-<script src="assets/article.toc.js?v=1111221"></script>
-<script src="component.js?v=143312"></script>
 <script>
   import('/assets/article.toc.js?v=' + Date.now()).then(function () {
     new Docute({
@@ -67,8 +70,9 @@
       highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python'],
       darkThemeToggler: true,
       plugins: [
-        showAuthor,
-        extCurPage,
+        showAuthorPlugin,
+        extCurPagePlugin,
+        appSearchsPlugin,
       ],
       nav: [
         {

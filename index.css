@@ -7,6 +7,10 @@
   margin-top: 3.5rem;
 }
 
+.el-input.is-active .el-input__inner, .el-input__inner:focus {
+  border-color: var(--accent-color);
+}
+
 .a-iframe {
   display: block;
   width: 100%;
