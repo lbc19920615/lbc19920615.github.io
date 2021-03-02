@@ -14,8 +14,21 @@ Vue.component('TocTree', {
         }
 
         .toc-tree .el-tree {
-          background: transparent;
+          background: rgba(255,255,255,.6);
           font-size: 14px;
+          box-shadow: 0 0 10px #eee;
+          padding: 10px;
+        }
+
+        .toc-tree .el-tree-node__content {
+          flex-wrap: wrap;
+          height: initial;
+          height: auto;
+        }
+
+        .toc-tree .custom-tree-node {
+          max-width: 15em;
+          white-space: normal;
         }
       </v-style>
       <el-tree :data="data" :props="defaultProps"
