@@ -59,6 +59,18 @@ const showAuthorPlugin = {
 })();
 
 (function() {
+  function slugify(str) {
+    const RE = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g
+    const REPLACEMENT = '-'
+    const WHITESPACE = /\s/g
+
+    return str
+      .trim()
+      .replace(RE, '')
+      .replace(WHITESPACE, REPLACEMENT)
+      .toLowerCase()
+  }
+
   window.extCurPagePlugin = {
     // 插件名称
     name: 'extCurPagePlugin',
@@ -74,7 +86,8 @@ const showAuthorPlugin = {
         const tokens = marked.lexer(text);
         tokens.forEach(element => {
           if (element.type === "heading") {
-            window.TocManager.addTocItem(element.text, element.depth, element.text)
+            let id = slugify(element.text)
+            window.TocManager.addTocItem(element.text, element.depth, id)
           }
         });
         window.curPageInfo.toc = window.TocManager.get()
