@@ -16,6 +16,12 @@
    
 会简单的node.js框架 egg.js的开发
 
+## 宣传页
+
+看到的这里的人 你们考研吗
+
+[点击这里考研吧]()
+
 ## PC站
 
 https://www.kaoyanvip.cn/
