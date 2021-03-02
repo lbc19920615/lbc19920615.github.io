@@ -2,7 +2,7 @@
   "scripts": {
     "toc:articles": "node cmd.js --type build-toc --dist assets/article.toc.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "fs-extra": "^9.1.0",
     "marked": "^2.0.1",
     "yargs": "^16.2.0"

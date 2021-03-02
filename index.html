@@ -22,6 +22,7 @@
 <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
 <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
 
+
 <!-- live2d -->
 <script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
 <div id="live2d-widget" class="Lolita">
@@ -60,84 +61,87 @@
 <script src="assets/article.toc.js?v=1111221"></script>
 <script src="component.js?v=143312"></script>
 <script>
-  new Docute({
-    target: '#docute',
-    highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python'],
-    darkThemeToggler: true,
-    plugins: [
-      showAuthor,
-      extCurPage,
-    ],
-    nav: [
-      {
-        title: '首页',
-        link: '/'
-      },
-      {
-        title: 'GitHub',
-        link: 'https://github.com/lbc19920615'
-      },
-      {
-        title: 'Gitee',
-        link: 'https://gitee.com/lbc19920615'
-      },
-    ],
-    sidebar: [
-      // A sidebar item, with child links
-      {
-        title: '文章列表',
-        children: [
-          ...window.articleToc,
-          {
-            title: 'bug处理积累',
-            link: '/bug/README.md'
-          },
-          {
-            title: '凌柏超的个人简历',
-            link: '/crm/images.md'
-          }
-        ]
-      },
-      {
-        title: 'WebGL2学习',
-        children: [
-          {
-            title: 'WebGL2的基本原理',
-            link: '/webgl2/s1.md'
-          },
-          {
-            title: 'WebGL2 着色器和 GLSL 语言',
-            link: '/webgl2/s2.md'
-          },
-          {
-            title: 'WebGL2 图像处理',
-            link: '/webgl2/s3.md'
-          },
-          {
-            title: 'WebGL2 2D矩阵',
-            link: '/webgl2/s4.md'
-          },
-          {
-            title: 'WebGL2 Orthographic 3D',
-            link: '/webgl2/s5.md'
-          },
-          {
-            title: 'WebGL2 3D Perspective',
-            link: '/webgl2/s6.md'
-          },
-        ]
-      },
-      {
-        title: 'three.js学习',
-        children: [
-          {
-            title: 'three.js的基本原理',
-            link: '/threejs/s1.md'
-          },
-        ]
-      },
-    ]
+  import('/assets/article.toc.js?v=' + Date.now()).then(function () {
+    new Docute({
+      target: '#docute',
+      highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python'],
+      darkThemeToggler: true,
+      plugins: [
+        showAuthor,
+        extCurPage,
+      ],
+      nav: [
+        {
+          title: '首页',
+          link: '/'
+        },
+        {
+          title: 'GitHub',
+          link: 'https://github.com/lbc19920615'
+        },
+        {
+          title: 'Gitee',
+          link: 'https://gitee.com/lbc19920615'
+        },
+      ],
+      sidebar: [
+        // A sidebar item, with child links
+        {
+          title: '文章列表',
+          children: [
+            ...window.articleToc,
+            {
+              title: 'bug处理积累',
+              link: '/bug/README.md'
+            },
+            {
+              title: '凌柏超的个人简历',
+              link: '/crm/images.md'
+            }
+          ]
+        },
+        {
+          title: 'WebGL2学习',
+          children: [
+            {
+              title: 'WebGL2的基本原理',
+              link: '/webgl2/s1.md'
+            },
+            {
+              title: 'WebGL2 着色器和 GLSL 语言',
+              link: '/webgl2/s2.md'
+            },
+            {
+              title: 'WebGL2 图像处理',
+              link: '/webgl2/s3.md'
+            },
+            {
+              title: 'WebGL2 2D矩阵',
+              link: '/webgl2/s4.md'
+            },
+            {
+              title: 'WebGL2 Orthographic 3D',
+              link: '/webgl2/s5.md'
+            },
+            {
+              title: 'WebGL2 3D Perspective',
+              link: '/webgl2/s6.md'
+            },
+          ]
+        },
+        {
+          title: 'three.js学习',
+          children: [
+            {
+              title: 'three.js的基本原理',
+              link: '/threejs/s1.md'
+            },
+          ]
+        },
+      ]
+    })
   })
 </script>
+
 </body>
 </html>
