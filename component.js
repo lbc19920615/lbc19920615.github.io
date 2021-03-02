@@ -67,7 +67,7 @@ window.AppSearchComponent = Vue.component('AppSearch', {
   class="inline-input"
   v-model="searchInput"
   :fetch-suggestions="querySearch"
-  placeholder="请输入内容"
+  placeholder="输入搜索文章"
   :trigger-on-focus="false"
   @select="handleSelect"
 >

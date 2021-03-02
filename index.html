@@ -65,6 +65,9 @@
 
 <script>
   import('/assets/article.toc.js?v=' + Date.now()).then(function () {
+    if (!Array.isArray(window.articleToc)) {
+      window.articleToc = []
+    }
     new Docute({
       target: '#docute',
       highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python'],
@@ -93,7 +96,7 @@
         {
           title: '文章列表',
           children: [
-            ...window.articleToc,
+            ...window.articleToc.slice(0, 5),
             {
               title: 'bug处理积累',
               link: '/bug/README.md'
