@@ -8,6 +8,7 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "gulp-twig": "^1.2.0"
   }
 }
