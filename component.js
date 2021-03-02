@@ -73,7 +73,9 @@ window.AppSearchComponent = Vue.component('AppSearch', {
   <div class="app-search">
   <v-style>
     .app-search   {
-      margin-top: .6vh
+      height: 100%;
+      display: flex;
+      align-items: center;
     }
   </v-style>
   <el-autocomplete
