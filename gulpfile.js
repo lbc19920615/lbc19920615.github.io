@@ -20,7 +20,7 @@ gulp.task('compile', function () {
 });
 
 gulp.task('default', async function watchMd () {
-  gulp.watch(['component.js', 'plugin.js'], gulp.parallel(['compile']))
+  gulp.watch(['component.js', 'plugin.js', 'index.twig'], gulp.parallel(['compile']))
 
   gulp.watch(['articles/*.md'], function(cb) {
     exec('npm run toc:articles', (err, stdout, stderr) => {

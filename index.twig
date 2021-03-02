@@ -34,6 +34,7 @@
   </canvas>
 </div>
 <script>
+  let con = 1180
   L2Dwidget.init({
     "model": {
       //jsonpath控制显示那个小萝莉模型，下面这个就是我觉得最可爱的小萝莉模型
@@ -44,7 +45,7 @@
       //"position": "", //看板娘的表现位置
       "width": 150,  //小萝莉的宽度
       "height": 300, //小萝莉的高度
-      "hOffset": 0,
+      "hOffset": (window.innerWidth - con) / 2 + con,
       "vOffset": -20,
     },
     "mobile": {
