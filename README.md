@@ -17,7 +17,9 @@
 
 ## 简历
 
-[图片展示地址](crm/images.md)
+[简历线上地址](crm/images.md)
+
+<a href="/crm/凌柏超-web前端-个人简历.pdf" download="凌柏超的个人简历">PDF</a>
 
 ## 微信
 
