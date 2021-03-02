@@ -1,4 +1,4 @@
-## 在windows配置mongodb服务
+# 在windows配置mongodb服务
 
 ### 安装
 

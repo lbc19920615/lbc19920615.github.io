@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>My Docs</title>
+  <title>凌柏超的个人博客</title>
   <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
-  <link rel="stylesheet" href="./index.css?v=3">
+  <script src="https://cdn.bootcdn.net/ajax/libs/marked/1.2.7/marked.min.js"></script>
+  <link rel="stylesheet" href="./index.css?v=122121">
   <script>
     var _hmt = _hmt || [];
     (function() {
@@ -18,6 +19,7 @@
 </head>
 <body>
 <div id="docute"></div>
+<link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
 <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
 
 <!-- live2d -->
@@ -51,14 +53,24 @@
   });
 </script>
 
+
+<script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
+<script src="plugin.js?v=311122"></script>
+
+<script src="assets/article.toc.js?v=1111221"></script>
+<script src="component.js?v=143312"></script>
 <script>
   new Docute({
     target: '#docute',
-    highlight: ['typescript', 'go', 'glsl'],
+    highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python'],
     darkThemeToggler: true,
+    plugins: [
+      showAuthor,
+      extCurPage,
+    ],
     nav: [
       {
-        title: 'Home',
+        title: '首页',
         link: '/'
       },
       {
@@ -75,17 +87,10 @@
       {
         title: '文章列表',
         children: [
+          ...window.articleToc,
           {
-            title: 'web单页面可视化编辑器',
-            link: '/articles/s1.md'
-          },
-          {
-            title: 'mongodb安装',
-            link: '/articles/mongo.md'
-          },
-          {
-            title: 'JavaScript tip',
-            link: '/articles/jstips.md'
+            title: 'bug处理积累',
+            link: '/bug/README.md'
           },
           {
             title: '项目系统展示',
