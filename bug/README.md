@@ -1,3 +1,4 @@
 # bug处理积累
 
-1. [json](/bug/json.md)
+- [json](/bug/json.md)
+- [window.open失效](/bug/windowopen.md)

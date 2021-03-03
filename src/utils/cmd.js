@@ -1,6 +1,25 @@
 const fs = require('fs');
 const path = require('path');
 
+
+function listFile(dir, list = []){
+	var arr = fs.readdirSync(dir);
+	arr.forEach(function(item){
+		var fullpath = path.join(dir,item);
+		var stats = fs.statSync(fullpath);
+		if(stats.isDirectory()){
+			listFile(fullpath, list);
+		}else{
+			list.push({
+                filedir: fullpath,
+                filename: item,
+            });
+		}
+	});
+	return list;
+}
+exports.listFile = listFile
+
 /**
  * 文件遍历方法
  * @param filePath 需要遍历的文件路径

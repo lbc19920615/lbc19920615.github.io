@@ -110,7 +110,7 @@ window.AppSearchComponent = Vue.component('AppSearch', {
     },
     createFilter(queryString) {
       return (restaurant) => {
-        return (restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
       };
     },
     handleSelect(item) {

@@ -1,4 +1,4 @@
-### 正确处理json的方法
+# 正确处理json的方法
 
 ```javascript
 function safeParseJSON(str) {
