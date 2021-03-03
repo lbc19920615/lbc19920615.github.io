@@ -87,10 +87,19 @@ console.log(s1)
 
 1）js 代码执行时，先按代码顺序将同步任务压入主执行栈中执行 （2）遇到异步任务则先将异步任务压入对应的任务队列中（宏队列或微队列） （3）同步任务执行完毕后，查看微队列，将微任务一一取出进入主执行栈中执行 （4）微任务队列清空后，再查看宏队列，只取出第一个宏任务执行，执行完一个宏任务后，回到第三步的操作 这个过程是循环不断的，所以整个的这种运行机制又称为 Event Loop（事件循环）。
 
-### JS 函数节流 抖动
+### JS 函数节流 防抖
+
+防抖
 
 <iframe height="265" style="width: 100%;" scrolling="no" title="js 面试训练 抖动 节流" src="https://codepen.io/andypinet/embed/dyOeRrN?height=265&theme-id=light&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href='https://codepen.io/andypinet/pen/dyOeRrN'>js 面试训练 抖动 节流</a> by lingbaichao
+  (<a href='https://codepen.io/andypinet'>@andypinet</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+节流
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="js 节流" src="https://codepen.io/andypinet/embed/eYBKNje?height=265&theme-id=light&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/andypinet/pen/eYBKNje'>js 节流</a> by lingbaichao
   (<a href='https://codepen.io/andypinet'>@andypinet</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
