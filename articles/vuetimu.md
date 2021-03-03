@@ -14,23 +14,12 @@ vue3.x使用Proxy
 
 ### 源码解析
 
-```js
-function observable(obj) {
-    if (!obj || typeof obj !== 'object') {
-        return;
-    }
-    const keys = Object.keys(obj)
-    keys.forEach(key => {
-        defineReactive(obj, key, obj[key])
-    })
-}
-```
+Vue 主要通过以下 4 个步骤来实现数据双向绑定的：
+- 实现一个监听器 Observer：对数据对象进行遍历，包括子属性对象的属性，利用 Object.defineProperty() 对属性都加上 setter 和 getter。这样的话，给这个对象的某个值赋值，就会触发 setter，那么就能监听到了数据变化。
+- 实现一个解析器 Compile：解析 Vue 模板指令，将模板中的变量都替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，添加监听数据的订阅者，一旦数据有变动，收到通知，调用更新函数进行数据更新。
+- 实现一个订阅者 Watcher：Watcher 订阅者是 Observer 和 Compile 之间通信的桥梁 ，主要的任务是订阅 Observer 中的属性值变化的消息，当收到属性值变化的消息时，触发解析器 Compile 中对应的更新函数。
+- 实现一个订阅器 Dep：订阅器采用 发布-订阅 设计模式，用来收集订阅者 Watcher，对监听器 Observer 和 订阅者 Watcher 进行统一管理。
 
-先对 data 进行数据劫持（observe），然后为当前实例创建一个订阅者（Watcher）。
-
-数据劫持
-
-数据劫持的实质就是使用 defineProperty 重写对象属性的 getter/setter 方法。但由于defineProperty 无法监测到对象和数组内部的变化，所以遇到子属性为对象时，会递归观察该属性直至简单数据类型；为数组时的处理是重写push、pop、shift等方法，方法内部通知订阅中心：状态变化了！这样就能对所有类型数据进行监听了。
 
 [0 到 1 掌握：Vue 核心之数据双向绑定](https://juejin.cn/post/6844903903822086151)
 
@@ -88,6 +77,45 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
 - 如果目标是对象，会先判读属性是否存在、对象是否是响应式，最终如果要对属性进行响应式处理，则是通过调用   defineReactive 方法进行响应式处理（ defineReactive 方法就是  Vue 在初始化对象时，给对象属性采用 Object.defineProperty 动态添加 getter 和 setter 的功能所调用的方法）
 
 ## Vue 核心之虚拟DOM
+
+[文章](https://juejin.cn/post/6844903895467032589#heading-1)
+
+## 你有对 Vue 项目进行哪些优化
+
+- v-if 和 v-show 区分使用场景
+- computed 和 watch  区分使用场景
+- v-for 遍历必须为 item 添加 key，且避免同时使用 v-if
+- 长列表性能优化
+- 事件的销毁
+- 图片资源懒加载
+- 路由懒加载
+- 第三方插件的按需引入
+- 优化无限列表性能
+- 服务端渲染 SSR or 预渲染
+
+
+## 对于即将到来的 vue3.0 特性你有什么了解的吗
+
+Vue 3.0 正走在发布的路上，Vue 3.0 的目标是让 Vue 核心变得更小、更快、更强大，因此 Vue 3.0 增加以下这些新特性：
+
+（1）监测机制的改变
+3.0 将带来基于代理 Proxy 的 observer 实现，提供全语言覆盖的反应性跟踪。这消除了 Vue 2 当中基于 Object.defineProperty 的实现所存在的很多限制：
+
+
+- 只能监测属性，不能监测对象
+- 检测属性的添加和删除；
+- 检测数组索引和长度的变更；
+- 支持 Map、Set、WeakMap 和 WeakSet。
+
+
+新的 observer 还提供了以下特性：
+
+- 用于创建 observable 的公开 API。这为中小规模场景提供了简单轻量级的跨组件状态管理解决方案。
+- 默认采用惰性观察。在 2.x 中，不管反应式数据有多大，都会在启动时被观察到。如果你的数据集很大，这可能会在应用启动时带来明显的开销。在 3.x 中，只观察用于渲染应用程序最初可见部分的数据。
+- 更精确的变更通知。在 2.x 中，通过 Vue.set 强制添加新属性将导致依赖于该对象的 watcher 收到变更通知。在 3.x 中，只有依赖于特定属性的 watcher 才会收到通知。
+不可变的 observable：我们可以创建值的“不可变”版本（即使是嵌套属性），除非系统在内部暂时将其“解禁”。这个机制可用于冻结 prop 传递或 Vuex 状态树以外的变化。
+- 更好的调试功能：我们可以使用新的 renderTracked 和 renderTriggered 钩子精确地跟踪组件在什么时候以及为什么重新渲染。
+
 
 
 ## 参考
