@@ -103,6 +103,22 @@ console.log(s1)
   (<a href='https://codepen.io/andypinet'>@andypinet</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
+## CSS
+
+### 盒子模型
+
+ie盒子模型： width 和 height 指的是内容区域+border+padding的宽度和高度。
+标准盒子模型：width 和 height 指的是内容区域的宽度和高度。
+
+ie盒子模型和标准盒子模型转换可以利用 box-sizing： border-box / content-box；
+
+### border 三角形 梯形
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="border css" src="https://codepen.io/andypinet/embed/PobaPqz?height=265&theme-id=light&default-tab=css,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/andypinet/pen/PobaPqz'>border css</a> by lingbaichao
+  (<a href='https://codepen.io/andypinet'>@andypinet</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
 ## 网络部分
 
 ### cookie、localStorage 与 sessionStorage 区别
