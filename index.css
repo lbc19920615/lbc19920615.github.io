@@ -11,6 +11,11 @@
   border-color: var(--accent-color);
 }
 
+.el-autocomplete-suggestion {
+  width: auto !important;
+}
+
+/* page */
 .a-iframe {
   display: block;
   width: 100%;
