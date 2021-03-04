@@ -155,7 +155,7 @@ POST产生两个TCP数据包，浏览器先发送header，服务器响应100 con
 
 [链接](/articles/jswrite)
 
-## node 部分
+## node.js 部分
 
 [链接](/articles/node)
 
