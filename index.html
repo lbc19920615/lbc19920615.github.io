@@ -7,8 +7,7 @@
 <meta http-equiv="cache-control" content="no-cache" />
  
   <title>凌柏超的个人博客</title>
-  <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
-  
+  <link rel="stylesheet" href="/assets/css/docute.css?v=1">
   <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
   <link rel="stylesheet" href="./index.css?v=122121">
   <script>
@@ -27,7 +26,7 @@
 <body>
 <div id="docute"></div>
 
-<script src="https://unpkg.com/docute@4/dist/docute.js"></script>
+<script src="/assets/js/docute.js?v={{now}}"></script>
 
 
 <!-- live2d -->
@@ -64,8 +63,8 @@
 
 
 <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
-<script src="plugin.js?v=1614848884743"></script>
-<script src="component.js?v=1614848884743"></script>
+<script src="plugin.js?v=1614849440736"></script>
+<script src="component.js?v=1614849440736"></script>
 
 <script>
   import('/assets/article.toc.js?v=' + Date.now()).then(function () {
@@ -76,6 +75,12 @@
       target: '#docute',
       highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python', 'php'],
       darkThemeToggler: true,
+      fetchOptions: {
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        headers: {
+          'testsds': 'Mozilla/4.0 MDN Example',
+        },
+      },
       plugins: [
         showAuthorPlugin,
         extCurPagePlugin,
