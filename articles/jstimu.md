@@ -151,6 +151,10 @@ POST产生两个TCP数据包，浏览器先发送header，服务器响应100 con
 
 [链接](/articles/vuetimu)
 
+## js 手写
+
+[链接](/articles/jswrite)
+
 ## 参考
 
 - [1] (2020前端面试题)(https://zhuanlan.zhihu.com/p/138148644)
