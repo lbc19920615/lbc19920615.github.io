@@ -57,7 +57,6 @@ Vue.component('TocTree', {
   methods: {
     handleNodeClick(data) {
       if (data.level > 1) {
-        console.log('data', data)
         // window.curPageInfo.router.push({
         //   path: window.curPageInfo.router.currentRoute.path + '#' + data.id 
         // })
