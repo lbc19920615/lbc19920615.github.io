@@ -207,4 +207,3 @@ POST产生两个TCP数据包，浏览器先发送header，服务器响应100 con
 
 - [1] (2020前端面试题)(https://zhuanlan.zhihu.com/p/138148644)
 - [2] (Daily-Interview-Question)(https://github.com/00feng00/diaryBrush)
-- [3] (FE-interview)(https://github.com/qiu-deqing/FE-interview#%E5%B8%B8%E8%A7%81%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6)
