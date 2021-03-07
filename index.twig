@@ -76,6 +76,12 @@
       target: '#docute',
       highlight: ['typescript', 'go', 'glsl', 'scss', 'less', 'python', 'php'],
       darkThemeToggler: true,
+      fetchOptions: {
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        headers: {
+          'testsds': 'Mozilla/4.0 MDN Example',
+        },
+      },
       plugins: [
         showAuthorPlugin,
         extCurPagePlugin,
@@ -109,6 +115,24 @@
               title: '凌柏超的个人简历',
               link: '/crm/images.md'
             }
+          ]
+        },
+        {
+          title: '用js多端开发',
+          children: [
+            {
+              title: 'uniapp 使用tabbar',
+              link: '/wechat/s1.md'
+            },
+          ]
+        },
+        {
+          title: 'echarts.js学习',
+          children: [
+            {
+              title: 'echarts的地图',
+              link: '/echarts/s1.md'
+            },
           ]
         },
         {
@@ -150,29 +174,11 @@
           ]
         },
         {
-          title: 'echarts.js学习',
-          children: [
-            {
-              title: 'echarts的地图',
-              link: '/echarts/s1.md'
-            },
-          ]
-        },
-        {
           title: '树莓派',
           children: [
             {
               title: '为树莓派装系统',
               link: '/pie/s1.md'
-            },
-          ]
-        },
-        {
-          title: '小程序',
-          children: [
-            {
-              title: '微信小程序api使用',
-              link: '/wechat/s1.md'
             },
           ]
         },
