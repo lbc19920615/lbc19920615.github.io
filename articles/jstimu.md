@@ -81,6 +81,24 @@ console.log(s1.constructor) //Student
 console.log(s1)
 ```
 
+### js 数组去重
+
+```js
+function unqiueArr(arr) {
+  return arr.filter(function(v, index) {
+    return arr.indexOf(v) === index
+  })
+}
+```
+
+### JS中的深拷贝与浅拷贝的区别？
+
+- 深拷贝递归地复制新对象中的所有值或属性，而拷贝只复制引用。
+
+- 在深拷贝中，新对象中的更改不会影响原始对象，而在浅拷贝中，新对象中的更改，原始对象中也会跟着改。
+
+- 在深拷贝中，原始对象不与新对象共享相同的属性，而在浅拷贝中，它们具有相同的属性。
+
 ### 事件循环机制
 
 1、js 是单线程。 2、一个线程中，事件循环是唯一的，但是任务队列可以拥有多个。3、任务队列有宏任务（script(整体代码), setTimeout, setInterval, setImmediate, I/O（输入输出）, UI rendering）和微任务（process.nextTick, Promise,MutationObserver)
