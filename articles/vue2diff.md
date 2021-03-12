@@ -1,6 +1,6 @@
 # vue2 diff的学习
 
-## vue2 vnode
+## vnode 格式
 
 ```js
 export default class VNode {
