@@ -105,3 +105,21 @@ patchVnode (oldVnode, vnode) {
 ```
 
 ### updateChildren
+
+
+粉红色的部分为oldCh和vCh
+
+![](/articles/images/w2021-12134151.png)
+
+
+我们将它们取出来并分别用s和e指针指向它们的头child和尾child
+
+![](/articles/images/w2021-12651516.png)
+
+现在分别对oldS、oldE、S、E两两做sameVnode比较，有四种比较方式，当其中两个能匹配上那么真实dom中的相应节点会移到Vnode相应的位置，这句话有点绕，打个比方
+
+- 如果是oldS和E匹配上了，那么真实dom中的第一个节点会移到最后
+- 如果是oldE和S匹配上了，那么真实dom中的最后一个节点会移到最前，匹配上的两个指针向中间移动
+- 如果四种匹配没有一对是成功的，分为两种情况
+  - 如果新旧子节点都存在key，那么会根据oldChild的key生成一张hash表，用S的key与hash表做匹配，匹配成功就判断S和匹配节点是否为sameNode，如果是，就在真实dom中将成功的节点移到最前面，否则，将S生成对应的节点插入到dom中对应的oldS位置，S指针向中间移动，被匹配old中的节点置为null。
+  - 如果没有key,则直接将S生成新的节点插入真实DOM
