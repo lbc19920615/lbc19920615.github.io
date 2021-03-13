@@ -123,3 +123,58 @@ patchVnode (oldVnode, vnode) {
 - 如果四种匹配没有一对是成功的，分为两种情况
   - 如果新旧子节点都存在key，那么会根据oldChild的key生成一张hash表，用S的key与hash表做匹配，匹配成功就判断S和匹配节点是否为sameNode，如果是，就在真实dom中将成功的节点移到最前面，否则，将S生成对应的节点插入到dom中对应的oldS位置，S指针向中间移动，被匹配old中的节点置为null。
   - 如果没有key,则直接将S生成新的节点插入真实DOM
+
+
+四步法
+
+1. 旧首 和 新首 对比
+
+```js
+if (sameVnode(oldStartVnode, newStartVnode)) { 
+      patchVnode(oldStartVnode.elm, oldStartVnode, newStartVnode);
+      oldStartVnode = oldCh[++oldStartIdx];
+      newStartVnode = newCh[++newStartIdx];
+    }
+```
+
+2.旧尾 和 新尾 对比
+
+```js
+if (sameVnode(oldEndVnode, newEndVnode)) { //旧尾 和 新尾相同
+      patchVnode(oldEndVnode.elm, oldEndVnode, newEndVnode);
+      oldEndVnode = oldCh[--oldEndIdx];
+      newEndVnode = newCh[--newEndIdx];
+    }
+```
+
+3. 旧首 和 新尾 对比
+
+```js
+if (sameVnode(oldStartVnode, newEndVnode)) { //旧首 和 新尾相同,将旧首移动到 最后面
+      patchVnode(oldStartVnode.elm, oldStartVnode, newEndVnode);
+      nodeOps.insertBefore(parentElm, oldStartVnode.elm, oldEndVnode.elm.nextSibling)
+      oldStartVnode = oldCh[++oldStartIdx];
+      newEndVnode = newCh[--newEndIdx];
+    }
+```
+
+4. 旧尾 和 新首 对比,将 旧尾 移动到 最前面
+
+```js
+if (sameVnode(oldEndVnode, newStartVnode)) {//旧尾 和 新首相同 ,将 旧尾 移动到 最前面
+      patchVnode(oldEndVnode.elm, oldEndVnode, newStartVnode);
+      nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
+      oldEndVnode = oldCh[--oldEndIdx];
+      newStartVnode = newCh[++newStartIdx];
+    }
+```
+
+- 首尾对比 都不 符合 sameVnode 的话
+- 尝试 用 newCh 的第一项在 oldCh 内寻找 sameVnode,如果在 oldCh 不存在对应的 sameVnode ，则直接创建一个，存在的话则判断
+- 符合 sameVnode，则移动 oldCh 对应的 节点
+- 不符合 sameVnode ,创建新节点
+
+最后 通过 oldStartIdx > oldEndIdx ，来判断 oldCh 和 newCh 哪一个先遍历完成
+
+1. oldCh 先遍历完成,则证明 newCh 还有多余节点，需要新增这些节点
+2. newCh 先遍历完成,则证明 oldCh 还有多余节点，需要删除这些节点
