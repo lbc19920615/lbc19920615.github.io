@@ -31,6 +31,12 @@
   padding: 0;
 }
 
+.search-dialog .el-dialog {
+  width: 50%;
+  background-color: transparent;
+  max-width: 600px;
+}
+
 /* page */
 .a-iframe {
   display: block;

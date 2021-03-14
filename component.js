@@ -89,21 +89,23 @@ window.AppSearchComponent = Vue.component('AppSearch', {
   :visible.sync="dialogVisible"
   :append-to-body="true"
   class="search-dialog"
-  width="50%"
+  @closed="onClosed"
   >
         
-      <el-autocomplete
-      class="inline-input"
-      v-model="searchInput"
-      :fetch-suggestions="querySearch"
-      placeholder="输入搜索文章"
-      :trigger-on-focus="false"
-      @select="handleSelect"
-    >
-    <template slot-scope="{ item }">
-    <div class="title">{{ item.title }}</div>
-    </template>
-    </el-autocomplete>
+  <el-autocomplete
+  class="inline-input"
+  v-model="searchInput"
+  :fetch-suggestions="querySearch"
+  placeholder="输入搜索文章"
+  :trigger-on-focus="false"
+  @select="handleSelect"
+>
+<template slot-scope="{ item }">
+<div class="title">{{ item.title }}</div>
+</template>
+</el-autocomplete>
+
+
   </el-dialog>
 
   </div>
@@ -136,6 +138,9 @@ window.AppSearchComponent = Vue.component('AppSearch', {
       window.curPageInfo.router.push({
         path: item.link
       }).catch(err => {err})
+    },
+    onClosed() {
+      this.searchInput = ''
     }
   }
 })
