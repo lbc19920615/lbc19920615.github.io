@@ -41,6 +41,12 @@ keep-alive 是 Vue 内置的一个组件，可以使被包含的组件保留状�
 4. $attrs/$listeners 适用于 隔代组件通信
 5. provide / inject 适用于 隔代组件通信
 6. Vuex 适用于 父子、隔代、兄弟组件通信
+  
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="vue provide inject" src="https://codepen.io/andypinet/embed/preview/LYbaEPz?height=265&theme-id=light&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/andypinet/pen/LYbaEPz'>vue provide inject</a> by lingbaichao
+  (<a href='https://codepen.io/andypinet'>@andypinet</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>  
 
 ## Vue 怎么用 vm.$set() 解决对象新增属性不能响应的问题 
 
