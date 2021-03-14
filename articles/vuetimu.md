@@ -35,12 +35,12 @@ keep-alive 是 Vue 内置的一个组件，可以使被包含的组件保留状�
 
 ## Vue 组件间通信有哪几种方式
 
-（1）props / $emit 适用 父子组件通信
-（2）ref 与 $parent / $children 适用 父子组件通信
-（3）EventBus （$emit / $on） 适用于 父子、隔代、兄弟组件通信
-（4）$attrs/$listeners 适用于 隔代组件通信
-（5）provide / inject 适用于 隔代组件通信
-（6）Vuex 适用于 父子、隔代、兄弟组件通信
+1. props / $emit 适用 父子组件通信
+2. ref 与 $parent / $children 适用 父子组件通信  
+3. EventBus （$emit / $on） 适用于 父子、隔代、兄弟组件通信
+4. $attrs/$listeners 适用于 隔代组件通信
+5. provide / inject 适用于 隔代组件通信
+6. Vuex 适用于 父子、隔代、兄弟组件通信
 
 ## Vue 怎么用 vm.$set() 解决对象新增属性不能响应的问题 
 
