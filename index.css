@@ -11,8 +11,24 @@
   border-color: var(--accent-color);
 }
 
+.el-autocomplete {
+  width: 100%;
+}
+
 .el-autocomplete-suggestion {
   width: auto !important;
+}
+
+.search-dialog .el-dialog__close {
+  display: none;
+}
+
+.search-dialog .el-dialog__header {
+   padding: 0;
+}
+
+.search-dialog .el-dialog__body {
+  padding: 0;
 }
 
 /* page */

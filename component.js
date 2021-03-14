@@ -76,25 +76,43 @@ window.AppSearchComponent = Vue.component('AppSearch', {
       display: flex;
       align-items: center;
     }
+
+
   </v-style>
-  <el-autocomplete
-  class="inline-input"
-  v-model="searchInput"
-  :fetch-suggestions="querySearch"
-  placeholder="输入搜索文章"
-  :trigger-on-focus="false"
-  @select="handleSelect"
->
-<template slot-scope="{ item }">
-<div class="title">{{ item.title }}</div>
-</template>
-</el-autocomplete>
+  <div style="width: 50px; height: 50px; line-height: 50px; text-align: center"
+  @click="dialogVisible = true"
+  >
+  <i class="el-icon-search" ></i>
+  </div>
+
+  <el-dialog
+  :visible.sync="dialogVisible"
+  :append-to-body="true"
+  class="search-dialog"
+  width="50%"
+  >
+        
+      <el-autocomplete
+      class="inline-input"
+      v-model="searchInput"
+      :fetch-suggestions="querySearch"
+      placeholder="输入搜索文章"
+      :trigger-on-focus="false"
+      @select="handleSelect"
+    >
+    <template slot-scope="{ item }">
+    <div class="title">{{ item.title }}</div>
+    </template>
+    </el-autocomplete>
+  </el-dialog>
+
   </div>
   `,
   data() {
     return {
       searchInput: '',
-      restaurants: []
+      restaurants: [],
+      dialogVisible: false,
     }
   },
   mounted() {
@@ -113,7 +131,8 @@ window.AppSearchComponent = Vue.component('AppSearch', {
       };
     },
     handleSelect(item) {
-      console.log(item.link)
+      // console.log(item.link)
+      this.dialogVisible = false
       window.curPageInfo.router.push({
         path: item.link
       }).catch(err => {err})
