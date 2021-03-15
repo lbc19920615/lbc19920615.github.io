@@ -123,6 +123,29 @@ function unqiueArr(arr) {
   (<a href='https://codepen.io/andypinet'>@andypinet</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
+## map 和 set 和 object
+
+Map 对象保存键值对，并且能够记住键的原始插入顺序。任何值(对象或者原始值) 都可以作为一个键或一个值。
+
+Objects 和 Maps 类似的是，它们都允许你按键存取一个值、删除键、检测一个键是否绑定了值。因此（并且也没有其他内建的替代方式了）过去我们一直都把对象当成 Maps 使用。不过 Maps 和 Objects 有一些重要的区别，在下列情况里使用 Map 会是更好的选择：
+
+![](/articles/images/w12121212121215.png)
+
+![](/articles/images/w1212124565656565.png)
+
+
+Set 对象允许你存储任何类型的唯一值，无论是原始值或者是对象引用。
+
+
+## Set 和 WeakSet
+
+WeakSet 对象是一些对象值的集合, 并且其中的每个对象值都只能出现一次。在WeakSet的集合中是唯一的
+
+它和 Set 对象的区别有两点:
+
+与Set相比，WeakSet 只能是对象的集合，而不能是任何类型的任意值。
+WeakSet持弱引用：集合中对象的引用为弱引用。 如果没有其他的对WeakSet中对象的引用，那么这些对象会被当成垃圾回收掉。 这也意味着WeakSet中没有存储当前对象的列表。 正因为这样，WeakSet 是不可枚举的。
+
 ## CSS
 
 ### 盒子模型
