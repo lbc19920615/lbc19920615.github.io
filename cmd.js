@@ -41,6 +41,7 @@ if (argv.type === 'build-toc') {
 
   scanMarkdown('articles', arr)
   scanMarkdown('bug', arr)
+  scanMarkdown('flutter', arr)
 
   // console.log(arr)
   fse.outputFileSync(path.resolve(__dirname, argv.dist), `
