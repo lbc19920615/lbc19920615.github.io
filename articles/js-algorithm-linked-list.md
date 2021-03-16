@@ -26,3 +26,7 @@ Append(value)
   end if
 end Append
 ```
+
+## 参考
+
+https://github.com/trekhleb/javascript-algorithms
