@@ -29,5 +29,5 @@
 
 ## 算法 
 
-[单向列表](/articles/js-algorithm-linked-list.md)
+[单向链表](/articles/js-algorithm-linked-list.md)
 
