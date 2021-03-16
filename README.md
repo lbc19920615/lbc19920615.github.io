@@ -15,7 +15,6 @@
 
 ## 自我
 
-
 1. 前端博客链接
    
    [https://segmentfault.com/u/andypinet](https://segmentfault.com/u/andypinet)
@@ -28,11 +27,7 @@
 
 3. 熟悉微信小程序开发流程
 
+## 算法 
 
-## 简历
-
-[简历线上地址](crm/images.md)
-
-<a href="/crm/凌柏超-web前端-个人简历.pdf" download="凌柏超的个人简历">PDF</a>
-
+[单向列表](/articles/js-algorithm-linked-list.md)
 
