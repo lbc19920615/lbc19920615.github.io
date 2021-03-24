@@ -1,3 +1,5 @@
-let a = {
-    name: 'sds'
-};
+export default function () {
+    let a = {
+        name: 'sds'
+    };
+}

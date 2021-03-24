@@ -2,6 +2,8 @@ type User = {
   name: string;
 }
 
-let a: User = {
-  name: 'sds'
+export default function () {
+  let a: User = {
+    name: 'sds'
+  }
 }

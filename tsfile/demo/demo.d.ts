@@ -1,5 +1,2 @@
-declare type User = {
-    name: string;
-};
-declare let a: User;
+export default function (): void;
 //# sourceMappingURL=demo.d.ts.map
