@@ -1,20 +1,7 @@
 
- var myChart;
 
-function renderChart(document, option = {}) {
-    var dom = document.getElementById("container");
-    if (!myChart) {
-        myChart = echarts.init(dom);
-    } else {
-        myChart.clear()
-    }
 
-    var opt = Object.assign({}, option);
-
-    if (opt && typeof opt === 'object') {
-        myChart.setOption(opt);
-    }
-}
+import { renderChart } from '/articles/echarts/render-chart.js'
 
 
 export let map = new Map();
