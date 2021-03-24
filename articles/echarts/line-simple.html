@@ -5,9 +5,16 @@
 <html style="height: 100%">
     <head>
         <meta charset="utf-8">
+        <style>
+            :root {
+                --tab-height: 60px;
+            }
+        </style>
     </head>
     <body style="height: 100%; margin: 0">
-        <div id="container" style="height: 100%"></div>
+        <div id="buttons" style="height: var(--tab-height);"></div>
+
+        <div id="container" style="height: calc(100% - var(--tab-height))"></div>
 
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
         <!-- Uncomment this line if you want to dataTool extension
@@ -27,12 +34,41 @@
         <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/extension/bmap.min.js"></script>
         -->
-
         <script type="module">
-            import { setLineSimple } from './line-simple.js';
-            console.log(setLineSimple)
+            import 'https://unpkg.com/xy-ui';
+            import {html, render} from 'https://unpkg.com/lit-html?module';
 
-            setLineSimple(document);
+            import { setLineSimple } from './line-simple.js';
+
+            window.map = new Map();
+            map.set('setLineSimple', setLineSimple);
+            let keys = [...map.keys()];
+
+            function runCurAction(v) {
+                if (map.has(v)) {
+                    map.get(v)(document);
+                }
+            }
+
+            runCurAction(keys[0]);
+
+            const clickHandler = {
+                // handleEvent method is required.
+                handleEvent(e) { 
+                    let funName = e.target.dataset.fun
+                    console.log('btnbtnbtnbtn', funName);
+                    runCurAction(funName);
+                },
+                // event listener objects can also define zero or more of the event 
+                // listener options: capture, passive, and once.
+                capture: true,
+            };
+
+            const tabsTemplate = () => html`
+            ${keys.map(key  => html`<xy-button class="btn" @click=${clickHandler} data-fun="${key}">${key}</xy-button>` ) }
+            `
+
+            render(tabsTemplate(), document.getElementById('buttons'));
         </script>
     </body>
 </html>
