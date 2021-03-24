@@ -38,10 +38,9 @@
             import 'https://unpkg.com/xy-ui';
             import {html, render} from 'https://unpkg.com/lit-html?module';
 
-            import { setLineSimple } from './line-simple.js';
+            import { map } from './line-simple.js';
 
-            window.map = new Map();
-            map.set('setLineSimple', setLineSimple);
+            window.map = map;
             let keys = [...map.keys()];
 
             function runCurAction(v) {
