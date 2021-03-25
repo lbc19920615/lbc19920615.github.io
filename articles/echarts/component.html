@@ -48,54 +48,20 @@
         });
         document.currentScript.after(im);
         </script>
-
         <script type="module">
             import 'https://unpkg.com/xy-ui';
-            import {html, render} from 'https://unpkg.com/lit-html?module';
-
 
             function importModule(path) {
                 return import(`${path}.js?v=` + Date.now())
             }
 
             Promise.all([
-                importModule('./line-simple'),
-                importModule('./line-area'),
+              importModule('./baseui'),
+              importModule('./component/com-a'),
             ]).then(res => {
-                console.log(res);
-                
-            window.map = res[0].map;
-            res[1].init(window.map)
-            
-            let keys = [...map.keys()];
-
-            function runCurAction(v) {
-                if (map.has(v)) {
-                    map.get(v)(document);
-                }
-            }
-
-            runCurAction(keys[0]);
-
-            const clickHandler = {
-                // handleEvent method is required.
-                handleEvent(e) { 
-                    let funName = e.target.dataset.fun
-                    console.log('btnbtnbtnbtn', funName);
-                    runCurAction(funName);
-                },
-                // event listener objects can also define zero or more of the event 
-                // listener options: capture, passive, and once.
-                capture: true,
-            };
-
-            const tabsTemplate = () => html`
-            ${keys.map(key  => html`<xy-button class="btn" @click=${clickHandler} data-fun="${key}">${key}</xy-button>` ) }
-            `
-
-            render(tabsTemplate(), document.getElementById('buttons'));
+              let { renderTab } = initBaseUI(res[1]);
+              renderTab('#buttons');
             })
-
         </script>
     </body>
 </html>
