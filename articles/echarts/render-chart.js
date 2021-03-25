@@ -14,3 +14,7 @@ export function renderChart(document, option = {}) {
         myChart.setOption(opt);
     }
 }
+
+export function getChart() {
+    return myChart
+}

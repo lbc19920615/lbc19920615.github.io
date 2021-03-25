@@ -1,0 +1,68 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=line-simple
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+        <style>
+            :root {
+                --tab-height: 60px;
+            }
+        </style>
+    </head>
+    <body style="height: 100%; margin: 0">
+        <div id="buttons" style="height: var(--tab-height);"></div>
+
+        <div id="container" style="height: calc(100% - var(--tab-height))"></div>
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+        <!-- Uncomment this line if you want to dataTool extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/extension/dataTool.min.js"></script>
+        -->
+        <!-- Uncomment this line if you want to use gl extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+        -->
+        <!-- Uncomment this line if you want to echarts-stat extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+        -->
+        <!-- Uncomment this line if you want to use map
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/map/js/china.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/map/js/world.js"></script>
+        -->
+        <!-- Uncomment these two lines if you want to use bmap extension
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/extension/bmap.min.js"></script>
+        -->
+        <script>
+        const im = document.createElement('script');
+        im.type = 'importmap';
+        im.textContent = JSON.stringify({
+            imports: {
+                "xy-ui": "https://unpkg.com/xy-ui",
+                "render-chart": "/articles/echarts/render-chart.js?v=1"
+            }
+        });
+        document.currentScript.after(im);
+        </script>
+        <script type="module">
+            import 'https://unpkg.com/xy-ui';
+
+            function importModule(path) {
+                return import(`${path}.js?v=` + Date.now())
+            }
+
+            Promise.all([
+              importModule('./baseui'),
+              importModule('./component/com-k'),
+            ]).then(res => {
+              let { renderTab } = initBaseUI(res[1]);
+              renderTab('#buttons');
+            })
+        </script>
+    </body>
+</html>
+    
