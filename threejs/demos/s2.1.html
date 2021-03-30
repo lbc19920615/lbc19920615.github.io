@@ -8,8 +8,8 @@
   <script src="./three.js"></script>
   <link rel="stylesheet" href="./reset.import.css">
   <script type="text/javascript" src="./libs/OrbitControls.js"></script>
-
   <script src="obj.js?v=1"></script>
+  <script src="move.js?v=1"></script>
   <style type="text/css">
     div#canvas-frame {
         cursor: pointer;
@@ -27,6 +27,16 @@
     let height;//页面高度
     let origPoint = new THREE.Vector3(0, 0, 0);//原点
 
+    var camera;
+    var controller;//视角控制器
+
+    var scene;
+
+    var light;
+
+    var moveModule;
+
+    var initStatus = [] //魔方初始状态
 
     //根据页面宽度和高度创建渲染器，并添加容器中
     function initThree() {
@@ -41,26 +51,19 @@
     }
 
     //创建相机，并设置正方向和中心点
-    var camera;
-    var controller;//视角控制器
     function initCamera() {
         camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
         camera.position.set(200, 400, 600);
         camera.up.set(0, 1, 0);//正方向
         camera.lookAt(origPoint);
-        //视角控制
-        controller = new THREE.OrbitControls(camera, renderer.domElement);
-        controller.target = origPoint;//设置控制点
     }
 
     //创建场景，后续元素需要加入到场景中才会显示出来
-    var scene;
     function initScene() {
         scene = new THREE.Scene();
     }
 
     //创建光线
-    var light;
     function initLight() {
       // AmbientLight https://threejs.org/docs/#api/en/lights/AmbientLight
       light = new THREE.AmbientLight(0xfefefe);
@@ -82,6 +85,20 @@
       initLight();
       initObject();
       render();
+
+      //视角控制
+      controller = new THREE.OrbitControls(camera, renderer.domElement);
+      controller.target = origPoint;//设置控制点
+
+      moveModule = MoveModule(controller, initStatus)
+      //监听鼠标事件
+      renderer.domElement.addEventListener('mousedown', moveModule.startCube, false);
+      renderer.domElement.addEventListener('mousemove', moveModule.moveCube, false );
+      renderer.domElement.addEventListener('mouseup', moveModule.stopCube,false);
+      //监听触摸事件
+      renderer.domElement.addEventListener('touchstart', moveModule.startCube, false);
+      renderer.domElement.addEventListener('touchmove', moveModule.moveCube, false);
+      renderer.domElement.addEventListener('touchend', moveModule.stopCube, false);
     }
   </script>
 </body>

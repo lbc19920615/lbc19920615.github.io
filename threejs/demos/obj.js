@@ -90,6 +90,35 @@ function initObject() {
   )
   for (var i = 0; i < cubes.length; i++) {
     var item = cubes[i]
+    /**
+     * 由于筛选运动元素时是根据物体的id规律来的，但是滚动之后位置发生了变化；
+     * 再根据初始规律筛选会出问题，而且id是只读变量；
+     * 所以这里给每个物体设置一个额外变量cubeIndex，每次滚动之后更新根据初始状态更新该cubeIndex；
+     * 让该变量一直保持初始规律即可。
+     */
+    initStatus.push({
+      x: item.position.x,
+      y: item.position.y,
+      z: item.position.z,
+      cubeIndex: item.id,
+    })
+    item.cubeIndex = item.id
     scene.add(cubes[i]) //并依次加入到场景中
   }
+
+  //透明正方体
+  var cubegeo = new THREE.BoxGeometry(150, 150, 150)
+  var hex = 0x000000
+  for (var i = 0; i < cubegeo.faces.length; i += 2) {
+    cubegeo.faces[i].color.setHex(hex)
+    cubegeo.faces[i + 1].color.setHex(hex)
+  }
+  var cubemat = new THREE.MeshBasicMaterial({
+    vertexColors: THREE.FaceColors,
+    opacity: 0,
+    transparent: true,
+  })
+  var cube = new THREE.Mesh(cubegeo, cubemat)
+  cube.cubeType = 'coverCube'
+  scene.add(cube)
 }
