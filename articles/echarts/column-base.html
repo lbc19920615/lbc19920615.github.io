@@ -1,0 +1,84 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=line-simple
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+        <style>
+            :root {
+                --tab-height: 60px;
+            }
+        </style>
+    </head>
+    <body style="height: 100%; margin: 0">
+        <div id="buttons" style="height: var(--tab-height);"></div>
+
+        <div id="container" style="height: calc(100% - var(--tab-height))"></div>
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+        <script>
+        const im = document.createElement('script');
+        im.type = 'importmap';
+        im.textContent = JSON.stringify({
+            imports: {
+                "xy-ui": "https://unpkg.com/xy-ui",
+                "render-chart": "/articles/echarts/render-chart.js?v=1"
+            }
+        });
+        document.currentScript.after(im);
+        </script>
+
+        <script type="module">
+            import 'https://unpkg.com/xy-ui';
+            import {html, render} from 'https://unpkg.com/lit-html?module';
+
+
+            function importModule(path) {
+                return import(`${path}.js?v=` + Date.now())
+            }
+
+            Promise.all([
+                importModule('./column-base'),
+            ]).then(res => {
+                console.log(res);
+                
+            window.map = new Map();
+            res[0].init(map);
+            
+            let keys = [...map.keys()];
+
+            function runCurAction(v) {
+                if (map.has(v)) {
+                    map.get(v)(document);
+                }
+            }
+
+            runCurAction(keys[0]);
+
+            const clickHandler = {
+                // handleEvent method is required.
+                handleEvent(e) { 
+                    let funName = e.target.dataset.fun
+                    console.log('btnbtnbtnbtn', funName);
+                    runCurAction(funName);
+                },
+                // event listener objects can also define zero or more of the event 
+                // listener options: capture, passive, and once.
+                capture: true,
+            };
+
+            const tabsTemplate = () => html`
+            ${keys.map(key  => html`<xy-button class="btn" @click=${clickHandler} data-fun="${key}">${key}</xy-button>` ) }
+            `
+
+            render(tabsTemplate(), document.getElementById('buttons'));
+            })
+
+        </script>
+    </body>
+</html>
+    
