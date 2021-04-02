@@ -80,7 +80,7 @@ window.AppSearchComponent = Vue.component('AppSearch', {
 
   </v-style>
   <div style="width: 50px; height: 50px; line-height: 50px; text-align: center"
-  @click="dialogVisible = true"
+  @click="openSearch"
   >
   <i class="el-icon-search" ></i>
   </div>
@@ -93,6 +93,7 @@ window.AppSearchComponent = Vue.component('AppSearch', {
   >
         
   <el-autocomplete
+  ref="autocom"
   class="inline-input"
   v-model="searchInput"
   :fetch-suggestions="querySearch"
@@ -121,6 +122,15 @@ window.AppSearchComponent = Vue.component('AppSearch', {
     this.restaurants = window.articleToc
   },
   methods: {
+    openSearch() {
+      this.dialogVisible = true
+     this.$nextTick(() => {
+      this.$refs.autocom.focus()
+     })
+    },
+    hideSearch() {
+      this.dialogVisible = false
+    },
     querySearch(queryString, cb) {
       var restaurants = this.restaurants;
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
