@@ -122,6 +122,10 @@ Vue 3.0 正走在发布的路上，Vue 3.0 的目标是让 Vue 核心变得更�
 不可变的 observable：我们可以创建值的“不可变”版本（即使是嵌套属性），除非系统在内部暂时将其“解禁”。这个机制可用于冻结 prop 传递或 Vuex 状态树以外的变化。
 - 更好的调试功能：我们可以使用新的 renderTracked 和 renderTriggered 钩子精确地跟踪组件在什么时候以及为什么重新渲染。
 
+(2) teleport 组件
+(3) v-model可以处理多个值
+
+
 
 ## Vue3 proxy 原理
 

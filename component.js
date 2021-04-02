@@ -47,8 +47,8 @@ Vue.component('TocTree', {
       data: window.curPageInfo.toc,
       defaultProps: {
         children: 'children',
-        label: 'text'
-      }
+        label: 'text',
+      },
     }
   },
   mounted() {
@@ -58,14 +58,14 @@ Vue.component('TocTree', {
     handleNodeClick(data) {
       if (data.level > 1) {
         // window.curPageInfo.router.push({
-        //   path: window.curPageInfo.router.currentRoute.path + '#' + data.id 
+        //   path: window.curPageInfo.router.currentRoute.path + '#' + data.id
         // })
-        location.hash = window.curPageInfo.router.currentRoute.path + '#' + data.id 
+        location.hash =
+          window.curPageInfo.router.currentRoute.path + '#' + data.id
       }
-    }
-  }
+    },
+  },
 })
-
 
 window.AppSearchComponent = Vue.component('AppSearch', {
   template: `
@@ -124,33 +124,41 @@ window.AppSearchComponent = Vue.component('AppSearch', {
   methods: {
     openSearch() {
       this.dialogVisible = true
-     this.$nextTick(() => {
-      this.$refs.autocom.focus()
-     })
+      this.$nextTick(() => {
+        this.$refs.autocom.focus()
+      })
     },
     hideSearch() {
       this.dialogVisible = false
     },
     querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      var restaurants = this.restaurants
+      var results = queryString
+        ? restaurants.filter(this.createFilter(queryString))
+        : restaurants
       // 调用 callback 返回建议列表的数据
-      cb(results);
+      cb(results)
     },
     createFilter(queryString) {
       return (restaurant) => {
-        return (restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
-      };
+        return (
+          restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) > -1
+        )
+      }
     },
     handleSelect(item) {
       // console.log(item.link)
       this.dialogVisible = false
-      window.curPageInfo.router.push({
-        path: item.link
-      }).catch(err => {err})
+      window.curPageInfo.router
+        .push({
+          path: item.link,
+        })
+        .catch((err) => {
+          err
+        })
     },
     onClosed() {
       this.searchInput = ''
-    }
-  }
+    },
+  },
 })
