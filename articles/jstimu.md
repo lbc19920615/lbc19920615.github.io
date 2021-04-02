@@ -2,6 +2,11 @@
 
 <TocTree></TocTree>
 
+## 浏览器原理
+
+从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理
+https://segmentfault.com/a/1190000012925872
+
 ## JS 部分
 
 ### JS 基本数据类型
@@ -147,6 +152,11 @@ WeakSet 对象是一些对象值的集合, 并且其中的每个对象值都只�
 WeakSet持弱引用：集合中对象的引用为弱引用。 如果没有其他的对WeakSet中对象的引用，那么这些对象会被当成垃圾回收掉。 这也意味着WeakSet中没有存储当前对象的列表。 正因为这样，WeakSet 是不可枚举的。
 
 ## CSS
+
+### bfc
+
+[史上最全面、最透彻的BFC原理剖析](
+https://github.com/zuopf769/notebook/blob/master/fe/BFC%E5%8E%9F%E7%90%86%E5%89%96%E6%9E%90/README.md)
 
 ### 盒子模型
 
