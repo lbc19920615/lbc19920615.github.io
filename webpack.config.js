@@ -1,5 +1,5 @@
 // webpack.config.js
-const { MyPlugin } = require('./src/plugins/my-webpack.plugin')
+const { MyPlugin } = require('./builds/webpack/plugins/my-webpack.plugin')
 
 module.exports = {
   entry: './src/index.js',
