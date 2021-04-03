@@ -75,6 +75,12 @@ let ret = merge(
         Path.resolve(__dirname, './builds/webpack/loaders'),
       ],
     },
+
+    devServer: {
+      contentBase: Path.join(__dirname),
+      compress: true,
+      port: 9000,
+    },
   },
   config
 )
