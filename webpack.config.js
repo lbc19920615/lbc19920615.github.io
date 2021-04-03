@@ -4,11 +4,16 @@ const { MyPlugin } = require('./builds/webpack/plugins/my-webpack.plugin')
 
 const config = require(`./builds/webpack/env/webpack-${process.env.NODE_ENV}`)
 
-console.log(config)
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-let ret = Object.assign(
+const merge = require('lodash/merge')
+
+let ret = merge(
   {
     entry: './src/index.js',
+    output: {
+      path: Path.resolve(__dirname),
+    },
     module: {
       rules: [
         {
@@ -55,6 +60,11 @@ let ret = Object.assign(
     plugins: [
       new MyPlugin({
         banner: '版权所有，翻版必究',
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'src/index.ejs',
+        // publicPath: '/',
       }),
     ],
 
