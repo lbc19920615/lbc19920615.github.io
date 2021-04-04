@@ -81,3 +81,67 @@ function arr_flat(arr) {
 ```
 
 [link](https://jsfiddle.net/lbc19920615/z5Lj4x60/4/)
+
+## debouce
+
+```js
+function debounce(fun, wait, imm) {
+  var timeout, result;
+  var debouced = function() {
+    var context = this
+    var args = arguments
+    if (timeout) {  clearTimeout(timeout) }
+    if (imm) {
+      var callNow = !timeout
+      timeout = setTimeout(function() {
+        timeout = null
+      }, wait)
+      if (callNow) {
+        result = fun.apply(context, args)
+      }
+    } else {
+      timeout = setTimeout(function() {
+         result = fun.apply(context, args)
+      }, wait)
+    }
+    return result
+  }
+
+  debouced.cancel = function() {
+    clearTimeout(timeout)
+    timeout = null
+  }
+
+  return debounced
+}
+```
+
+```js
+function throttle(fn, delay) {
+  var previous = 0
+  return function() {
+    var _this = this;
+    var args = arguments;
+    var now = new Date()
+    if (now - previous > delay) {
+      fn.apply(_this, args);
+      previous = now
+    }
+  }
+}
+```
+
+## 柯里化
+
+```js
+function curry(fn) {
+  let judge = (...args) => {
+    if (args.length == fn.length) {
+      return fn(...args)
+    }
+    return (...arg) => judge(...args, ...arg)
+  }
+  
+  return judge;
+}
+```
