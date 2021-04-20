@@ -56,6 +56,15 @@ window.initDocute = function () {
         ],
       },
       {
+        title: '推荐文章',
+        children: [
+          {
+            title: 'css固定浮动到右下角',
+            link: '/articles/float-to-end.md'
+          }
+        ]
+      },
+      {
         title: '用js多端开发',
         children: [
           {
