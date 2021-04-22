@@ -49,17 +49,14 @@
     display: none;
   }
 }
-
 @media screen and (max-width: 1024px) {
   #live2d-widget {
     display: none;
   }
 }
-
 @media screen and (min-width: 1024px) {
   .medium-zoom-image--opened,
-  .medium-zoom-overlay {
+.medium-zoom-overlay {
     z-index: 10000011;
   }
 }
-

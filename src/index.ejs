@@ -16,6 +16,19 @@
       href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
       rel="stylesheet"
     />
+    <style>
+      @font-face {
+        font-family: 'sailregular';
+        src: url('/assets/css/sail-regular-webfont.woff2') format('woff2'),
+             url('/assets/css/sail-regular-webfont.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
+      
+      .font-sailregular, .toc-tree {
+        font-family: 'sailregular', -apple-system, BlinkMacSystemFont, Hiragino Sans GB, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
+      }
+    </style>
     <% var random = Math.random(); %>
     <script>
       var _hmt = _hmt || []
