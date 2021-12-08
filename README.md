@@ -13,7 +13,7 @@
 2. 提升个人的(前端)工作效率和工作质量
 3. 提升用户体验, 通过技术驱动业务, 提升产品价值
 
-![](/assets/images/toolapp1.png)
+![](assets/images/toolapp1.png)
 
 ## 自我
 
