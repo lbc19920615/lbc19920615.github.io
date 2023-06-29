@@ -4,7 +4,7 @@
 
 ## PDF
 
-<a href="/crm/凌柏超-web前端-个人简历.pdf" download="凌柏超的个人简历">下载个人简历</a>
+<a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
 
 ## 主要技术合集
 
