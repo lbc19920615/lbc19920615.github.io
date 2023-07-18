@@ -22,6 +22,7 @@ c = `RUN('name', b, 2)`
 d = 0
 each[a, """ d=`d+1`; """]
 
+# result: {"a":[1,2],"b":"customRet","c":"customRet","d":2}
 ```
 
 <a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
