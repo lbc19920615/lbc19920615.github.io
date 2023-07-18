@@ -19,6 +19,9 @@ b = `CALL('customFun')`
 # 执行内部函数
 c = `RUN('name', b, 2)`
 
+# 控制台打印
+out['aaa', a]
+
 d = 0
 each[a, """ d=`d+1`; """]
 
