@@ -48,6 +48,24 @@
   <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script>
   <div id="live2d-widget" class="Lolita"><canvas id="live2dcanvas"></canvas></div>
+  <dialog id="favDialog">
+    <form style="margin-bottom: 10px;position: relative; padding-bottom: 30px;" method="dialog">
+      <div style="display: flex; position: absolute; left: 0; width: 100%;">
+        <div style="flex: 1;">&nbsp;</div>
+        <button>关闭</button>
+      </div>
+    </form>
+    <div style="width: 100%; overflow: auto;">
+      <img id="favDialogImg" />
+    </div>
+  </dialog>
+  <script>
+    globalThis.showImgDialog = function(src = '') {
+      favDialogImg.src = src
+      favDialogImg.style.width = '1000px'
+      favDialog.showModal();
+    }
+  </script>
   <script>let con = 1180
     L2Dwidget.init({
       model: {
@@ -72,13 +90,19 @@
         opacityOnHover: 0.2,
       },
     })</script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script> -->
   <script src="plugin.js?v=0.4403960003920231"></script>
   <script>import('/assets/article.toc.js?v=' + Date.now()).then(function () {
       if (!Array.isArray(window.articleToc)) {
         window.articleToc = []
       }
-      window.initDocute()
+      window.initDocute();
+      document.addEventListener('click', function(e) {
+        console.log(e);
+        if (e.srcElement instanceof HTMLImageElement) {
+          showImgDialog(e.srcElement.src)
+        }
+      })
     })</script>
 </body>
 
