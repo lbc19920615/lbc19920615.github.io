@@ -7,6 +7,22 @@ android  uniapp  都会做
 
 java 后端也会
 
+自己在toml基础上加强 开发了自己的配置语言 mytoml
+
+```toml
+@['name', 'arg0', 'arg1', """a=`arg0`;
+
+ return = `a`;"""]
+
+a = [1,2]
+b = `CALL('customFun')`
+c = `RUN('name', b, 2)`
+
+d = 0
+each[a, """ d=`d+1`; """]
+
+```
+
 <a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
 
 <!-- 前端工程师只是程序员的一个专业方向, 因此我们首先应该是一个优秀的程序员.
