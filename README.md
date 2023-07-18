@@ -10,12 +10,13 @@ java 后端也会
 自己在toml基础上加强 开发了自己的配置语言 mytoml
 
 ```toml
-@['name', 'arg0', 'arg1', """a=`arg0`;
-
- return = `a`;"""]
+# 定义函数
+@['name', 'arg0', 'arg1', """a=`arg0`; return = `a`;"""]
 
 a = [1,2]
+# 使用外部函数
 b = `CALL('customFun')`
+# 执行内部函数
 c = `RUN('name', b, 2)`
 
 d = 0
