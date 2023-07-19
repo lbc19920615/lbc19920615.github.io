@@ -23,8 +23,8 @@
 
 ### 首页
 
-![](./images/webapp_main.png)
+![](/articles/images/webapp_main.png)
 
 ### 购物车
 
-![](./images/webapp_cart.png)
+![](/articles/images/webapp_cart.png)
