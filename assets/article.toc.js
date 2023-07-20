@@ -1,5 +1,6 @@
 
 window.articleToc = [
+  { "title": "可视化uniapp", "link": "/articles/uniapp.md" },
   { "title": "小程序动态执行", "link": "/articles/miniapp.md" },
   { "title": "kotlin 混合webapp开发", "link": "/articles/webapp.md" },
   { "title": "css position sticky", "link": "/articles/css-pos-sticky.md" },
