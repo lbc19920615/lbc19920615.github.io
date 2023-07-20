@@ -1,10 +1,10 @@
 
 window.articleToc = [
+  { "title": "小程序动态执行", "link": "/articles/miniapp.md" },
   { "title": "kotlin 混合webapp开发", "link": "/articles/webapp.md" },
   { "title": "css position sticky", "link": "/articles/css-pos-sticky.md" },
   { "title": "css snap属性", "link": "/articles/css-snap.md" },
   { "title": "echart line", "link": "/articles/echart-line.md" },
-  { "title": "echarts base", "link": "/articles/echarts-base.md" },
   { "title": "echarts column", "link": "/articles/echarts-column.md" },
   { "title": "css 浮动元素到右下角", "link": "/articles/float-to-end.md" },
   { "title": "链表", "link": "/articles/js-algorithm-linked-list.md" },
