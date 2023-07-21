@@ -1,8 +1,6 @@
 
 ## 简介
 
-3500 求一份工作   什么时候都可以干活
-
 android  uniapp  都会做
 
 java 后端也会
@@ -11,15 +9,14 @@ java 后端也会
 
 ```toml
 # 定义函数
-@['name', 'arg0', 'arg1', """a=`arg0`; return = `a`;"""]
+@['name', 'arg0', 'arg1', """a=`arg0`;
+
+ return = `a`;"""]
 
 a = [1,2]
-# 使用外部函数
-b = `CALL('customFun')`
-# 执行内部函数
+b = `RUN('customFun')`
 c = `RUN('name', b, 2)`
 
-# 控制台打印
 out['aaa', a]
 
 d = 0
