@@ -19,10 +19,18 @@ c = `RUN('name', b, 2)`
 
 out['aaa', a]
 
+multine_map = {
+    enabled = true
+    ports = [ 8000, 8001, 8002 ]
+    data = [ ["delta", "phi"], [3.14] ]
+}
+
+temp_targets = { cpu = 79.5, case = 72.0 }
+
 d = 0
 each[a, """ d=`d+1`; """]
 
-# result: {"a":[1,2],"b":"customRet","c":"customRet","d":2}
+# result: {"a":[1,2],"b":"customRet","c":"customRet","multine_map":{"enabled":true,"ports":[8000,8001,8002],"data":[["delta","phi"],[3.14]]},"temp_targets":{"cpu":79.5,"case":72},"d":2}
 ```
 
 <a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
