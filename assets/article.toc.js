@@ -5,6 +5,7 @@ window.articleToc = [
   { "title": "kotlin 混合webapp开发", "link": "/articles/webapp.md" },
   { "title": "css position sticky", "link": "/articles/css-pos-sticky.md" },
   { "title": "css snap属性", "link": "/articles/css-snap.md" },
+  { "title": "css animation scoll", "link": "/articles/animation-scoll.md" },
   { "title": "echart line", "link": "/articles/echart-line.md" },
   { "title": "echarts column", "link": "/articles/echarts-column.md" },
   { "title": "css 浮动元素到右下角", "link": "/articles/float-to-end.md" },
