@@ -20,9 +20,9 @@ c = `RUN('name', b, 2)`
 out['aaa', a]
 
 multine_map = {
-    enabled = true
-    ports = [ 8000, 8001, 8002 ]
-    data = [ ["delta", "phi"], [3.14] ]
+    enabled = true,
+    ports = [ 8000, 8001, 8002 ],
+    data = [ ["delta", "phi"], [3.14] ],
 }
 
 temp_targets = { cpu = 79.5, case = 72.0 }
