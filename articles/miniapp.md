@@ -13,41 +13,99 @@
 ## 确定语法
 
 ```js
-(@(fun,[1, {a: 1}]) + 1px) + 1px + @(fun,[1,2,"3"])
+(@(fun,[1, {a: 1}]) + 1) + 1 + @(fun,[1,2,"3"])
 ```
 
 ## 先解析函数 
 
 ```js
-async function makestyle(cssCode = '') {
-  return new Promise(resolve => {
-    let context = {
-    async fun(...args) {
-      // console.log(args);
-      return '1px'
+function createFunc() {
+  return  {
+    fun(...args) {
+      // console.log('fun');
+      
+      if (Array.isArray(args) && args.length > 0) {
+        return args.at(-1)
+      }
+      return 0
+    },
+    // get(...args) {
+    //   let name = args[0]
+    //   return (funContext[name] ?? 0)
+    // },
+    str_append(...args) {
+      // console.log('str_append');
+      let str = ''
+      args.forEach(item => {
+        str = str + item
+      })
+      return str
+    },
+    async fetch(...args) {
+      await sleep(1000);
+      return `fetch ${args}`
     }
   }
+}
+
+function makestyleCore(newCssCode = '', funContext = {}, context: any = {}) {
+
+  let functions = createFunc() 
 
   let regexp = /@\(([^\)]*)\)/g
-  let match = cssCode.match(regexp)
+
+  // console.log(funContext);
+  let match = newCssCode.match(regexp);
 
 
-  let newCssCode = cssCode
-    match.forEach(async (funcArgBody, funcIndex) => {
+  if (Array.isArray(match)) {
+    match.some( async (funcArgBody, funcIndex) => {
       let funcNameRe = funcArgBody.match(/@\(([^,)]*)/)
       let funcName = funcNameRe[1]
       let args = funcArgBody.slice(funcNameRe[0].length).slice(1).slice(0, -1);
       // console.log(funcArgBody);
       // console.log(funcName);
       // console.log(args);
-      if (context[funcName]) {
-        let ret = await context[funcName](...JSON5.parse(args));
-        // console.log(ret);
-        
-        newCssCode = newCssCode.replace(funcArgBody, ret)
+      if (functions[funcName]) {
+        // let parsedArgs = parseArgs(args, funContext)
+        // console.log(args);
+        if (context.run) {
+          await context.run(functions[funcName], funcArgBody, args)
+        }
       }
-      
-      if (funcIndex > match.length -2) {
+
+      if (funcIndex > match.length - 2) {
+        if (context.done) {
+          await context.done()
+        }
+        return true
+      }
+      return false
+    });
+    
+  } 
+}
+
+function makestyle(cssCode = '', funContext = {}) {
+  let newCssCode = parseArgs(cssCode, funContext)
+  makestyleCore(newCssCode, funContext, {
+    run(fun, funcArgBody, args) {
+      let ret = fun.bind({})(...JSON5.parse(args));
+      newCssCode = newCssCode.replace(funcArgBody, ret)
+    }
+  })
+  return newCssCode
+}
+
+function asyncmakestyle(cssCode = '', funContext = {}) {
+  return new Promise(resolve => {
+    let newCssCode = parseArgs(cssCode, funContext)
+    makestyleCore(newCssCode, funContext, {
+      async run(fun, funcArgBody, args) {
+        let ret = await fun.bind({})(...JSON5.parse(args));
+        newCssCode = newCssCode.replace(funcArgBody, ret)
+      },
+      async done() {
         resolve(newCssCode)
       }
     });

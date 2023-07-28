@@ -1,52 +1,41 @@
 
 ## 简介
 
-android  uniapp  都会做
+android  uniapp  都会做 java 后端也会
+然后再在前端这个专业方向上有更深入的研究
 
-java 后端也会
+1. 跨平台前端开发 （实现小程序，web端通用，native也部分通用）
+2. 提升个人的(前端)工作效率和工作质量
+3. 提升用户体验, 通过技术驱动业务, 提升产品价值 -
+
+<a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
+
+自制快速代码编辑器
+![](/articles/images/electron_main.png)
+
 
 自己在toml基础上加强 开发了自己的配置语言 mytoml
 
 ```toml
 # 定义函数
-@['name', 'arg0', 'arg1', """a=`arg0`;
-
- return = `a`;"""]
+@['name', 'arg0', 'arg1', """a=`arg0`; return = `a`;"""]
 
 a = [1,2]
 b = `RUN('customFun')`
 c = `RUN('name', b, 2)`
-
-out['aaa', a]
-
-multine_map = {
-    enabled = true,
-    ports = [ 8000, 8001, 8002 ],
-    data = [ ["delta", "phi"], [3.14] ],
-}
 
 temp_targets = { cpu = 79.5, case = 72.0 }
 
 d = 0
 each[a, """ d=`d+1`; """]
 
-# result: {"a":[1,2],"b":"customRet","c":"customRet","multine_map":{"enabled":true,"ports":[8000,8001,8002],"data":[["delta","phi"],[3.14]]},"temp_targets":{"cpu":79.5,"case":72},"d":2}
+# result: {"a":[1,2],"b":"customRet","c":"customRet","temp_targets":{"cpu":79.5,"case":72},"d":2}
 ```
 
-<a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
 
-<!-- 前端工程师只是程序员的一个专业方向, 因此我们首先应该是一个优秀的程序员.
-
-1. 发现问题/解决问题/总结问题的能力(写写博客锻炼下自己的写作能力, 输出就是最好的学习)
-2. 沟通能力/团队协作(各种软技能/辅助技能)
-3. 主动做事的执行力(给你什么做什么 -> 没人给你时, 自己决定做什么, 思考怎么做, 为什么做)
-
-然后再在前端这个专业方向上有更深入的研究
-
-1. 跨平台前端开发 （实现小程序，web端通用，native也部分通用）
-2. 提升个人的(前端)工作效率和工作质量
-3. 提升用户体验, 通过技术驱动业务, 提升产品价值 -->
+早期web ui 开发代码
 ![](assets/images/toolapp1.png)
+
 
 
 ## 自我
