@@ -56,13 +56,15 @@
       </div>
     </form>
     <div style="width: 100%; overflow: auto;">
-      <img id="favDialogImg" />
+      <!-- <img id="favDialogImg" /> -->
+
+      <xy-img  id="favDialogImg" ></xy-img>
     </div>
   </dialog>
   <script>
     globalThis.showImgDialog = function(src = '') {
       favDialogImg.src = src
-      favDialogImg.style.width = '1000px'
+      favDialogImg.style.width = '1200px'
       favDialog.showModal();
     }
   </script>
