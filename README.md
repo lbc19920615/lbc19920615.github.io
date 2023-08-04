@@ -18,7 +18,8 @@ android  uniapp  都会做 java 后端也会
 <img src="/articles/images/electron_main.png" />
     </xy-tab-content>
     <xy-tab-content label="uniapp 制作的店铺页面">
-    <img src="/articles/images/webapp_cart.png" />
+      <img src="/articles/images/webapp_cart.png" />
+      <img src="/articles/images/webapp_demo1.png" />
     </xy-tab-content>
 </xy-tab>
 
