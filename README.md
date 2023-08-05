@@ -17,7 +17,8 @@ android  uniapp  都会做 java 后端也会
     <xy-tab-content label="自制快速代码编辑器">
 <img src="/articles/images/electron_main.png" />
     </xy-tab-content>
-    <xy-tab-content label="uniapp 制作的店铺页面">
+    <xy-tab-content label="使用编辑器制作的店铺页面 uniapp 架构">
+    <div>只写少量代码 大部分靠配置</div>
       <img src="/articles/images/webapp_cart.png" />
     </xy-tab-content>
 </xy-tab>
