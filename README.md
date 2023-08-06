@@ -10,12 +10,9 @@ android  uniapp  都会做 java 后端也会
 
 <a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
 
-<!-- 自制快速代码编辑器
-![](/articles/images/electron_main.png) -->
-
 <xy-tab>
     <xy-tab-content label="自制快速代码编辑器">
-<img src="/articles/images/electron_main.png" />
+      <img src="/articles/images/electron_main.png?v=1" />
     </xy-tab-content>
     <xy-tab-content label="使用编辑器制作的店铺页面 uniapp 架构">
     <div>只写少量代码 大部分靠配置</div>
