@@ -15,10 +15,14 @@ android  uniapp  都会做 java 后端也会
       <img src="/articles/images/electron_main.png?v=1" />
     </xy-tab-content>
     <xy-tab-content label="使用编辑器制作的店铺页面 uniapp 架构">
-    <div>只写少量代码 大部分靠配置</div>
+      <div>只写少量代码 大部分靠配置</div>
       <img src="/articles/images/webapp_cart.png" />
     </xy-tab-content>
 </xy-tab>
+
+
+早期web ui 开发代码
+![](assets/images/toolapp1.png)
 
 
 自己在toml基础上加强 开发了自己的配置语言 mytoml
@@ -38,11 +42,6 @@ each[a, """ d=`d+1`; """]
 
 # result: {"a":[1,2],"b":"customRet","c":"customRet","temp_targets":{"cpu":79.5,"case":72},"d":2}
 ```
-
-
-早期web ui 开发代码
-![](assets/images/toolapp1.png)
-
 
 
 ## 自我
