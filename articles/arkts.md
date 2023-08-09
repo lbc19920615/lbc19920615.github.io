@@ -14,30 +14,30 @@ Column() {
 ## 编译后
 ```js
  g.defc(Column().init(function () {
-        ; g.defc(Text('space').init(function () { }), function (ctx) {
-            ctx.fontSize(9).fontColor(0xCCCCCC).width('90%');
-            ctx.done()
-        });
-        g.defc(Column({ space: 5 }).init(function () {
+    
+    ; g.defc(Text('space').init(function () { }), function (ctx) {
+        ctx.fontSize(9).fontColor(0xCCCCCC).width('90%');
+        ctx.done()
+    });
+    g.defc(Column({ space: 5 }).init(function () {
 
-            ; g.defc(Column().init(function () { }), function (ctx) {
-                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-                ctx.done()
-            });
-
-
-            ; g.defc(Column().init(function () { }), function (ctx) {
-                ctx.width('100%').height(30).backgroundColor(0x00FFFF);
-                ctx.done()
-            });
-
-        }), function (ctx) {
-            ctx.width('90%').height(100).border({ width: 1 });
+        ; g.defc(Column().init(function () { }), function (ctx) {
+            ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
             ctx.done()
         });
 
-    }), function (ctx) { ctx.done() 
-})
+
+        ; g.defc(Column().init(function () { }), function (ctx) {
+            ctx.width('100%').height(30).backgroundColor(0x00FFFF);
+            ctx.done()
+        });
+
+    }), function (ctx) {
+        ctx.width('90%').height(100).border({ width: 1 });
+        ctx.done()
+    });
+
+}), function (ctx) { ctx.done() })
 ```
 
 
