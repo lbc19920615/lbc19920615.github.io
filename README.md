@@ -21,6 +21,81 @@ android  uniapp  都会做 java 后端也会
 </xy-tab>
 
 
+为了能够跨平台支持动态更新  实现了自有的基于js的vm语言 slimjs
+
+
+```js
+// json 表达形式 但是实际上 编译成二进制也是可以的 只不过懒得写  
+let programAttrs: any = {
+  cssMap: {
+    main: {
+      assignMents: [
+        // ['fun', 'p3', ['fun1', ['p1']]],
+        // ['assign', 's111', `@(fetch,['1', '2'])`],
+        // ['worker', ['2 > 1'], '__fetch_c1',  '__if_else_empty'],    
+        ['assign', 'p1', `(@(lastArg,[1, $gloA1]) + 1) / $gloA1`],
+        ['assign', 'p2', `@(str_append,['1', '2'])`],
+        ['log', `hello p1: $p1`],
+        ['assign', 's1', `(2 > 1) + 2`],
+        ['await:assign', '', `@(fetch,['1', '2'])`],
+        // ['if', ['$p1 > 1', '$p1 > 0'], '__if_c1', '__if_c2',  '__if_else_empty'],    
+        // ['for', [1,2,3,4,5,6,7,8,9,10], ['item', 'index'], '__loop_fun1']
+      ],
+    },
+    fun1: {
+      assignMents: [
+        ['assign', 'fun1_p1', `($a1 + 1) + 1 + @(lastArg,[1,2,"3"])`],
+        // ['assign', 'return', `@(get,["p3"])`],
+      ],
+      params: [
+        'a1',
+        'a2'
+      ],
+      outVars: ['fun1_p1']
+    },
+    __fetch_c1: {
+      assignMents: [
+        ['assign', 'f1', `1 + @(lastArg,[1,2,"3"])`],
+      ],
+      outVars: ['f1']
+    },
+    __if_c1: {
+      assignMents: [
+        ['assign', 'p1', `1 + @(lastArg,[1,2,"2"])`],
+      ],
+      outVars: ['p1']
+    },
+    __if_c2: {
+      assignMents: [
+        ['assign', 'p1', `1 + @(lastArg,[1,2,"2"])`],
+      ],
+      outVars: ['p1']
+    },
+    __if_else_empty: {
+      assignMents: [
+      ],
+      outVars: []
+    },
+    __loop_fun1_c1: {
+      assignMents: [
+        ['log', `hello LOOP_INDEX: $item $index`],
+        ['break']
+      ],
+      outVars: []
+    },
+    __loop_fun1: {
+      assignMents: [
+        ['assign', 'p1', `1 + $p1`],
+        // ['log', `hello LOOP_ITEM: $item`],
+        ['if', ['$index > 5'], '__loop_fun1_c1', '__if_else_empty']
+      ],
+      outVars: ['p1']
+    }
+  }
+}
+
+```
+
 早期web ui 开发代码
 ![](assets/images/toolapp1.png)
 
