@@ -32,6 +32,22 @@ function appendCommon(ctx, ele) {
     }
 }
 
+let cssHelper = {
+    toLength(val) {
+        if (Number(val) == val) {
+            return val + 'px'
+        }
+        return val
+    },
+    toColor(val) {
+        if (typeof val !== 'string') {
+            // console.log(val.toString(16).padStart(6, '0'));
+           return  '#' + val.toString(16).padStart(6, '0')
+        }
+        return val
+    }
+}
+
 function createCommonCtx(callback, {ele, id = Nid()} = {}) {
     let ctx =  {
         id,
@@ -51,6 +67,8 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
     let borderNames = ['border']
     let sizeNames = ['width', 'height', 'fontSize']
     let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
+
+
     let proxy = new Proxy(ctx, {
         get(target, key, receiver){
             // console.log(target, key, receiver);
@@ -62,25 +80,28 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
                     // console.log('ele', args[0].toString(16));
                     let val =  args[0]
                     if (colorNames.includes(key)) {
-                        if (typeof val !== 'string') {
-                            // console.log(val.toString(16).padStart(6, '0'));
-                            val = '#' + val.toString(16).padStart(6, '0')
-                        }
+                        val = cssHelper.toColor(val)
                     }
                     if (sizeNames.includes(key)) {
-                        if (typeof val !== 'string') {
-                            val =  val + 'px'
-                        }
+                        val = cssHelper.toLength(val)
                     }
                     if (borderNames.includes(key)) {
-                        let str = `1px solid`
-                        console.log(val);
+                        let option = {
+                            width: '0px',
+                            style: 'solid',
+                            ...val
+                        }
+
+                        let width = cssHelper.toLength(option.width)
+
+                        let str = `${width} ${option.style}`
+                        console.log(width);
                         val = str
                     }
                     ele.style[key] = val
                     return proxy
                 }
-                console.log('sssss');
+                // console.log('sssss');
             }
         }
     })
