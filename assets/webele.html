@@ -45,7 +45,46 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
             callback(ele)
         }
     }
-    return ctx
+
+
+    let colorNames = ['backgroundColor']
+    let borderNames = ['border']
+    let sizeNames = ['width', 'height', 'fontSize']
+    let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
+    let proxy = new Proxy(ctx, {
+        get(target, key, receiver){
+            // console.log(target, key, receiver);
+            if (ctx[key]) {
+                return ctx[key]
+            }
+            else if(cssFunNames.includes(key)) {
+                return function(...args) {
+                    // console.log('ele', args[0].toString(16));
+                    let val =  args[0]
+                    if (colorNames.includes(key)) {
+                        if (typeof val !== 'string') {
+                            // console.log(val.toString(16).padStart(6, '0'));
+                            val = '#' + val.toString(16).padStart(6, '0')
+                        }
+                    }
+                    if (sizeNames.includes(key)) {
+                        if (typeof val !== 'string') {
+                            val =  val + 'px'
+                        }
+                    }
+                    if (borderNames.includes(key)) {
+                        let str = `1px solid`
+                        console.log(val);
+                        val = str
+                    }
+                    ele.style[key] = val
+                    return proxy
+                }
+                console.log('sssss');
+            }
+        }
+    })
+    return proxy
 }
 
 function createForeachCtx(callback, {ele, max =  0, list, id = Nid()} = {}) {
@@ -195,7 +234,7 @@ function If(conditions) {
     currentCondition = conditions
     let fragment = ForEach({max: Number(conditions.value)})
     watch(conditions, (newVal, oldVal) => {
-        console.log('111', newVal, fragment);
+        // console.log('111', newVal, fragment);
         fragment.getCtx().reload({max: Number(newVal)})
     })
     return fragment
@@ -266,7 +305,14 @@ g.defc(Column().init(function (ele) {
 
         ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
         , function (ctx) {
-            // ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+            ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+            ctx.done(ele)
+        });
+
+
+        ; g.defc(Text('for测试').init(function (ele) {
+        }), function (ctx) {
+            // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
             ctx.done(ele)
         });
 
@@ -274,12 +320,20 @@ g.defc(Column().init(function (ele) {
         ; g.defc(ForEach({list: vmDataList}).init(function (ele, option) {
             g.defc(Text(option.item).init(function (ele) {
 
-            }), function (ctx) { ctx.done(ele) })
+            }), function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0x00FFFF);   
+                ctx.done(ele) 
+            })
          }), function (ctx) {
-            // ctx.width('100%').height(30).backgroundColor(0x00FFFF);   
             ctx.done(ele)
         });
 
+
+        ; g.defc(Text('if测试').init(function (ele) {
+        }), function (ctx) {
+            // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
+            ctx.done(ele)
+        });
 
         ; g.defc(If(vmDataMax).init(function (ele) { 
             g.defc(Text('if ok').init(function (ele) {
@@ -299,7 +353,7 @@ g.defc(Column().init(function (ele) {
         
 
     }), function (ctx) {
-        // ctx.width('90%').height(100).border({ width: 1 });
+        ctx.border({ width: 1 });
         ctx.done(ele)
     });
 
