@@ -36,7 +36,9 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
     let ctx =  {
         id,
         curRoot: undefined,
-
+        getEle() {
+            return ele
+        },
         done() {
             appendCommon(ctx, ele)
             callback(ele)
@@ -111,14 +113,28 @@ function Column() {
 }
 
 function Text(text = '') {
+    let ctx
     let ele = document.createElement('div')
     ele.classList.add('text')
-    ele.textContent = text
+
+    function render(ele) {
+        ele.textContent = text.__v_isRef ? text.value : text
+    }
+
+    render(ele)
+
+    // console.log(text);
+    if (text.__v_isRef) {
+        watch(text, () => {
+            // console.log('1111');
+            render(ctx.getEle())
+        })
+    }
     return {
         init(callback) {
             // console.log(callback);
             return function () {
-                let ctx =  createCommonCtx(callback, {ele})
+                ctx = createCommonCtx(callback, {ele})
                 return ctx
             }
         }
@@ -181,7 +197,6 @@ function If(conditions) {
         fragment.getCtx().reload({max: Number(newVal)})
     })
     return fragment
-    
 }
 
 function Else() {
@@ -195,8 +210,7 @@ function Else() {
         // console.log('111', newVal, fragment);
         fragment.getCtx().reload({max: !Number(newVal)})
     })
-    return fragment
-    
+    return fragment   
 }
 
 function defc(buildCtx, runFun) {
@@ -229,8 +243,9 @@ let vm = (function() {
 
 let vmData = vm.data;
 
-let vmDataMax = computed(() => vmData.max > 1)
 let vmDataList = vmData.list
+let vmDataMax = computed(() => vmData.max > 1)
+let vmStrSome =  computed(() => vmData.some)
 
 
 setTimeout(() => {
@@ -240,7 +255,7 @@ setTimeout(() => {
 
 
 g.defc(Column().init(function (ele) {
-    ; g.defc(Text('space').init(function (ele) { }), function (ctx) {
+    ; g.defc(Text(vmStrSome).init(function (ele) { }), function (ctx) {
         // ctx.fontSize(9).fontColor(0xCCCCCC).width('90%');
         ctx.curRoot = ele;
         ctx.done()
