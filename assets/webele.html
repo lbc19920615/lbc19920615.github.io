@@ -67,8 +67,9 @@ function createForeachCtx(callback, {ele, max =  0, list, id = Nid()} = {}) {
                 }
             }
             else {
+                // console.log(ele);
                 for (let index = 0; index < innerMax; index++) {
-                    callback(ele, {index})                
+                    callback(ele, {index, item: index})                
                 }
             }
         }
@@ -124,7 +125,7 @@ function Text(text = '') {
     }
 }
 
-function ForEach({max = ref(0), list = ref([])} = {}) {
+function ForEach({max = ref(0), list = null} = {}) {
     let startFlg = document.createComment('start')
     let endFlg = document.createComment('end')
     let ele = [
@@ -140,8 +141,15 @@ function ForEach({max = ref(0), list = ref([])} = {}) {
     })
 
     // console.log(list);
+    watch(max,  (newVal, oldVal) => {
+        // console.log('list', newVal, oldVal);
+        ctx.reload({max: obj.max, list: obj.list})
+    }, {
+        deep: true
+    })
+
     watch(list,  (newVal, oldVal) => {
-        console.log('list', newVal, oldVal);
+        // console.log('list', newVal, oldVal);
         ctx.reload({max: obj.max, list: obj.list})
     }, {
         deep: true
@@ -149,14 +157,46 @@ function ForEach({max = ref(0), list = ref([])} = {}) {
 
     let ctx;
     return {
+        getCtx() {
+            return ctx
+        },
         init(callback) {
             // console.log(callback);
             return function () {
+                // console.log(obj);
                 ctx =  createForeachCtx(callback, {ele, max: obj.max, list: obj.list})
                 return ctx
             }
         }
     }
+}
+
+let currentCondition = null
+function If(conditions) {
+    // console.log(conditions);
+    currentCondition = conditions
+    let fragment = ForEach({max: Number(conditions.value)})
+    watch(conditions, (newVal, oldVal) => {
+        console.log('111', newVal, fragment);
+        fragment.getCtx().reload({max: Number(newVal)})
+    })
+    return fragment
+    
+}
+
+function Else() {
+    // console.log(conditions);
+    if (!currentCondition) {
+        return;
+    }
+    let conditions = currentCondition
+    let fragment = ForEach({max: !Number(conditions.value)})
+    watch(conditions, (newVal, oldVal) => {
+        // console.log('111', newVal, fragment);
+        fragment.getCtx().reload({max: !Number(newVal)})
+    })
+    return fragment
+    
 }
 
 function defc(buildCtx, runFun) {
@@ -189,10 +229,13 @@ let vm = (function() {
 
 let vmData = vm.data;
 
+let vmDataMax = computed(() => vmData.max > 1)
 let vmDataList = vmData.list
+
 
 setTimeout(() => {
     vmData.list[0] = 3;
+    vmData.max = 2;
 }, 3000)
 
 
@@ -221,6 +264,26 @@ g.defc(Column().init(function (ele) {
             ctx.curRoot = ele;
             ctx.done()
         });
+
+
+        ; g.defc(If(vmDataMax).init(function (ele) { 
+            g.defc(Text('if ok').init(function (ele) {
+
+            }), function (ctx) { ctx.curRoot = ele; ctx.done() })
+        }), function (ctx) {
+            ctx.curRoot = ele;
+            ctx.done()
+        });
+
+        ; g.defc(Else().init(function (ele) { 
+            g.defc(Text('else ok').init(function (ele) {
+
+            }), function (ctx) { ctx.curRoot = ele; ctx.done() })
+        }), function (ctx) {
+            ctx.curRoot = ele;
+            ctx.done()
+        });
+        
 
     }), function (ctx) {
         // ctx.width('90%').height(100).border({ width: 1 });
