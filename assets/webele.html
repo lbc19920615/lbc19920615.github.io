@@ -39,7 +39,8 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
         getEle() {
             return ele
         },
-        done() {
+        done(parent) {
+            ctx.curRoot = parent
             appendCommon(ctx, ele)
             callback(ele)
         }
@@ -51,7 +52,8 @@ function createForeachCtx(callback, {ele, max =  0, list, id = Nid()} = {}) {
     let ctx =  {
         id,
         curRoot: undefined,
-        done() {
+        done(parent) {
+            ctx.curRoot = parent
             appendCommon(ctx, ele);
             ctx.build(max, list)
         },
@@ -228,7 +230,7 @@ let rootEle = document.createElement('div')
 let ele = rootEle;
 let vm = (function() {
     let data = reactive({
-        some: "",
+        some: "initStr",
         max: 1,
         list: [1,2,3]
     })
@@ -255,58 +257,53 @@ setTimeout(() => {
 
 
 g.defc(Column().init(function (ele) {
-    ; g.defc(Text(vmStrSome).init(function (ele) { }), function (ctx) {
-        // ctx.fontSize(9).fontColor(0xCCCCCC).width('90%');
-        ctx.curRoot = ele;
-        ctx.done()
+    ; g.defc(Text(vmStrSome).init(function (ele) {
+     }), function (ctx) {
+        // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
+        ctx.done(ele)
     });
     g.defc(Column({space: 5}).init(function (ele) {
 
-        ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { }), function (ctx) {
+        ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
+        , function (ctx) {
             // ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-            ctx.curRoot = ele;
-            ctx.done()
+            ctx.done(ele)
         });
 
 
         ; g.defc(ForEach({list: vmDataList}).init(function (ele, option) {
             g.defc(Text(option.item).init(function (ele) {
 
-            }), function (ctx) { ctx.curRoot = ele; ctx.done() })
+            }), function (ctx) { ctx.done(ele) })
          }), function (ctx) {
-            // ctx.width('100%').height(30).backgroundColor(0x00FFFF);
-     
-            ctx.curRoot = ele;
-            ctx.done()
+            // ctx.width('100%').height(30).backgroundColor(0x00FFFF);   
+            ctx.done(ele)
         });
 
 
         ; g.defc(If(vmDataMax).init(function (ele) { 
             g.defc(Text('if ok').init(function (ele) {
 
-            }), function (ctx) { ctx.curRoot = ele; ctx.done() })
+            }), function (ctx) { ctx.done(ele) })
         }), function (ctx) {
-            ctx.curRoot = ele;
-            ctx.done()
+            ctx.done(ele)
         });
 
         ; g.defc(Else().init(function (ele) { 
             g.defc(Text('else ok').init(function (ele) {
 
-            }), function (ctx) { ctx.curRoot = ele; ctx.done() })
+            }), function (ctx) { ctx.done(ele) })
         }), function (ctx) {
-            ctx.curRoot = ele;
-            ctx.done()
+            ctx.done(ele)
         });
         
 
     }), function (ctx) {
         // ctx.width('90%').height(100).border({ width: 1 });
-        ctx.curRoot = ele;
-        ctx.done()
+        ctx.done(ele)
     });
 
-}), function (ctx) { ctx.curRoot = ele; ctx.done() })
+}), function (ctx) { ctx.done(ele) })
 
 document.querySelector('#webele').appendChild(rootEle)
     </script>
