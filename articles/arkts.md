@@ -1,5 +1,11 @@
 # 实现arkts build 里ui编译成js
 
+## webcomponent实现
+
+<a href="/assets/webele.html" target="_blank">demo</a>
+
+<iframe src="/assets/webele.html" style="width: 100%; height: 350px"></iframe>
+
 ## 原来语法
 ```
 Column() {
