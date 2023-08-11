@@ -18,43 +18,108 @@
         {
           "imports": {
             "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
-            "wle": "./webele.js?v=1"
+            "wle": "/assets/webele.js?v=1"
           }
         }
     </script>
     <script type="module">
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
+        import { Nid } from "wle";
 
+
+        let rooterRootEle = document.getElementById("routerroot")
      
+        let BaseDir = '/assets/'
+        const routes = {
+            404: () => {
+                return import(BaseDir + 'webele/404.js?v=' + Date.now())
+            },
+            detail: () => {
+                return import(BaseDir + 'webele/detail.js?v=' + Date.now())
+            },
+        };
+
+  
+
         let routerModule = (function () {
+            let pageMap = new Map()
+
+            function render(rootEle) {
+                rooterRootEle.innerHTML = ''
+                rooterRootEle.appendChild(rootEle)
+            }
+
+            function createPageFun(nid = '') {
+                return function Page({ele, lifeTimes = {}} = {}) {
+                    render(ele)
+                    if (lifeTimes.onLoad) {
+                        lifeTimes.onLoad()
+                    }
+                    let pageCtx = {
+                        nid,
+                        ele,
+                        lifeTimes
+                    }
+                    pageMap.set(nid, pageCtx)
+                }   
+            }
+
+
+            function getCurrentPages() {
+                return [...pageMap.values()]
+            }
+
+            function removeLastPage() {
+                let keys = [...pageMap.keys()]
+                removePage(keys.at(-1))
+            }
+
+            function removePage(key) {
+                pageMap.delete(key)
+            }
+
+            window.getCurrentPages = getCurrentPages
+
             const pushRoute = (path = '') => {
                 // event = event || window.event;
                 // event.preventDefault();
-                window.history.pushState({}, "", path);
+                window.history.pushState({}, "", "#/" + path);
                 handleLocation();
             };
 
-            const routes = {
-                404: () => {
-                    return import('./webele/404.js?v=' + Date.now())
-                },
-            };
+
 
             const handleLocation = async () => {
-                const path = window.location.pathname;
-                const route = routes[path] || routes[404];
-                function render(rootEle) {
-                    document.getElementById("routerroot").innerHTML = ''
-                    document.querySelector('#routerroot').appendChild(rootEle)
-                }
+                const path = window.location.hash;
+
+
+                let baseLen =  '#/'
+
+                console.log(path);
+
+                const route = routes[path.slice(baseLen.length)] || routes[404];
+
 
                 const m = await route();
+
+                let nid = Nid()
+                let Page = createPageFun(nid)
+
                 if (m.default) {
-                    m.default({render})
+                    m.default({Page})
                 }
             };
 
-            window.onpopstate = handleLocation;
+            window.onpopstate = async function() {
+                let pages = getCurrentPages()
+                let lastPage = pages.at(-1)
+                if (lastPage?.lifeTimes?.onUnload) {
+                    lastPage.lifeTimes.onUnload()
+                }
+                await handleLocation()
+                removePage(lastPage.nid)
+            };
+
             window.wRoute = {
                 push: pushRoute
             };

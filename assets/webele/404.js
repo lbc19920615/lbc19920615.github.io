@@ -1,7 +1,7 @@
 import { reactive, computed  } from "vue"
 import { Button, Text, ForEach, If, Else, Column, Nid, g } from "wle";
 
-export default function({render}) {
+export default function({Page}) {
   
     let ele =  document.createElement('div');
     let vm = (function () {
@@ -17,6 +17,9 @@ export default function({render}) {
             },
             onLoad(e) {
                 console.log('组件事件回调');
+            },
+            action2() {
+                globalThis.wRoute.push('detail')
             },
             data
         }
@@ -48,7 +51,6 @@ export default function({render}) {
                     ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
                     ctx.done(ele)
                 });
-
 
             ; g.defc(Text('for测试').init(function (ele) {
             }), function (ctx) {
@@ -92,6 +94,12 @@ export default function({render}) {
             });
 
 
+            ; g.defc(Button({ text: 'detail', action: vm.action2 }).init(function (ele) { })
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
+
         }), function (ctx) {
             ctx.onLoad((e) => { vm.onLoad(e) }).border({ width: 1 });
             ctx.done(ele)
@@ -99,5 +107,12 @@ export default function({render}) {
 
     }), function (ctx) { ctx.done(ele) })
 
-    render(ele)
+    Page({
+        ele,
+        lifeTimes: {
+            onLoad() {
+                console.log("main 加载完成");
+            }
+        }
+    })
 }
