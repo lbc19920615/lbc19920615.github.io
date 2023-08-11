@@ -1,8 +1,5 @@
 import { reactive, computed, ref,  watch } from "vue"
-import { Button, Text, ForEach, If, createCommonCtx, Column, BaseVmControl, injectControl, useControl, g } from "wle";
-
-
-
+import { Button, Text, ForEach, If, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
 
 
 class DomCotnrol extends BaseVmControl {
@@ -20,41 +17,7 @@ class DomCotnrol extends BaseVmControl {
 
 injectControl('vm')(DomCotnrol)
 
-function defComponent(option = {}) {
-    let {setup} = option
 
-    let ctx = null;
-    function getCtx() {
-        return ctx
-    }
-
-    let stopWatch
-
-    return function(...args) {
-        // console.log(args);
-        function startWatch(onChange) {
-            stopWatch = watch(args, (newVal, oldVal) => {
-                if (onChange) {
-                    onChange(newVal, oldVal)
-                }
-            }, {
-                deep: true
-            })
-        }
-
-        return {
-            init(callback) {
-                // console.log(callback);
-                return function () {
-                    let ele = setup({getCtx, startWatch, args})
-                    ctx = createCommonCtx(callback, { ele })
-                    // console.log(ctx);
-                    return ctx
-                }
-            }
-        }
-    }
-}
 
 let Text2 = defComponent({
     setup({getCtx, startWatch, args}) {         

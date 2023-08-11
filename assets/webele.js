@@ -290,6 +290,42 @@ export let g = {
 }
 
 
+export function defComponent(option = {}) {
+    let {setup} = option
+
+    let ctx = null;
+    function getCtx() {
+        return ctx
+    }
+
+    let stopWatch
+
+    return function(...args) {
+        // console.log(args);
+        function startWatch(onChange) {
+            stopWatch = watch(args, (newVal, oldVal) => {
+                if (onChange) {
+                    onChange(newVal, oldVal)
+                }
+            }, {
+                deep: true
+            })
+        }
+
+        return {
+            init(callback) {
+                // console.log(callback);
+                return function () {
+                    let ele = setup({getCtx, startWatch, args})
+                    ctx = createCommonCtx(callback, { ele })
+                    // console.log(ctx);
+                    return ctx
+                }
+            }
+        }
+    }
+}
+
 
 
 let symbol = Symbol('BaseControl')
