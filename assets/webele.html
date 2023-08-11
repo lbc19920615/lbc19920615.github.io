@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+<script>
+  // VConsole will be exported to `window.VConsole` by default.
+  var vConsole = new window.VConsole();
+</script>
 </head>
 <body>
     <div id="webele"></div>
@@ -68,6 +73,7 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
     let sizeNames = ['width', 'height', 'fontSize']
     let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
 
+    let eventNames = ['onLoad']
 
     let proxy = new Proxy(ctx, {
         get(target, key, receiver){
@@ -95,13 +101,21 @@ function createCommonCtx(callback, {ele, id = Nid()} = {}) {
                         let width = cssHelper.toLength(option.width)
 
                         let str = `${width} ${option.style}`
-                        console.log(width);
+                        // console.log(width);
                         val = str
                     }
                     ele.style[key] = val
                     return proxy
                 }
                 // console.log('sssss');
+            }
+            else if(eventNames.includes(key)) {
+                return function(...args) {
+                // console.log(args[0]);
+                    let callback = args[0];
+                    callback({})
+                    return proxy
+                }
             }
         }
     })
@@ -299,6 +313,9 @@ let vm = (function() {
             data.some = Nid()
             console.log('action', data, e);
         },
+        onLoad(e) {
+            console.log('组件事件回调');
+        },
         data
     }
 })();
@@ -374,7 +391,7 @@ g.defc(Column().init(function (ele) {
         
 
     }), function (ctx) {
-        ctx.border({ width: 1 });
+        ctx.onLoad((e) => {vm.onLoad(e)}).border({ width: 1 });
         ctx.done(ele)
     });
 
