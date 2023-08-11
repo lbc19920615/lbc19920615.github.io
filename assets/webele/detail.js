@@ -59,12 +59,34 @@ function defComponent(option = {}) {
 let Text2 = defComponent({
     setup({getCtx, startWatch, args}) {         
         let ele = document.createElement('div')
-        ele.classList.add('text')
+        ele.classList.add('text2')
+
+        g.defc(Column().init(function (ele) {
+            ; g.defc(Text('text2 com start').init(function (ele) { 
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+            ; g.defc(Text(args[0]).init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(Text('text2 com end').init(function (ele) { 
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+        }), function (ctx) { 
+            ctx.done(ele) 
+        })
+
     
         function render(ele) {
             // console.log(args[0]);
-            let text = args[0]
-            ele.textContent = text.__v_isRef ? text.value : text
+            // let text = args[0]
+            // ele.textContent = text.__v_isRef ? text.value : text
         }
     
         render(ele)
