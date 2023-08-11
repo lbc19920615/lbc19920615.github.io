@@ -28,20 +28,30 @@
 
 
         let rooterRootEle = document.getElementById("routerroot")
-     
+       
         let BaseDir = '/assets/'
         const routes = {
-            404: () => {
+            404: (params) => {
                 return import(BaseDir + 'webele/404.js?v=' + Date.now())
             },
-            detail: () => {
+            detail: (params) => {
+                console.log(params);
                 return import(BaseDir + 'webele/detail.js?v=' + Date.now())
             },
         };
 
+
+        let keepLives = [
+            '404'
+        ]
+
+        let option = {
+            rooterRootEle,
+            keepLives
+        }
   
 
-        let routerModule = (function () {
+        let routerModule = (function ({rooterRootEle, keepLives = []} = {}) {
             let pageMap = new Map()
 
             function render(rootEle) {
@@ -51,14 +61,24 @@
 
             function createPageFun(nid = '') {
                 return function Page({ele, lifeTimes = {}} = {}) {
-                    render(ele)
+              
+                    function reRender(innerEle) {
+                        render(innerEle)
+                    }
+
+                    reRender(ele)
                     if (lifeTimes.onLoad) {
                         lifeTimes.onLoad()
                     }
+                    
+
                     let pageCtx = {
                         nid,
                         ele,
-                        lifeTimes
+                        lifeTimes,
+                        reload() {
+                            reRender(ele)
+                        }
                     }
                     pageMap.set(nid, pageCtx)
                 }   
@@ -87,26 +107,38 @@
                 handleLocation();
             };
 
-
+            const backRoute = () => {
+                history.back()
+            }
 
             const handleLocation = async () => {
                 const path = window.location.hash;
 
-
                 let baseLen =  '#/'
+                const pathName = path.slice(baseLen.length) 
 
-                console.log(path);
+                let routerName = pathName ? pathName : '404'
 
-                const route = routes[path.slice(baseLen.length)] || routes[404];
+                // console.log(routerName);
 
+                const route = routes[routerName];
 
-                const m = await route();
+                let params = {}
 
-                let nid = Nid()
-                let Page = createPageFun(nid)
+                // let params = new URLSearchParams(location.search)
+                const m = await route(params);
 
-                if (m.default) {
-                    m.default({Page})
+                let nid = routerName ?? Nid()
+                
+                if (keepLives.includes(nid) && pageMap.get(nid)) {
+                    let cached =  pageMap.get(nid)
+                    cached.reload()
+                } else {
+                    
+                    let Page = createPageFun(nid)
+                    if (m.default) {
+                        m.default({Page})
+                    }
                 }
             };
 
@@ -116,16 +148,19 @@
                 if (lastPage?.lifeTimes?.onUnload) {
                     lastPage.lifeTimes.onUnload()
                 }
-                await handleLocation()
                 removePage(lastPage.nid)
+                await handleLocation()
             };
 
             window.wRoute = {
-                push: pushRoute
+                push: pushRoute,
+                back: backRoute
             };
 
             handleLocation();
-        })();
+        });
+
+        routerModule(option)
 
     </script>
 </body>

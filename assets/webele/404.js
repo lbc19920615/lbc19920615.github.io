@@ -16,7 +16,7 @@ export default function({Page}) {
                 console.log('action', data, e);
             },
             onLoad(e) {
-                console.log('组件事件回调');
+                console.log('main 组件事件回调');
             },
             action2() {
                 globalThis.wRoute.push('detail')
@@ -41,7 +41,6 @@ export default function({Page}) {
     g.defc(Column().init(function (ele) {
         ; g.defc(Text(vmStrSome).init(function (ele) {
         }), function (ctx) {
-            // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
             ctx.done(ele)
         });
         g.defc(Column({ space: 5 }).init(function (ele) {
@@ -54,7 +53,6 @@ export default function({Page}) {
 
             ; g.defc(Text('for测试').init(function (ele) {
             }), function (ctx) {
-                // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
                 ctx.done(ele)
             });
 
