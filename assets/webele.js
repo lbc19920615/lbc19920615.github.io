@@ -38,7 +38,7 @@ let cssHelper = {
     }
 }
 
-function createCommonCtx(callback, { ele, id = Nid() } = {}) {
+export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
     let ctx = {
         id,
         curRoot: undefined,
@@ -189,8 +189,7 @@ export function Text(text) {
 
     if (text.__v_isRef) {
         watch(text, () => {
-            // console.log('1111');
-            render(ctx.getEle())
+            render(ele)
         })
     }
     return {
@@ -276,8 +275,13 @@ export function Else() {
     return fragment
 }
 
-function defc(buildCtx, runFun) {
-    let ctx = buildCtx()
+async function defc(buildCtx, runFun) {
+    let fun = buildCtx
+    if (Reflect.getPrototypeOf(buildCtx).toString() === '[object Promise]') {
+        fun = await buildCtx
+    }
+    // console.log(fun);
+    let ctx = fun()
     runFun(ctx)
 }
 
@@ -401,8 +405,11 @@ export function useControl(cls) {
         let def = clsDef
         let obj = reactive(def.state)
 
+        let getterKeys = []
+
         Object.keys(def.getters).forEach(key => {
             // console.log(def.getters[key].bind(obj));
+            getterKeys.push(key)
             obj[key] = computed(def.getters[key].bind(obj))
         });
 
@@ -412,7 +419,18 @@ export function useControl(cls) {
         })
 
         // console.log(obj);
-        return obj
+        return new Proxy(obj, {
+            get(target, key) {
+                if (getterKeys.includes(key)) {
+                    return computed(() => {
+                        return obj[key]
+                    })
+                }
+                else {
+                    return obj[key]
+                }
+            }
+        })
     }
     return null
 }
