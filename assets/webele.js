@@ -1,6 +1,6 @@
 import { reactive, ref , watch  } from "vue"
 
-function Nid() {
+export function Nid() {
     return crypto.randomUUID()
 }
 
