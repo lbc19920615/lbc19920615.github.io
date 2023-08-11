@@ -1,27 +1,33 @@
-import { reactive, computed  } from "vue"
-import { Button, Text, ForEach, If, Else, Column, Nid, g } from "wle";
+import { reactive, computed, ref,  } from "vue"
+import { Button, Text, ForEach, If, Else, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+
+
+
+
+
+class DomCotnrol extends BaseVmControl {
+    title = ''
+    get TextDetail() {
+        return computed(() =>'detail 页面 ' + this.title)
+    }
+    setTitle(v) {
+        // console.log('setTitle', v);
+        this.title = v
+    }
+    action(e) {
+        globalThis.wRoute.back()
+    }
+}
+
+injectControl('vm')(DomCotnrol)
+
 
 export default function({Page}) {
     let ele =  document.createElement('div');
-
-    let vm = (function () {
-        let data = reactive({
-            title: ''
-        })
-        return {
-            action(e) {
-                globalThis.wRoute.back()
-            },
-            data
-        }
-    })();
-
-    let TextDetail = computed(() => {
-        return 'detail 页面 ' + vm.data.title
-    })
+    let vm = useControl('vm')
 
     g.defc(Column().init(function (ele) {
-        ; g.defc(Text(TextDetail).init(function (ele) {
+        ; g.defc(Text(vm.TextDetail).init(function (ele) {
         }), function (ctx) {
             ctx.done(ele)
         });
@@ -39,7 +45,11 @@ export default function({Page}) {
             onLoad(pageVm) {
                 console.log("detail 加载完成", pageVm.$getParams());
 
-                vm.data.title = JSON.stringify( pageVm.$getParams())
+                // vm.data.title = JSON.stringify( pageVm.$getParams())
+
+                vm.setTitle(JSON.stringify( pageVm.$getParams()))
+                
+    // console.log(vm.TextDetail);
             },
             onUnload() {
                 console.log("detail 结束");
