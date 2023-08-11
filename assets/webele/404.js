@@ -1,5 +1,21 @@
 import { reactive, computed  } from "vue"
-import { Button, Text, ForEach, If, Else, Column, Nid, g } from "wle";
+import { Button, Text, ForEach, If, Else, Column, defComponent, Nid, g } from "wle";
+
+
+
+
+
+let TextArea1 = defComponent({
+    setup({getCtx, startWatch, args}) {    
+        let ele = document.createElement('elastic-textarea')
+        ele.style.display = 'block'
+        ele.style.border = '1px solid'
+        ele.innerHTML = `<label>
+        <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none;" name="textarea-1"></textarea>
+    </label>`
+        return ele
+    }
+})
 
 export default function({Page}) {
   
@@ -97,6 +113,19 @@ export default function({Page}) {
             ; g.defc(Button({ text: 'detail', action: vm.action2 }).init(function (ele) { })
             , function (ctx) {
                 ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
+
+            
+            ; g.defc(Text('form测试').init(function (ele) {
+            }), function (ctx) {
+                // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(TextArea1().init(function (ele) {
+            }), function (ctx) {
                 ctx.done(ele)
             });
 

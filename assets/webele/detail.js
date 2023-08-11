@@ -1,5 +1,5 @@
 import { reactive, computed, ref,  watch } from "vue"
-import { Button, Text, ForEach, If, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+import { Button, Text, ForEach, If, hc, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
 
 
 class DomCotnrol extends BaseVmControl {
@@ -24,26 +24,13 @@ let Text2 = defComponent({
         let ele = document.createElement('div')
         ele.classList.add('text2')
 
-        g.defc(Column().init(function (ele) {
-            ; g.defc(Text('text2 com start').init(function (ele) { 
-            }), function (ctx) {
-                ctx.done(ele)
-            });
+        hc(Column, {init()  {
+            hc(Text, {args: ['text2 com start'], ele})
 
-            ; g.defc(Text(args[0]).init(function (ele) {
-            }), function (ctx) {
-                ctx.done(ele)
-            });
+            hc(Text, {args: args, ele})
 
-
-            ; g.defc(Text('text2 com end').init(function (ele) { 
-            }), function (ctx) {
-                ctx.done(ele)
-            });
-
-        }), function (ctx) { 
-            ctx.done(ele) 
-        })
+            hc(Text, {args: ['text2 com end'], ele})
+        }, ele})
 
     
         function render(ele) {

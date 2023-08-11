@@ -1,4 +1,4 @@
-import { reactive, ref , watch, computed, watchEffect  } from "vue"
+import { reactive, ref , watch, computed  } from "vue"
 
 export function Nid() {
     return crypto.randomUUID()
@@ -288,6 +288,18 @@ async function defc(buildCtx, runFun) {
 export let g = {
     defc
 }
+
+
+export async function hc(ComponentConstruct, {args = [], init = function() {}, ele, done} = {}) {
+    let doneFun = done ?? function(ctx) {
+       
+    }
+    defc(ComponentConstruct.apply(null, args).init(init), function (ctx) {
+        doneFun(ctx)
+        ctx.done(ele)
+    });
+}
+
 
 
 export function defComponent(option = {}) {
