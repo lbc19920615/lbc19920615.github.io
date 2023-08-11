@@ -35,7 +35,6 @@
                 return import(BaseDir + 'webele/404.js?v=' + Date.now())
             },
             detail: (params) => {
-                console.log(params);
                 return import(BaseDir + 'webele/detail.js?v=' + Date.now())
             },
         };
@@ -59,27 +58,40 @@
                 rooterRootEle.appendChild(rootEle)
             }
 
-            function createPageFun(nid = '') {
-                return function Page({ele, lifeTimes = {}} = {}) {
+            function createPageFun(nid = '', params) {
+                return function Page(option) {
+                    let {ele, lifeTimes = {}} = option
               
                     function reRender(innerEle) {
                         render(innerEle)
                     }
 
-                    reRender(ele)
-                    if (lifeTimes.onLoad) {
-                        lifeTimes.onLoad()
-                    }
-                    
-
                     let pageCtx = {
                         nid,
                         ele,
                         lifeTimes,
-                        reload() {
+                        params: {},
+                        reload(params) {
+                            pageCtx.params = params
                             reRender(ele)
                         }
                     }
+
+                    pageCtx.params = params;
+                    reRender(ele);
+
+                    let pageVm = {
+                        $getParams() {
+                            return pageCtx.params 
+                        }
+                    }
+
+                    if (lifeTimes.onLoad) {
+                        lifeTimes.onLoad(pageVm)
+                    }
+                    
+
+         
                     pageMap.set(nid, pageCtx)
                 }   
             }
@@ -100,18 +112,18 @@
 
             window.getCurrentPages = getCurrentPages
 
-            const pushRoute = (path = '') => {
+            const pushRoute = (path = '', params = {}) => {
                 // event = event || window.event;
                 // event.preventDefault();
                 window.history.pushState({}, "", "#/" + path);
-                handleLocation();
+                handleLocation(params);
             };
 
             const backRoute = () => {
                 history.back()
             }
 
-            const handleLocation = async () => {
+            const handleLocation = async (params = {}) => {
                 const path = window.location.hash;
 
                 let baseLen =  '#/'
@@ -123,8 +135,6 @@
 
                 const route = routes[routerName];
 
-                let params = {}
-
                 // let params = new URLSearchParams(location.search)
                 const m = await route(params);
 
@@ -132,10 +142,10 @@
                 
                 if (keepLives.includes(nid) && pageMap.get(nid)) {
                     let cached =  pageMap.get(nid)
-                    cached.reload()
+                    cached.reload(params)
                 } else {
                     
-                    let Page = createPageFun(nid)
+                    let Page = createPageFun(nid, params)
                     if (m.default) {
                         m.default({Page})
                     }

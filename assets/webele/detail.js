@@ -6,6 +6,7 @@ export default function({Page}) {
 
     let vm = (function () {
         let data = reactive({
+            title: ''
         })
         return {
             action(e) {
@@ -15,8 +16,12 @@ export default function({Page}) {
         }
     })();
 
+    let TextDetail = computed(() => {
+        return 'detail 页面 ' + vm.data.title
+    })
+
     g.defc(Column().init(function (ele) {
-        ; g.defc(Text('detail 页面').init(function (ele) {
+        ; g.defc(Text(TextDetail).init(function (ele) {
         }), function (ctx) {
             ctx.done(ele)
         });
@@ -31,8 +36,10 @@ export default function({Page}) {
     Page({
         ele,
         lifeTimes: {
-            onLoad() {
-                console.log("detail 加载完成");
+            onLoad(pageVm) {
+                console.log("detail 加载完成", pageVm.$getParams());
+
+                vm.data.title = JSON.stringify( pageVm.$getParams())
             },
             onUnload() {
                 console.log("detail 结束");

@@ -19,7 +19,9 @@ export default function({Page}) {
                 console.log('main 组件事件回调');
             },
             action2() {
-                globalThis.wRoute.push('detail')
+                globalThis.wRoute.push('detail', {
+                    paramA: Nid()
+                })
             },
             data
         }
