@@ -1,403 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-<script>
-  // VConsole will be exported to `window.VConsole` by default.
-  var vConsole = new window.VConsole();
-</script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
+    </script>
 </head>
+
 <body>
-    <div id="webele"></div>
+    <div id="routerroot"></div> 
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
+            "wle": "./webele.js?v=1"
+          }
+        }
+    </script>
     <script type="module">
-import { reactive, onMounted, computed, watchEffect, ref, watch } from "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js"
+        import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
 
-function Nid() {
-    return crypto.randomUUID()
-}
+     
+        let routerModule = (function () {
+            const pushRoute = (path = '') => {
+                // event = event || window.event;
+                // event.preventDefault();
+                window.history.pushState({}, "", path);
+                handleLocation();
+            };
 
-function appendCommon(ctx, ele) {
-    let curRoot = ctx.curRoot
-    if (Array.isArray(ctx.curRoot)) {
-        curRoot =  ctx.curRoot[1]
-        // console.dir(curRoot);
-    }
-    if (curRoot.nodeType === 8) {
-        curRoot.before(ele)
-    }
-    else {
-        if (Array.isArray(ele)) {
-            curRoot.append(...ele)
-        } else {
-            curRoot.append(ele)
-        }
-    }
-}
+            const routes = {
+                404: () => {
+                    return import('./webele/404.js?v=' + Date.now())
+                },
+            };
 
-let cssHelper = {
-    toLength(val) {
-        if (Number(val) == val) {
-            return val + 'px'
-        }
-        return val
-    },
-    toColor(val) {
-        if (typeof val !== 'string') {
-            // console.log(val.toString(16).padStart(6, '0'));
-           return  '#' + val.toString(16).padStart(6, '0')
-        }
-        return val
-    }
-}
-
-function createCommonCtx(callback, {ele, id = Nid()} = {}) {
-    let ctx =  {
-        id,
-        curRoot: undefined,
-        getEle() {
-            return ele
-        },
-        done(parent) {
-            ctx.curRoot = parent
-            appendCommon(ctx, ele)
-            callback(ele)
-        }
-    }
-
-
-    let colorNames = ['backgroundColor']
-    let borderNames = ['border']
-    let sizeNames = ['width', 'height', 'fontSize']
-    let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
-
-    let eventNames = ['onLoad']
-
-    let proxy = new Proxy(ctx, {
-        get(target, key, receiver){
-            // console.log(target, key, receiver);
-            if (ctx[key]) {
-                return ctx[key]
-            }
-            else if(cssFunNames.includes(key)) {
-                return function(...args) {
-                    // console.log('ele', args[0].toString(16));
-                    let val =  args[0]
-                    if (colorNames.includes(key)) {
-                        val = cssHelper.toColor(val)
-                    }
-                    if (sizeNames.includes(key)) {
-                        val = cssHelper.toLength(val)
-                    }
-                    if (borderNames.includes(key)) {
-                        let option = {
-                            width: '0px',
-                            style: 'solid',
-                            ...val
-                        }
-
-                        let width = cssHelper.toLength(option.width)
-
-                        let str = `${width} ${option.style}`
-                        // console.log(width);
-                        val = str
-                    }
-                    ele.style[key] = val
-                    return proxy
+            const handleLocation = async () => {
+                const path = window.location.pathname;
+                const route = routes[path] || routes[404];
+                function render(rootEle) {
+                    document.getElementById("routerroot").innerHTML = ''
+                    document.querySelector('#routerroot').appendChild(rootEle)
                 }
-                // console.log('sssss');
-            }
-            else if(eventNames.includes(key)) {
-                return function(...args) {
-                // console.log(args[0]);
-                    let callback = args[0];
-                    callback({})
-                    return proxy
+
+                const m = await route();
+                if (m.default) {
+                    m.default({render})
                 }
-            }
-        }
-    })
-    return proxy
-}
+            };
 
-function createForeachCtx(callback, {ele, max =  0, list, id = Nid()} = {}) {
-    let ctx =  {
-        id,
-        curRoot: undefined,
-        done(parent) {
-            ctx.curRoot = parent
-            appendCommon(ctx, ele);
-            ctx.build(max, list)
-        },
-        reload({max, list} ={}) {
-           while (ele[0].nextSibling !== ele[1]) {
-            ele[0].nextSibling.remove()
-           }
-        //    console.log(max);
-           ctx.build(max, list)
-        },
-        build(innerMax, innerList) {
-            if (innerList) {
-                for (let index = 0; index < innerList.length; index++) {
-                    callback(ele, {index, item: innerList[index]})                
-                }
-            }
-            else {
-                // console.log(ele);
-                for (let index = 0; index < innerMax; index++) {
-                    callback(ele, {index, item: index})                
-                }
-            }
-        }
-    }
-    return ctx
-}
+            window.onpopstate = handleLocation;
+            window.wRoute = {
+                push: pushRoute
+            };
 
+            handleLocation();
+        })();
 
-function Button({action, text} = {}) {
-    let ele = document.createElement('button')
-    ele.classList.add('button')
-    ele.onclick = function(e) {
-        action(e)
-    }
-    ele.textContent = text
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                let ctx =  createCommonCtx(callback, {ele})
-                return ctx
-            }
-        }
-    }
-}
-
-function Column() {
-    let ele = document.createElement('div')
-    ele.classList.add('column')
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                let ctx =  createCommonCtx(callback, {ele})
-                return ctx
-            }
-        }
-    }
-}
-
-function Text(text = '') {
-    let ctx
-    let ele = document.createElement('div')
-    ele.classList.add('text')
-
-    function render(ele) {
-        ele.textContent = text.__v_isRef ? text.value : text
-    }
-
-    render(ele)
-
-    // console.log(text);
-    if (text.__v_isRef) {
-        watch(text, () => {
-            // console.log('1111');
-            render(ctx.getEle())
-        })
-    }
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                ctx = createCommonCtx(callback, {ele})
-                return ctx
-            }
-        }
-    }
-}
-
-function ForEach({max = ref(0), list = null} = {}) {
-    let startFlg = document.createComment('start')
-    let endFlg = document.createComment('end')
-    let ele = [
-        startFlg,
-        endFlg
-    ]
-
-    // let computeMax = computed(() => max)
-    
-    let obj = reactive({
-        max,
-        list
-    })
-
-    // console.log(list);
-    watch(max,  (newVal, oldVal) => {
-        // console.log('list', newVal, oldVal);
-        ctx.reload({max: obj.max, list: obj.list})
-    }, {
-        deep: true
-    })
-
-    watch(list,  (newVal, oldVal) => {
-        // console.log('list', newVal, oldVal);
-        ctx.reload({max: obj.max, list: obj.list})
-    }, {
-        deep: true
-    })
-
-    let ctx;
-    return {
-        getCtx() {
-            return ctx
-        },
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                // console.log(obj);
-                ctx =  createForeachCtx(callback, {ele, max: obj.max, list: obj.list})
-                return ctx
-            }
-        }
-    }
-}
-
-let currentCondition = null
-function If(conditions) {
-    // console.log(conditions);
-    currentCondition = conditions
-    let fragment = ForEach({max: Number(conditions.value)})
-    watch(conditions, (newVal, oldVal) => {
-        // console.log('111', newVal, fragment);
-        fragment.getCtx().reload({max: Number(newVal)})
-    })
-    return fragment
-}
-
-function Else() {
-    // console.log(conditions);
-    if (!currentCondition) {
-        return;
-    }
-    let conditions = currentCondition
-    let fragment = ForEach({max: !Number(conditions.value)})
-    watch(conditions, (newVal, oldVal) => {
-        // console.log('111', newVal, fragment);
-        fragment.getCtx().reload({max: !Number(newVal)})
-    })
-    return fragment   
-}
-
-function defc(buildCtx, runFun) {
-    let ctx = buildCtx()
-    runFun(ctx)
-}
-
-let g = {
-    defc
-}
-
-
-let rootEle = document.createElement('div')
-
-let ele = rootEle;
-let vm = (function() {
-    let data = reactive({
-        some: "initStr",
-        max: 1,
-        list: [1,2,3]
-    })
-    return {
-        action(e) {
-            data.some = Nid()
-            console.log('action', data, e);
-        },
-        onLoad(e) {
-            console.log('组件事件回调');
-        },
-        data
-    }
-})();
-
-let vmData = vm.data;
-
-let vmDataList = vmData.list
-let vmDataMax = computed(() => vmData.max > 1)
-let vmStrSome =  computed(() => vmData.some)
-
-
-setTimeout(() => {
-    vmData.list[0] = 3;
-    vmData.max = 2;
-}, 3000)
-
-
-g.defc(Column().init(function (ele) {
-    ; g.defc(Text(vmStrSome).init(function (ele) {
-     }), function (ctx) {
-        // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
-        ctx.done(ele)
-    });
-    g.defc(Column({space: 5}).init(function (ele) {
-
-        ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
-        , function (ctx) {
-            ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-            ctx.done(ele)
-        });
-
-
-        ; g.defc(Text('for测试').init(function (ele) {
-        }), function (ctx) {
-            // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
-            ctx.done(ele)
-        });
-
-
-        ; g.defc(ForEach({list: vmDataList}).init(function (ele, option) {
-            g.defc(Text(option.item).init(function (ele) {
-
-            }), function (ctx) {
-                ctx.width('100%').height(30).backgroundColor(0x00FFFF);   
-                ctx.done(ele) 
-            })
-         }), function (ctx) {
-            ctx.done(ele)
-        });
-
-
-        ; g.defc(Text('if测试').init(function (ele) {
-        }), function (ctx) {
-            // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
-            ctx.done(ele)
-        });
-
-        ; g.defc(If(vmDataMax).init(function (ele) { 
-            g.defc(Text('if ok').init(function (ele) {
-
-            }), function (ctx) { ctx.done(ele) })
-        }), function (ctx) {
-            ctx.done(ele)
-        });
-
-        ; g.defc(Else().init(function (ele) { 
-            g.defc(Text('else ok').init(function (ele) {
-
-            }), function (ctx) { ctx.done(ele) })
-        }), function (ctx) {
-            ctx.done(ele)
-        });
-        
-
-    }), function (ctx) {
-        ctx.onLoad((e) => {vm.onLoad(e)}).border({ width: 1 });
-        ctx.done(ele)
-    });
-
-}), function (ctx) { ctx.done(ele) })
-
-document.querySelector('#webele').appendChild(rootEle)
     </script>
 </body>
+
 </html>
