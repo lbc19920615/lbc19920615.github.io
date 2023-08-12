@@ -24,11 +24,16 @@ let Text2 = defComponent({
         let ele = document.createElement('div')
         ele.classList.add('text2')
 
-        hc(Column, {init(ele)  {
-            hc(Text, {args: ['text2 com start'], ele})
-            hc(Text, {args: args, ele})
-            hc(Text, {args: ['text2 com end'], ele})
-        }, ele})
+        hc(Column, {
+            init(ele)  {
+                hc(Text, {args: ['text2 com start'], ele})
+                hc(Text, {args: args, ele})
+                hc(Text, {args: ['text2 com end'], ele})
+            },
+            done(ctx) {
+                ctx.width('100%')
+            }
+        , ele})
 
     
         function render(ele) {
