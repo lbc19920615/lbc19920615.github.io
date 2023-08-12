@@ -138,15 +138,20 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
             ctx.build(max, list)
         },
         build(innerMax, innerList) {
+                
+            function appendChild(childEle) {
+                appendCommon(ctx, childEle);
+            }
+
             if (innerList) {
                 for (let index = 0; index < innerList.length; index++) {
-                    callback(ele, { index, item: innerList[index] })
+                    callback(ele, { appendChild, index, item: innerList[index] })
                 }
             }
             else {
                 // console.log(ele);
                 for (let index = 0; index < innerMax; index++) {
-                    callback(ele, { index, item: index })
+                    callback(ele, { appendChild, index, item: index })
                 }
             }
         }
@@ -305,7 +310,7 @@ export let g = {
 }
 
 
-export function hc(ComponentConstruct, {args = [], init = function() {}, end = function() {}, ele, afterInit, ready} = {}) {
+export function hc(ComponentConstruct, {args = [], init = function() {}, end = function() {}, afterInit, ready} = {}, ele) {
     let readyFun = ready ? function(ctx) {
         ready(ctx)
         ctx.done(ele)

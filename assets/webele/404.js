@@ -14,14 +14,14 @@ let FormItem = defComponent({
 
         hc(Column, {
             init(ele)  {
-                hc(Text, {args: [args[0]], ele})
+                hc(Text, {args: [args[0]]}, ele)
                 // console.log('init');
             },
             ready(ctx) {
                 // console.log('ssssss');
                 ctx.width('100%')
             }
-        , ele})
+        }, ele)
 
 
         function render(ele) {
@@ -38,13 +38,19 @@ let FormItem = defComponent({
 })
 
 
+const defaultFormSetting = {
+    padding: '.35em .625em'
+}
+
 let TextArea1 = defComponent({
     setup({getCtx, startWatch, args}) {    
         let ele = document.createElement('elastic-textarea')
         ele.style.display = 'block'
         ele.style.border = '1px solid var(--borderColor,rgba(0,0,0,.2))'
+        ele.style.padding = defaultFormSetting.padding
         ele.innerHTML = `<label>
-        <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none;" name="textarea-1"></textarea>
+        <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none; font-size: 14px" 
+        name="textarea-1"></textarea>
     </label>`
         return ele
     }
@@ -60,8 +66,10 @@ let Input1 = defComponent({
         ele.style.border = '1px solid var(--borderColor,rgba(0,0,0,.2))'
         ele.style.display = 'flex'
         ele.style.alignItems = 'center'
+        ele.style.padding = defaultFormSetting.padding
         let input = document.createElement('xy-input')
         input.style.flex = '1'
+        input.style.lineHeight = 'normal'
         input.style.border = 'none'
         // console.dir(input)
         if (option.type) {
@@ -95,6 +103,64 @@ let Input1 = defComponent({
                 close.style.setProperty("width", 'var(--input-addon-w)');
             }
         }
+        return ele
+    }
+})
+
+let Select1 = defComponent({
+    setup({getCtx, startWatch, args}) {    
+        let option = args[0] ?? {}
+        let ele = document.createElement('xy-select')
+
+        hc(ForEach, {args: [{max: 6}], 
+            init(ele, option)  {
+                let optionEle = document.createElement('xy-option')
+                optionEle.setAttribute('value', option.index + 1)
+                optionEle.innerHTML = `option${option.index + 1}`
+                option.appendChild(optionEle)
+            }
+        }, ele)
+
+        return ele
+    }
+})
+
+
+let CheckboxGroup = defComponent({
+    setup({getCtx, startWatch, args}) {    
+        let option = args[0] ?? {}
+        let ele = document.createElement('div')
+        ele.classList.add('checkbox-group')
+
+        hc(ForEach, {args: [{max: 6}], 
+            init(ele, option)  {
+                let checkbox = document.createElement('xy-checkbox')
+                checkbox.setAttribute('name', 'lang')
+                checkbox.innerHTML = Nid()
+                option.appendChild(checkbox)
+            }
+        }, ele)
+
+        return ele
+    }
+})
+
+
+let RadioboxGroup = defComponent({
+    setup({getCtx, startWatch, args}) {    
+        let option = args[0] ?? {}
+        let ele = document.createElement('div')
+        ele.classList.add('radio-group')
+
+        hc(ForEach, {args: [{max: 6}], 
+            init(ele, option)  {
+                let radio = document.createElement('xy-radio')
+                radio.setAttribute('name', 'lang')
+                radio.innerHTML = Nid()
+                option.appendChild(radio)
+            }
+        }, ele)
+
         return ele
     }
 })
@@ -205,7 +271,16 @@ export default function({Page}) {
                 ctx.done(ele)
             });
 
+            ; g.defc(FormItem('select').init(function (ele) {
+                ; g.defc(Select1().init(function (ele) {
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+            }), function (ctx) {
+                ctx.done(ele)
+            });
 
+            
             ; g.defc(FormItem('textarea').init(function (ele) {
                 ; g.defc(TextArea1().init(function (ele) {
                 }), function (ctx) {
@@ -233,6 +308,26 @@ export default function({Page}) {
             }), function (ctx) {
                 ctx.done(ele)
             });
+
+
+            ; g.defc(FormItem('checkbox').init(function (ele) {
+                ; g.defc(CheckboxGroup().init(function (ele) {
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+            ; g.defc(FormItem('radio').init(function (ele) {
+                ; g.defc(RadioboxGroup().init(function (ele) {
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
 
         }), function (ctx) {
             ctx.onLoad((e) => { vm.onLoad(e) }).border({ width: 1 });

@@ -26,14 +26,14 @@ let Text2 = defComponent({
 
         hc(Column, {
             init(ele)  {
-                hc(Text, {args: ['text2 com start'], ele})
-                hc(Text, {args: args, ele})
-                hc(Text, {args: ['text2 com end'], ele})
+                hc(Text, {args: ['text2 com start']}, ele)
+                hc(Text, {args: args}, ele)
+                hc(Text, {args: ['text2 com end']}, ele)
             },
             done(ctx) {
                 ctx.width('100%')
             }
-        , ele})
+        }, ele)
 
     
         function render(ele) {
