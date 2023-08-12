@@ -1,6 +1,36 @@
 import { reactive, ref , watch, computed  } from "vue"
 
 let customComponents = new Map()
+let ssrComponents = new Map()
+
+let isSsrMode = Boolean(globalThis.__ssrMode__)
+// isSsrMode = true
+
+let scripts = []
+let jsonMap = {}
+
+globalThis.getscripts = function() {
+    return {
+        run(jsonMap, dataMap) {
+            // console.log(scripts.toString());
+
+            Object.keys(jsonMap).forEach(key => {
+                let value = jsonMap[key]
+                // console.log(value);
+
+                let ComponentFunName = value.ssrRender[0]
+                if (ssrComponents.has(ComponentFunName)) {
+                    // console.log(ssrComponents.get(ComponentFunName));
+                    ssrComponents.get(ComponentFunName)(document.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? [])
+                }
+            })
+            
+            // scripts.forEach(fun => {
+            //     fun()
+            // })
+        }
+    }
+}
 
 export function Nid() {
     return crypto.randomUUID()
@@ -259,8 +289,20 @@ function defc(buildCtx, runFun) {
     return ctx
 }
 
+
+function ssrc(buildCtx, runFun) {
+    let fun = buildCtx
+    let ctx = fun()
+    // runFun(ctx)
+    runFun(ctx)
+    return ctx
+}
+
+
+
 export let g = {
-    defc
+    defc,
+    ssrc,
 }
 
 
@@ -290,8 +332,10 @@ export let h3 = new Proxy(customComponents, {
 globalThis.h3 = h3
 
 
+
+
 export function defComponent(option = {}) {
-    let {setup} = option
+    let {setup, ssrRender} = option
     let ctx = null;
     function getCompCtx() {
         return ctx
@@ -315,7 +359,22 @@ export function defComponent(option = {}) {
             init(callback) {
                 // console.log(callback);
                 return function () {
-                    let ele = setup({getCompCtx, startWatch, args})
+                    let ele = setup({getCompCtx, startWatch, args, isSsrMode})
+                    if (isSsrMode) {
+                        let id = Nid()
+                        ele.setAttribute('ssr-id', id)
+
+                        if (ssrRender) {
+                            if (!jsonMap[id]) {
+                                
+                                console.log(args);
+                                jsonMap[id] = {
+                                    ssrRender: [option.name, ['ssrRender']]
+                                }
+                            }
+                        }
+                    }
+                    
                     ctx = createCommonCtx(function(childEle, option) {
                         // console.log(option);
                         // console.dir(ele.parentElement);
@@ -334,6 +393,7 @@ export function defComponent(option = {}) {
 
     if (option?.name) {
         customComponents.set(option.name, fun)
+        ssrComponents.set(option.name, ssrRender)
     }
 
     // console.log(customComponents);
@@ -378,10 +438,11 @@ customComponents.set('Button', Button)
 export let Column = defComponent({
     name: 'Column',
     setup() {
+        // console.log('ssssssssssss');
         let ele = document.createElement('div')
         ele.classList.add('column')
         return ele
-    }
+    },
 })
 // customComponents.set('Column', Column)
 
@@ -412,24 +473,39 @@ export let Column = defComponent({
 // }
 // customComponents.set('Text', Text)
 
+function _text__render(ele, text) {
+    ele.textContent = text?.__v_isRef ? text.value : text
+}
+
+function _text__action(ele, args) {
+    console.log('ssrRender', args);
+
+    let text = args[0] ?? ''
+
+
+
+    if (text.__v_isRef) {
+        watch(text, () => {
+            console.log('ssss');
+            _text__render(ele, text)
+        })
+    }
+}
+
 export let Text = defComponent({
     name: 'Text',
-    setup({getCtx, startWatch, args}) {
+    setup({getCtx, startWatch, args, isSsrMode}) {
         let text = args[0] ?? ''
         let ele = document.createElement('div')
-        ele.classList.add('text')
-        function render(ele) {
-            ele.textContent = text.__v_isRef ? text.value : text
-        }
-    
-        render(ele)
-    
-        if (text.__v_isRef) {
-            watch(text, () => {
-                render(ele)
-            })
+        ele.classList.add('text');
+        _text__render(ele, text)
+        if (!isSsrMode) {
+            _text__action(ele, args)
         }
         return ele
+    },
+    ssrRender(ele, args) {
+        _text__action(ele, args)
     }
 })
 

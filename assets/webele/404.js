@@ -388,8 +388,6 @@ export default function({Page}) {
             ctx.onLoad((e) => { vm.onLoad(e) }).border({ width: 1 });
             ctx.done(ele)
         });
-
-
         
         ; g.defc(If(vmDataDialog).init(function (ele) {
             ; g.defc(Dialog1({onClose: vm.onDialogClose}).init(function (ele) {

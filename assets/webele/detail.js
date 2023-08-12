@@ -19,6 +19,7 @@ injectControl('vm')(DomCotnrol)
 
 
 
+
 let Text2 = defComponent({
     setup({getCompCtx, startWatch, args}) {         
         let ele = document.createElement('div')
@@ -52,6 +53,41 @@ let Text2 = defComponent({
     }
 })
 
+function genItems(num = 1000) {
+    return new Array(num).fill(0).map((item,index) => 'item' + (index + 1))
+}
+
+var VirtualizedList = window.VirtualizedList.default;
+let LazyList1 = defComponent({
+    name: 'LazyList1',
+    setup({getCtx, startWatch, args}) {    
+        let option = args[0] ?? {}
+        let totalHeight = 500
+        let rowHeight = 150
+
+
+        let ele = document.createElement('div')
+        ele.style.height = totalHeight + 'px'
+        ele.style.overflow = 'auto'
+        const rows = genItems();
+
+        const virtualizedList = new VirtualizedList(ele, {
+          height: totalHeight, // The height of the container
+          rowCount: rows.length,
+          renderRow: index => {
+              const element = document.createElement('div');
+              element.innerHTML = rows[index];
+              element.style.height = '150px'
+              return element;
+          },
+          rowHeight: rowHeight,
+        });
+        
+        // console.dir(virtualizedList )
+        return ele
+    }
+})
+
 export default function({Page}) {
     let ele =  document.createElement('div');
     let vm = useControl('vm')
@@ -65,6 +101,12 @@ export default function({Page}) {
         ; g.defc(Button({ text: 'back', action: vm.action }).init(function (ele) { 
         }), function (ctx) {
             ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+            ctx.done(ele)
+        });
+
+
+        ; g.defc(LazyList1().init(function (ele) {
+        }), function (ctx) {
             ctx.done(ele)
         });
     }), function (ctx) { ctx.done(ele) })

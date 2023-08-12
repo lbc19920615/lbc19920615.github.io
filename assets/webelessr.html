@@ -14,10 +14,18 @@
 
 <body>
     <div id="routerroot">
+        <div>
+            <div class="column" ssr-id="e27c514b-c042-452a-aa66-dd48f3b024a3">
+                <div class="text" ssr-id="87ac43fc-953f-41de-8341-307144074273">detail 页面 </div>
+            </div>
+        </div>
     </div>
     <script src="
 https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 "></script>
+    <script>
+        globalThis.__ssrMode__ = true
+    </script>
     <script type="importmap">
         {
           "imports": {
@@ -177,7 +185,55 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             handleLocation();
         });
 
-        routerModule(option)
+
+        class DomCotnrol extends BaseVmControl {
+            title = ''
+            get TextDetail() {
+                return 'detail 页面 ' + this.title
+            }
+            setTitle(v) {
+                this.title = v
+            }
+            action(e) {
+                globalThis.wRoute.back()
+            }
+        }
+
+        injectControl('vm')(DomCotnrol)
+
+        let vm = useControl('vm')
+
+
+        let ele = document.createElement('div')
+        g.ssrc(Column().init(function (ele) {
+            console.log('ssr');
+            ; g.ssrc(Text(vm.TextDetail).init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+        }), function (ctx) { ctx.done(ele) })
+
+        globalThis.vm = vm
+
+
+        // document.querySelector('#routerroot').appendChild(ele)
+
+        // routerModule(option)
+
+        let jsonMap = {
+            "87ac43fc-953f-41de-8341-307144074273": {
+                "ssrRender": [
+                    "Text",
+                ]
+            }
+        }
+
+        let dataMap = {
+            ['87ac43fc-953f-41de-8341-307144074273']: [vm.TextDetail]
+        }
+
+        globalThis.getscripts().run(jsonMap, dataMap)
+
     </script>
 </body>
 
