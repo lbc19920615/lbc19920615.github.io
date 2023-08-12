@@ -21,7 +21,10 @@ globalThis.getscripts = function() {
                 let ComponentFunName = value.ssrRender[0]
                 if (ssrComponents.has(ComponentFunName)) {
                     // console.log(ssrComponents.get(ComponentFunName));
-                    ssrComponents.get(ComponentFunName)(document.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? [])
+                    let fun =  ssrComponents.get(ComponentFunName)
+                    if (fun) {
+                        fun(document.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? [])
+                    }
                 }
             })
             
@@ -401,39 +404,34 @@ export function defComponent(option = {}) {
 }
 
 
-export function Button({ action, text } = {}) {
-    let ele = document.createElement('button')
-    ele.classList.add('button')
+function _button__render(ele, text) {
+    ele.textContent = text?.__v_isRef ? text.value : text
+}
+
+function _button__action(ele, args) {
+    let { action } = args[0] ?? {}
     ele.onclick = function (e) {
         action(e)
     }
-    ele.textContent = text
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                let ctx = createCommonCtx(callback, { ele })
-                return ctx
-            }
-        }
-    }
 }
 
-customComponents.set('Button', Button)
-
-// export function Column() {
-//     let ele = document.createElement('div')
-//     ele.classList.add('column')
-//     return {
-//         init(callback) {
-//             // console.log(callback);
-//             return function () {
-//                 let ctx = createCommonCtx(callback, { ele })
-//                 return ctx
-//             }
-//         }
-//     }
-// }
+export let Button = defComponent({
+    name: 'Button',
+    setup({getCtx, startWatch, args, isSsrMode}) {
+        // console.log('ssssssssssss');
+        let { action, text } = args[0] ?? {}
+        let ele = document.createElement('button')
+        ele.classList.add('button')
+        _button__render(ele, text)
+        if (!isSsrMode) {
+            _button__action(ele, args)
+        }
+        return ele
+    },
+    ssrRender(ele, args) {
+        _button__action(ele, args)
+    }
+})
 
 export let Column = defComponent({
     name: 'Column',
@@ -444,46 +442,14 @@ export let Column = defComponent({
         return ele
     },
 })
-// customComponents.set('Column', Column)
-
-// export function Text(text) {
-//     let ctx
-//     let ele = document.createElement('div')
-//     ele.classList.add('text')
-//     function render(ele) {
-//         ele.textContent = text.__v_isRef ? text.value : text
-//     }
-
-//     render(ele)
-
-//     if (text.__v_isRef) {
-//         watch(text, () => {
-//             render(ele)
-//         })
-//     }
-//     return {
-//         init(callback) {
-//             // console.log(callback);
-//             return function () {
-//                 ctx = createCommonCtx(callback, { ele })
-//                 return ctx
-//             }
-//         }
-//     }
-// }
-// customComponents.set('Text', Text)
 
 function _text__render(ele, text) {
     ele.textContent = text?.__v_isRef ? text.value : text
 }
 
 function _text__action(ele, args) {
-    console.log('ssrRender', args);
-
+    // console.log('ssrRender', args);
     let text = args[0] ?? ''
-
-
-
     if (text.__v_isRef) {
         watch(text, () => {
             console.log('ssss');
