@@ -4,12 +4,10 @@ let customComponents = new Map()
 let ssrComponents = new Map()
 
 let isSsrMode = Boolean(globalThis.__ssrMode__)
-// isSsrMode = true
 
-let scripts = []
 let jsonMap = {}
 
-globalThis.getscripts = function() {
+export let getscripts = function() {
     return {
         run(jsonMap, dataMap) {
             // console.log(scripts.toString());
@@ -27,10 +25,6 @@ globalThis.getscripts = function() {
                     }
                 }
             })
-            
-            // scripts.forEach(fun => {
-            //     fun()
-            // })
         }
     }
 }
@@ -38,6 +32,31 @@ globalThis.getscripts = function() {
 export function Nid() {
     return crypto.randomUUID()
 }
+
+function _utils_getObjectParam(args = [], index = 0) {
+    if (!Array.isArray(args)) {
+        return {}
+    }
+    return args[index] ?? {}
+}
+
+function _utils_getAnyParam(args = [], defaultVal, index = 0) {
+    return args[index] ?? defaultVal
+}
+
+
+function _directive_text(ele, text = '') {
+    ele.textContent = text?.__v_isRef ? text.value : text
+}
+
+function _directive_action(ele, name, fun) {
+    if (name) {
+        ele['on' + name] = function (e) {
+            fun(e)
+        }
+    }
+}
+
 
 function appendCommon(ctx, ele) {
     let curParent = ctx.parent
@@ -405,21 +424,18 @@ export function defComponent(option = {}) {
 
 
 function _button__render(ele, text) {
-    ele.textContent = text?.__v_isRef ? text.value : text
+    _directive_text(ele, text)
 }
 
 function _button__action(ele, args) {
-    let { action } = args[0] ?? {}
-    ele.onclick = function (e) {
-        action(e)
-    }
+    let { action } = _utils_getObjectParam(args)
+    _directive_action(ele, 'click', action)
 }
 
 export let Button = defComponent({
     name: 'Button',
     setup({getCtx, startWatch, args, isSsrMode}) {
-        // console.log('ssssssssssss');
-        let { action, text } = args[0] ?? {}
+        let { text } = _utils_getObjectParam(args)
         let ele = document.createElement('button')
         ele.classList.add('button')
         _button__render(ele, text)
@@ -436,7 +452,6 @@ export let Button = defComponent({
 export let Column = defComponent({
     name: 'Column',
     setup() {
-        // console.log('ssssssssssss');
         let ele = document.createElement('div')
         ele.classList.add('column')
         return ele
@@ -444,15 +459,13 @@ export let Column = defComponent({
 })
 
 function _text__render(ele, text) {
-    ele.textContent = text?.__v_isRef ? text.value : text
+    _directive_text(ele, text)
 }
 
 function _text__action(ele, args) {
-    // console.log('ssrRender', args);
-    let text = args[0] ?? ''
+    let text =_utils_getAnyParam(args, '')
     if (text.__v_isRef) {
         watch(text, () => {
-            console.log('ssss');
             _text__render(ele, text)
         })
     }
@@ -461,7 +474,7 @@ function _text__action(ele, args) {
 export let Text = defComponent({
     name: 'Text',
     setup({getCtx, startWatch, args, isSsrMode}) {
-        let text = args[0] ?? ''
+        let text =_utils_getAnyParam(args, '')
         let ele = document.createElement('div')
         ele.classList.add('text');
         _text__render(ele, text)

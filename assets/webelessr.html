@@ -41,11 +41,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         import 'https://unpkg.com/xy-ui';
 
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
-        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
-
-
-        let rooterRootEle = document.getElementById("routerroot")
-
+        import { Nid, getscripts, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
 
         class DomCotnrol extends BaseVmControl {
             title = ''
@@ -64,19 +60,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 
         let vm = useControl('vm')
 
-
-        // let ele = document.createElement('div')
-        // g.ssrc(Column().init(function (ele) {
-        //     console.log('ssr');
-        //     ; g.ssrc(Text(vm.TextDetail).init(function (ele) {
-        //     }), function (ctx) {
-        //         ctx.done(ele)
-        //     });
-        // }), function (ctx) { ctx.done(ele) })
-
         globalThis.vm = vm
-
-        // document.querySelector('#routerroot').appendChild(ele)
 
         let jsonMap = {
             "87ac43fc-953f-41de-8341-307144074273": {
@@ -96,7 +80,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             ['87ac43fc-953f-41de-8341-307142074273']: [{action: vm.action}]
         }
 
-        globalThis.getscripts().run(jsonMap, dataMap)
+        getscripts().run(jsonMap, dataMap)
 
     </script>
 </body>
