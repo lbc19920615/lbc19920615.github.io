@@ -1,5 +1,7 @@
 import { reactive, ref , watch, computed  } from "vue"
 
+let customComponents = new Map()
+
 export function Nid() {
     return crypto.randomUUID()
 }
@@ -50,7 +52,7 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
             ctx.parent = parent
             appendCommon(ctx, ele)
             ctx.ele = ele
-            callback(ele)
+            callback(ele, {parent})
         },
         afterFuns: []
     }
@@ -169,69 +171,6 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
     return ctx
 }
 
-
-export function Button({ action, text } = {}) {
-    let ele = document.createElement('button')
-    ele.classList.add('button')
-    ele.onclick = function (e) {
-        action(e)
-    }
-    ele.textContent = text
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                let ctx = createCommonCtx(callback, { ele })
-                return ctx
-            }
-        }
-    }
-}
-
-export function Column() {
-    let ele = document.createElement('div')
-    ele.classList.add('column')
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                let ctx = createCommonCtx(callback, { ele })
-                return ctx
-            }
-        }
-    }
-}
-
-export function Text(text) {
-
-    // console.log('text', typeof text);
-    let ctx
-    let ele = document.createElement('div')
-    ele.classList.add('text')
-
-    function render(ele) {
-        ele.textContent = text.__v_isRef ? text.value : text
-    }
-
-    render(ele)
-
-
-    if (text.__v_isRef) {
-        watch(text, () => {
-            render(ele)
-        })
-    }
-    return {
-        init(callback) {
-            // console.log(callback);
-            return function () {
-                ctx = createCommonCtx(callback, { ele })
-                return ctx
-            }
-        }
-    }
-}
-
 export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
     let startFlg = document.createComment('start' + label)
     let endFlg = document.createComment('end' + label)
@@ -277,11 +216,13 @@ export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
         }
     }
 }
+customComponents.set('ForEach', ForEach)
 
-let currentCondition = null
+let currentCondition = null;
+
 export function If(conditions) {
     // console.log(conditions);
-    currentCondition = conditions
+    currentCondition = conditions;
     let fragment = ForEach({ max: Number(conditions.value) }, {label: ' if'})
     watch(conditions, (newVal, oldVal) => {
         // console.log('111', newVal, fragment);
@@ -289,12 +230,14 @@ export function If(conditions) {
     })
     return fragment
 }
+customComponents.set('If', If)
 
 export function Else() {
     // console.log(conditions);
     if (!currentCondition) {
         return;
     }
+    
     let conditions = currentCondition
     let fragment = ForEach({ max: !Number(conditions.value) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
@@ -303,6 +246,7 @@ export function Else() {
     })
     return fragment
 }
+customComponents.set('Else', Else)
 
 function defc(buildCtx, runFun) {
     let fun = buildCtx
@@ -331,11 +275,23 @@ export function hc(ComponentConstruct, {args = [], init = function() {}, end = f
     return defc(ComponentConstruct.apply(null, args).init(init), readyFun);
 }
 
+export let h3 = new Proxy(customComponents, {
+    get(target, key) {
+        if (target.has(key)) {
+            return function(ele, ...args) {
+                // console.dir(ele)
+                return function(init) {
+                   return hc(target.get(key), {args: args.slice(0, args.length), init}, ele)
+                }
+            }
+        }
+    }
+})
+globalThis.h3 = h3
 
 
 export function defComponent(option = {}) {
     let {setup} = option
-
     let ctx = null;
     function getCompCtx() {
         return ctx
@@ -343,7 +299,7 @@ export function defComponent(option = {}) {
 
     let stopWatch
 
-    return function(...args) {
+    let fun = function(...args) {
         // console.log(args);
         function startWatch(onChange) {
             stopWatch = watch(args, (newVal, oldVal) => {
@@ -360,10 +316,13 @@ export function defComponent(option = {}) {
                 // console.log(callback);
                 return function () {
                     let ele = setup({getCompCtx, startWatch, args})
-                    ctx = createCommonCtx(function(ele) {
-                        callback(ele)
+                    ctx = createCommonCtx(function(childEle, option) {
+                        // console.log(option);
+                        // console.dir(ele.parentElement);
+                        callback(childEle)
+                        // currentRoot = childEle
                         if (option.afterRender) {
-                            option.afterRender(ele)
+                            option.afterRender(childEle, option)
                         }
                     }, { ele })
                     // console.log(ctx);
@@ -372,8 +331,107 @@ export function defComponent(option = {}) {
             }
         }
     }
+
+    if (option?.name) {
+        customComponents.set(option.name, fun)
+    }
+
+    // console.log(customComponents);
+    return fun
 }
 
+
+export function Button({ action, text } = {}) {
+    let ele = document.createElement('button')
+    ele.classList.add('button')
+    ele.onclick = function (e) {
+        action(e)
+    }
+    ele.textContent = text
+    return {
+        init(callback) {
+            // console.log(callback);
+            return function () {
+                let ctx = createCommonCtx(callback, { ele })
+                return ctx
+            }
+        }
+    }
+}
+
+customComponents.set('Button', Button)
+
+// export function Column() {
+//     let ele = document.createElement('div')
+//     ele.classList.add('column')
+//     return {
+//         init(callback) {
+//             // console.log(callback);
+//             return function () {
+//                 let ctx = createCommonCtx(callback, { ele })
+//                 return ctx
+//             }
+//         }
+//     }
+// }
+
+export let Column = defComponent({
+    name: 'Column',
+    setup() {
+        let ele = document.createElement('div')
+        ele.classList.add('column')
+        return ele
+    }
+})
+// customComponents.set('Column', Column)
+
+// export function Text(text) {
+//     let ctx
+//     let ele = document.createElement('div')
+//     ele.classList.add('text')
+//     function render(ele) {
+//         ele.textContent = text.__v_isRef ? text.value : text
+//     }
+
+//     render(ele)
+
+//     if (text.__v_isRef) {
+//         watch(text, () => {
+//             render(ele)
+//         })
+//     }
+//     return {
+//         init(callback) {
+//             // console.log(callback);
+//             return function () {
+//                 ctx = createCommonCtx(callback, { ele })
+//                 return ctx
+//             }
+//         }
+//     }
+// }
+// customComponents.set('Text', Text)
+
+export let Text = defComponent({
+    name: 'Text',
+    setup({getCtx, startWatch, args}) {
+        let text = args[0] ?? ''
+        let ele = document.createElement('div')
+        ele.classList.add('text')
+        function render(ele) {
+            ele.textContent = text.__v_isRef ? text.value : text
+        }
+    
+        render(ele)
+    
+        if (text.__v_isRef) {
+            watch(text, () => {
+                render(ele)
+            })
+        }
+        return ele
+    }
+})
 
 
 let symbol = Symbol('BaseControl')

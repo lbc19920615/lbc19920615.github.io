@@ -3,6 +3,7 @@ import { Button, Text, ForEach, If, Else, Column, defComponent, Nid, hc, g } fro
 
 
 let FormItem = defComponent({
+    name: 'FormItem',
     afterRender(ele) {
         let div = document.createElement('div')
         // div.innerHTML = 'end form item'
@@ -43,6 +44,7 @@ const defaultFormSetting = {
 }
 
 let TextArea1 = defComponent({
+    name: 'TextArea1',
     setup({getCtx, startWatch, args}) {    
         let ele = document.createElement('elastic-textarea')
         ele.style.display = 'block'
@@ -57,6 +59,7 @@ let TextArea1 = defComponent({
 })
 
 let Input1 = defComponent({
+    name: 'Input1',
     setup({getCtx, startWatch, args}) {    
         let option = args[0] ?? {}
         // console.log(option);
@@ -108,6 +111,7 @@ let Input1 = defComponent({
 })
 
 let Select1 = defComponent({
+    name: 'Select1',
     setup({getCtx, startWatch, args}) {    
         let option = args[0] ?? {}
         let ele = document.createElement('xy-select')
@@ -127,6 +131,7 @@ let Select1 = defComponent({
 
 
 let CheckboxGroup = defComponent({
+    name: 'CheckboxGroup',
     setup({getCtx, startWatch, args}) {    
         let option = args[0] ?? {}
         let ele = document.createElement('div')
@@ -147,6 +152,7 @@ let CheckboxGroup = defComponent({
 
 
 let RadioboxGroup = defComponent({
+    name: 'RadioboxGroup',
     setup({getCtx, startWatch, args}) {    
         let option = args[0] ?? {}
         let ele = document.createElement('div')
@@ -167,6 +173,7 @@ let RadioboxGroup = defComponent({
 
 
 let Dialog1 = defComponent({
+    name: 'Dialog1',
     setup({getCtx, startWatch, args}) {    
         let option = args[0] ?? {}
         let ele = document.createElement('xy-dialog')
