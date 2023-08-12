@@ -166,6 +166,26 @@ let RadioboxGroup = defComponent({
 })
 
 
+let Dialog1 = defComponent({
+    setup({getCtx, startWatch, args}) {    
+        let option = args[0] ?? {}
+        let ele = document.createElement('xy-dialog')
+        // console.dir(option);
+        setTimeout(() => {
+            ele.btnClose.addEventListener('click', function() {
+                // console.log('onClose');
+                if (option?.onClose) {
+                    option.onClose()
+                }
+            })
+        }, 30)
+        // ele.setAttribute('portal','body')
+        ele.setAttribute('open',true);
+        return ele
+    }
+})
+
+
 export default function({Page}) {
   
     let ele =  document.createElement('div');
@@ -173,7 +193,8 @@ export default function({Page}) {
         let data = reactive({
             some: "initStr",
             max: 1,
-            list: [1, 2, 3]
+            list: [1, 2, 3],
+            dialog: false
         })
         return {
             action(e) {
@@ -183,10 +204,17 @@ export default function({Page}) {
             onLoad(e) {
                 console.log('main 组件事件回调');
             },
+            onDialogClose() {
+                data.dialog = false
+                console.log('onDialogClose');
+            },
             action2() {
                 globalThis.wRoute.push('detail', {
                     paramA: Nid()
                 })
+            },
+            action3() {
+                data.dialog = true
             },
             data
         }
@@ -195,6 +223,7 @@ export default function({Page}) {
     let vmData = vm.data;
 
     let vmDataList = vmData.list
+    let vmDataDialog = computed(() => vmData.dialog)
     let vmDataMax = computed(() => vmData.max > 1)
     let vmStrSome = computed(() => vmData.some)
 
@@ -204,19 +233,22 @@ export default function({Page}) {
         vmData.max = 2;
     }, 3000)
 
+    globalThis.$vmData = vmData
+
 
     g.defc(Column().init(function (ele) {
         ; g.defc(Text(vmStrSome).init(function (ele) {
         }), function (ctx) {
             ctx.done(ele)
         });
+
         g.defc(Column({ space: 5 }).init(function (ele) {
 
             ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
-                , function (ctx) {
-                    ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-                    ctx.done(ele)
-                });
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
 
             ; g.defc(Text('for测试').init(function (ele) {
             }), function (ctx) {
@@ -259,11 +291,27 @@ export default function({Page}) {
             });
 
 
+            ; g.defc(Text('router测试').init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
             ; g.defc(Button({ text: 'detail', action: vm.action2 }).init(function (ele) { })
             , function (ctx) {
                 ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
                 ctx.done(ele)
             });
+
+
+            ; g.defc(Text('dialog测试').init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+            ; g.defc(Button({ text: 'dialog', action: vm.action3 }).init(function (ele) { })
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
+
 
             
             ; g.defc(Text('form测试').init(function (ele) {
@@ -328,11 +376,33 @@ export default function({Page}) {
                 ctx.done(ele)
             });
 
-
+            
         }), function (ctx) {
             ctx.onLoad((e) => { vm.onLoad(e) }).border({ width: 1 });
             ctx.done(ele)
         });
+
+
+        
+        ; g.defc(If(vmDataDialog).init(function (ele) {
+            ; g.defc(Dialog1({onClose: vm.onDialogClose}).init(function (ele) {
+                
+                ; g.defc(FormItem('input text').init(function (ele) {
+                    ; g.defc(Input1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+        }), function (ctx) {
+            ctx.done(ele)
+        });
+
 
     }), function (ctx) { ctx.done(ele) })
 

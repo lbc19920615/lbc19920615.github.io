@@ -132,7 +132,17 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
         },
         reload({ max, list } = {}) {
             while (ele[0].nextSibling !== ele[1]) {
-                ele[0].nextSibling.remove()
+                if ( ele[0].nextSibling?.remove) {
+                    ele[0].nextSibling.remove()
+                } else {
+                    // console.dir(ele[0].nextSibling)
+                    if (ele[0].nextSibling.parentElement) {
+                        ele[0].nextSibling.parentElement.removeChild(ele[0].nextSibling)
+                    } else {
+                      
+                        throw new Error('not have remove')
+                    }
+                }
             }
             //    console.log(max);
             ctx.build(max, list)
@@ -222,9 +232,9 @@ export function Text(text) {
     }
 }
 
-export function ForEach({ max = ref(0), list = null } = {}) {
-    let startFlg = document.createComment('start')
-    let endFlg = document.createComment('end')
+export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
+    let startFlg = document.createComment('start' + label)
+    let endFlg = document.createComment('end' + label)
     let ele = [
         startFlg,
         endFlg
@@ -272,7 +282,7 @@ let currentCondition = null
 export function If(conditions) {
     // console.log(conditions);
     currentCondition = conditions
-    let fragment = ForEach({ max: Number(conditions.value) })
+    let fragment = ForEach({ max: Number(conditions.value) }, {label: ' if'})
     watch(conditions, (newVal, oldVal) => {
         // console.log('111', newVal, fragment);
         fragment.getCtx().reload({ max: Number(newVal) })
@@ -286,7 +296,7 @@ export function Else() {
         return;
     }
     let conditions = currentCondition
-    let fragment = ForEach({ max: !Number(conditions.value) })
+    let fragment = ForEach({ max: !Number(conditions.value) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
         // console.log('111', newVal, fragment);
         fragment.getCtx().reload({ max: !Number(newVal) })
