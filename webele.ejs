@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于vue reactivity的 webcomponent框架</title>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+        // VConsole will be exported to `window.VConsole` by default.
+        var vConsole = new window.VConsole();
+    </script> -->
+</head>
+
+<body>
+    <div id="routerroot">
+    </div>
+    <script src="
+https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
+"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
+            "wle": "/assets/webele.js?v=35"
+          }
+        }
+    </script>
+    <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
+    <script type="module">
+        import '/assets/ele/index.js?v=0.0.3';
+
+        import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
+        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
+
+
+        let rooterRootEle = document.getElementById("routerroot")
+
+        let BaseDir = '/assets/'
+        const routes = {
+            404: (params) => {
+                return import(BaseDir + 'webele/404.js?v=' + Date.now())
+            },
+            detail: (params) => {
+                return import(BaseDir + 'webele/detail.js?v=' + Date.now())
+            },
+        };
+
+
+        let keepLives = [
+            '404'
+        ]
+
+        let option = {
+            rooterRootEle,
+            keepLives
+        }
+
+
+        let routerModule = (function ({ rooterRootEle, keepLives = [] } = {}) {
+            let pageMap = new Map()
+
+            function render(rootEle) {
+                rooterRootEle.innerHTML = ''
+                rooterRootEle.appendChild(rootEle)
+            }
+
+            function createPageFun(nid = '', params) {
+                return function Page(option) {
+                    let { ele, lifeTimes = {} } = option
+
+                    function reRender(innerEle) {
+                        render(innerEle)
+                    }
+
+                    let pageCtx = {
+                        nid,
+                        ele,
+                        lifeTimes,
+                        params: {},
+                        reload(params) {
+                            pageCtx.params = params
+                            reRender(ele)
+                        }
+                    }
+
+                    pageCtx.params = params;
+                    reRender(ele);
+
+                    let pageVm = {
+                        $getParams() {
+                            return pageCtx.params
+                        }
+                    }
+
+                    if (lifeTimes.onLoad) {
+                        lifeTimes.onLoad(pageVm)
+                    }
+
+
+
+                    pageMap.set(nid, pageCtx)
+                }
+            }
+
+
+            function getCurrentPages() {
+                return [...pageMap.values()]
+            }
+
+            function removeLastPage() {
+                let keys = [...pageMap.keys()]
+                removePage(keys.at(-1))
+            }
+
+            function removePage(key) {
+                pageMap.delete(key)
+            }
+
+            window.getCurrentPages = getCurrentPages
+
+            const pushRoute = (path = '', params = {}) => {
+                // event = event || window.event;
+                // event.preventDefault();
+                window.history.pushState({}, "", "#/" + path);
+                handleLocation(params);
+            };
+
+            const backRoute = () => {
+                history.back()
+            }
+
+            const handleLocation = async (params = {}) => {
+                const path = window.location.hash;
+
+                let baseLen = '#/'
+                const pathName = path.slice(baseLen.length)
+
+                let routerName = pathName ? pathName : '404'
+
+                // console.log(routerName);
+
+                const route = routes[routerName];
+
+                // let params = new URLSearchParams(location.search)
+                const m = await route(params);
+
+                let nid = routerName ?? Nid()
+
+                if (keepLives.includes(nid) && pageMap.get(nid)) {
+                    let cached = pageMap.get(nid)
+                    cached.reload(params)
+                } else {
+
+                    let Page = createPageFun(nid, params)
+                    if (m.default) {
+                        m.default({ Page })
+                    }
+                }
+            };
+
+            window.onpopstate = async function () {
+                let pages = getCurrentPages()
+                let lastPage = pages.at(-1)
+                if (lastPage?.lifeTimes?.onUnload) {
+                    lastPage.lifeTimes.onUnload()
+                }
+                removePage(lastPage.nid)
+                await handleLocation()
+            };
+
+            window.wRoute = {
+                push: pushRoute,
+                back: backRoute
+            };
+
+            handleLocation();
+        });
+
+        routerModule(option)
+    </script>
+</body>
+
+</html>
