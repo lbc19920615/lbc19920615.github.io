@@ -1,21 +1,104 @@
 import { reactive, computed  } from "vue"
-import { Button, Text, ForEach, If, Else, Column, defComponent, Nid, g } from "wle";
+import { Button, Text, ForEach, If, Else, Column, defComponent, Nid, hc, g } from "wle";
 
 
+let FormItem = defComponent({
+    afterRender(ele) {
+        let div = document.createElement('div')
+        // div.innerHTML = 'end form item'
+        ele.appendChild(div)
+    },
+    setup({getCompCtx, startWatch, args}) {         
+        let ele = document.createElement('div')
+        ele.classList.add('form-item')
 
+        hc(Column, {
+            init(ele)  {
+                hc(Text, {args: [args[0]], ele})
+                // console.log('init');
+            },
+            ready(ctx) {
+                // console.log('ssssss');
+                ctx.width('100%')
+            }
+        , ele})
+
+
+        function render(ele) {
+        }
+    
+        render(ele)
+    
+        startWatch(() => {
+            render(ele)
+        })
+
+        return ele
+    }
+})
 
 
 let TextArea1 = defComponent({
     setup({getCtx, startWatch, args}) {    
         let ele = document.createElement('elastic-textarea')
         ele.style.display = 'block'
-        ele.style.border = '1px solid'
+        ele.style.border = '1px solid var(--borderColor,rgba(0,0,0,.2))'
         ele.innerHTML = `<label>
         <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none;" name="textarea-1"></textarea>
     </label>`
         return ele
     }
 })
+
+let Input1 = defComponent({
+    setup({getCtx, startWatch, args}) {    
+        let option = args[0] ?? {}
+        // console.log(option);
+
+        let ele = document.createElement('div')
+        ele.style.setProperty("--input-addon-w", '24px');
+        ele.style.border = '1px solid var(--borderColor,rgba(0,0,0,.2))'
+        ele.style.display = 'flex'
+        ele.style.alignItems = 'center'
+        let input = document.createElement('xy-input')
+        input.style.flex = '1'
+        input.style.border = 'none'
+        // console.dir(input)
+        if (option.type) {
+            input.setAttribute('type', option.type)
+            input.input.type = option.type
+        }
+        input.oninput = function(e) {
+            // console.log('111', e);
+            detectChange(input)
+        }
+
+        ele.appendChild(input)
+  
+        let close = document.createElement('div')
+        close.innerHTML = '&#x2715'
+        close.style.setProperty("margin-left", 'calc(var(--input-addon-w) / 3)');
+        close.style.overflow = 'hidden'
+        close.style.setProperty("width", '0');
+        close.onclick = function() {
+            input.value = ''
+            detectChange(input)
+        }
+
+        ele.appendChild(close)
+
+        function detectChange(input) {
+            if (input.value === '') {
+                close.style.setProperty("width", '0');
+            }
+            else {
+                close.style.setProperty("width", 'var(--input-addon-w)');
+            }
+        }
+        return ele
+    }
+})
+
 
 export default function({Page}) {
   
@@ -119,12 +202,34 @@ export default function({Page}) {
             
             ; g.defc(Text('form测试').init(function (ele) {
             }), function (ctx) {
-                // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
                 ctx.done(ele)
             });
 
 
-            ; g.defc(TextArea1().init(function (ele) {
+            ; g.defc(FormItem('textarea').init(function (ele) {
+                ; g.defc(TextArea1().init(function (ele) {
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(FormItem('input text').init(function (ele) {
+                ; g.defc(Input1().init(function (ele) {
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+            ; g.defc(FormItem('input number').init(function (ele) {
+                ; g.defc(Input1({type: "number"}).init(function (ele) {
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
             }), function (ctx) {
                 ctx.done(ele)
             });

@@ -5,19 +5,19 @@ export function Nid() {
 }
 
 function appendCommon(ctx, ele) {
-    let curRoot = ctx.curRoot
-    if (Array.isArray(ctx.curRoot)) {
-        curRoot = ctx.curRoot[1]
-        // console.dir(curRoot);
+    let curParent = ctx.parent
+    if (Array.isArray(ctx.parent)) {
+        curParent = ctx.parent[1]
+        // console.dir(curParent);
     }
-    if (curRoot.nodeType === 8) {
-        curRoot.before(ele)
+    if (curParent.nodeType === 8) {
+        curParent.before(ele)
     }
     else {
         if (Array.isArray(ele)) {
-            curRoot.append(...ele)
+            curParent.append(...ele)
         } else {
-            curRoot.append(ele)
+            curParent.append(ele)
         }
     }
 }
@@ -47,9 +47,12 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
         },
         done(parent) {
             ctx.curRoot = parent
+            ctx.parent = parent
             appendCommon(ctx, ele)
+            ctx.ele = ele
             callback(ele)
-        }
+        },
+        afterFuns: []
     }
 
 
@@ -102,6 +105,15 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
                     return proxy
                 }
             }
+            else if (['hookEnd'].includes(key)) {
+                return function (...args) {
+                    if (args[0]) {
+                        ctx.afterFuns.push(args[0])
+                    }
+                    // console.log(args, ele, ctx);
+                    return proxy
+                }
+            }
         }
     })
     return proxy
@@ -113,7 +125,9 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
         curRoot: undefined,
         done(parent) {
             ctx.curRoot = parent
+            ctx.parent = parent
             appendCommon(ctx, ele);
+            ctx.ele = ele
             ctx.build(max, list)
         },
         reload({ max, list } = {}) {
@@ -275,14 +289,15 @@ export function Else() {
     return fragment
 }
 
-async function defc(buildCtx, runFun) {
+function defc(buildCtx, runFun) {
     let fun = buildCtx
-    if (Reflect.getPrototypeOf(buildCtx).toString() === '[object Promise]') {
-        fun = await buildCtx
-    }
+    // if (Reflect.getPrototypeOf(buildCtx).toString() === '[object Promise]') {
+    //     fun = await buildCtx
+    // }
     // console.log(fun);
     let ctx = fun()
     runFun(ctx)
+    return ctx
 }
 
 export let g = {
@@ -290,14 +305,15 @@ export let g = {
 }
 
 
-export async function hc(ComponentConstruct, {args = [], init = function() {}, ele, done} = {}) {
-    let doneFun = done ?? function(ctx) {
-       
-    }
-    defc(ComponentConstruct.apply(null, args).init(init), function (ctx) {
-        doneFun(ctx)
+export function hc(ComponentConstruct, {args = [], init = function() {}, end = function() {}, ele, afterInit, ready} = {}) {
+    let readyFun = ready ? function(ctx) {
+        ready(ctx)
         ctx.done(ele)
-    });
+    } : function(ctx) {  
+        ctx.done(ele)
+    }
+
+    return defc(ComponentConstruct.apply(null, args).init(init), readyFun);
 }
 
 
@@ -306,7 +322,7 @@ export function defComponent(option = {}) {
     let {setup} = option
 
     let ctx = null;
-    function getCtx() {
+    function getCompCtx() {
         return ctx
     }
 
@@ -328,8 +344,13 @@ export function defComponent(option = {}) {
             init(callback) {
                 // console.log(callback);
                 return function () {
-                    let ele = setup({getCtx, startWatch, args})
-                    ctx = createCommonCtx(callback, { ele })
+                    let ele = setup({getCompCtx, startWatch, args})
+                    ctx = createCommonCtx(function(ele) {
+                        callback(ele)
+                        if (option.afterRender) {
+                            option.afterRender(ele)
+                        }
+                    }, { ele })
                     // console.log(ctx);
                     return ctx
                 }

@@ -20,7 +20,7 @@ injectControl('vm')(DomCotnrol)
 
 
 let Text2 = defComponent({
-    setup({getCtx, startWatch, args}) {         
+    setup({getCompCtx, startWatch, args}) {         
         let ele = document.createElement('div')
         ele.classList.add('text2')
 
