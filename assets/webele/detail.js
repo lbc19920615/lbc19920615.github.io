@@ -104,6 +104,10 @@ export default function({Page}) {
             ctx.done(ele)
         });
 
+        ; g.defc(Text('大数据列表').init(function (ele) {
+        }), function (ctx) {
+            ctx.done(ele)
+        });
 
         ; g.defc(LazyList1().init(function (ele) {
         }), function (ctx) {

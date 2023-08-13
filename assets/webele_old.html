@@ -20,29 +20,39 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 "></script>
     <script type="importmap">
         {
-          "imports": <%- importmap %>
+          "imports": {
+            "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
+            "wle": "/assets/webele.js?v=35"
+          }
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-        import '/assets/ele/index.js?v=0.0.3';
+        import '/assets/ele/index.js?v=1';
 
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
         import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
 
+        function getFunBody ( Func) {
+            var entire = Func.toString(); 
+            var body = entire.slice(entire.indexOf("{") + 1, entire.lastIndexOf("}"));
+            return body
+        }
+        
+        globalThis.getFunBody =  getFunBody;
 
         let rooterRootEle = document.getElementById("routerroot")
 
         let BaseDir = '/assets/'
         const routes = {
+            remote: (params) => {
+                return import('http://localhost:7001/miniapp/script?name=[%27../esm/input.js%27]')
+            },
             404: (params) => {
                 return import(BaseDir + 'webele/404.js?v=' + Date.now())
             },
             detail: (params) => {
                 return import(BaseDir + 'webele/detail.js?v=' + Date.now())
-            },
-            remote: (params) => {
-                return import('http://localhost:7001/miniapp/script?name=[%27../esm/input.js%27]')
             },
         };
 
