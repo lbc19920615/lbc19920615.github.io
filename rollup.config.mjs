@@ -21,7 +21,7 @@ const config = {
   output: {
     dir: 'assets',
     format: 'es',
-    entryFileNames: 'webele_[hash].js' 
+    entryFileNames: 'main_[hash].js' 
   },
   plugins: [babel({ babelHelpers: 'bundled' }), demoWatcherPlugin()]
 };
