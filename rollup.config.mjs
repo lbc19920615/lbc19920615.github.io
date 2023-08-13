@@ -2,7 +2,7 @@ import { babel } from '@rollup/plugin-babel';
 import ejs from "ejs"
 import fs from "node:fs"
 
-let mainFileStr = fs.readFileSync('./webele.ejs').toString()
+let mainFileStr = fs.readFileSync('./src/webele.ejs').toString()
 
 let imports = {
   "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
@@ -18,9 +18,9 @@ function demoWatcherPlugin() {
 
 
       },
-      // augmentChunkHash(chunkInfo) {
-      //   console.log(chunkInfo );
-      // }
+      buildStart(){
+        this.addWatchFile('src/webele.ejs')
+       },
 
       generateBundle(options, bundle, isWrite) {
         console.log(Object.keys(bundle));
