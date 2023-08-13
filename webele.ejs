@@ -140,7 +140,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 
                 // console.log(routerName);
 
-                const route = routes[routerName];
+                const route = routes[routerName] ?? routes['404'];
 
                 // let params = new URLSearchParams(location.search)
                 const m = await route(params);
