@@ -40,9 +40,7 @@ function createElement(...args) {
 }
 let customComponents = new Map();
 let ssrComponents = new Map();
-let jsonMap = {};
 let getscripts = function (domRuntime = globalThis.document) {
-  console.log(ssrComponents);
   return {
     run(jsonMap, dataMap) {
       // console.log(scripts.toString());
@@ -58,9 +56,9 @@ let getscripts = function (domRuntime = globalThis.document) {
           if (fun) {
             let ele = domRuntime.querySelector(`[ssr-id="${key}"]`);
             if (ele) {
-              console.log(ele, key);
+              // console.log(ele, key);
+              fun(ele, dataMap[key] ?? []);
             }
-            fun(ele, dataMap[key] ?? []);
           }
         }
       });
@@ -361,7 +359,7 @@ function defc(buildCtx, runFun) {
   let ctx = fun();
   if (isSsrMode) {
     if (glo.__onDefc__) {
-      glo.__onDefc__(ctx, jsonMap);
+      glo.__onDefc__(ctx);
     }
   }
   runFun(ctx);
@@ -443,13 +441,6 @@ function defComponent(option = {}) {
           let id = Nid();
           if (isSsrMode) {
             ele.setAttribute('ssr-id', id);
-            if (ssrRender) {
-              if (!jsonMap[id]) {
-                jsonMap[id] = {
-                  ssrRender: [option.name, ['ssrRender']]
-                };
-              }
-            }
           }
           ctx = createCommonCtx(function (childEle, option) {
             // console.log(option);
@@ -467,6 +458,7 @@ function defComponent(option = {}) {
               id,
               option,
               ctx,
+              ssrRender,
               funcStr: callback?.toString() ?? ''
             });
           }

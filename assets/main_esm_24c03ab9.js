@@ -1,17 +1,45 @@
-import { reactive, watch, ref, computed } from 'vue';
+import { ref, reactive, watch, computed } from 'vue';
 
-let dom = globalThis.document || customDoucment;
+let glo = globalThis;
+let dom = glo.document || glo.customDoucment;
+let isSsrMode = Boolean(glo.__ssrMode__);
+function setGlobal(v) {
+  glo = v;
+  dom = glo.document || glo.customDoucment;
+  isSsrMode = Boolean(glo.__ssrMode__);
+  console.log('isSsrMode', isSsrMode);
+}
+function Nid() {
+  if (glo.__Nid__) {
+    return glo.__Nid__();
+  }
+  return glo.crypto.randomUUID();
+}
+function __filterNone() {
+  return NodeFilter.FILTER_ACCEPT;
+}
+function getAllComments(rootElem) {
+  var comments = [];
+  // Fourth argument, which is actually obsolete according to the DOM4 standard, is required in IE 11
+  var iterator = document.createNodeIterator(rootElem, NodeFilter.SHOW_COMMENT, __filterNone, false);
+  var curNode;
+  while (curNode = iterator.nextNode()) {
+    comments.push(curNode);
+  }
+  return comments;
+}
 function createComment(...args) {
   return dom.createComment(...args);
 }
 function createElement(...args) {
-  return dom.createElement(...args);
+  let d = dom.createElement(...args);
+  // if (isSsrMode) {
+  //     d.setAttribute("ssr-id", Nid())
+  // }
+  return d;
 }
 let customComponents = new Map();
 let ssrComponents = new Map();
-let isSsrMode = Boolean(globalThis.__ssrMode__);
-console.log('isSsrMode', isSsrMode);
-let jsonMap = {};
 let getscripts = function (domRuntime = globalThis.document) {
   return {
     run(jsonMap, dataMap) {
@@ -26,16 +54,17 @@ let getscripts = function (domRuntime = globalThis.document) {
           // console.log(ssrComponents.get(ComponentFunName));
           let fun = ssrComponents.get(ComponentFunName);
           if (fun) {
-            fun(domRuntime.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? []);
+            let ele = domRuntime.querySelector(`[ssr-id="${key}"]`);
+            if (ele) {
+              // console.log(ele, key);
+              fun(ele, dataMap[key] ?? []);
+            }
           }
         }
       });
     }
   };
 };
-function Nid() {
-  return crypto.randomUUID();
-}
 function _utils_getObjectParam(args = [], index = 0) {
   if (!Array.isArray(args)) {
     return {};
@@ -224,41 +253,41 @@ function createForeachCtx(callback, {
   };
   return ctx;
 }
-function ForEach({
-  max = ref(0),
-  list = null
-} = {}, {
-  label = ''
-} = {}) {
-  let startFlg = createComment('start' + label);
-  let endFlg = createComment('end' + label);
-  let ele = [startFlg, endFlg];
-
-  // let computeMax = computed(() => max)
-
-  let obj = reactive({
-    max,
-    list
-  });
+function __ForEach_action(option = {}, obj, ctx) {
+  let {
+    max = ref(0),
+    list = null
+  } = option;
 
   // console.log(list);
   watch(max, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
-    ctx.reload({
-      max: obj.max,
-      list: obj.list
-    });
+    // ctx.reload({ max: obj.max, list: obj.list })
+    ctx.reload(obj);
   }, {
     deep: true
   });
   watch(list, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
-    ctx.reload({
-      max: obj.max,
-      list: obj.list
-    });
+    // ctx.reload({ max: obj.max, list: obj.list })
+    ctx.reload(obj);
   }, {
     deep: true
+  });
+}
+function ForEach(option = {}, {
+  label = ''
+} = {}) {
+  let startFlg = createComment('start' + label);
+  let endFlg = createComment('end' + label);
+  let ele = [startFlg, endFlg];
+  let {
+    max = ref(0),
+    list = null
+  } = option;
+  let obj = reactive({
+    max,
+    list
   });
   let ctx;
   return {
@@ -268,12 +297,14 @@ function ForEach({
     init(callback) {
       // console.log(callback);
       return function () {
-        // console.log(obj);
         ctx = createForeachCtx(callback, {
           ele,
           max: obj.max,
           list: obj.list
         });
+        if (!isSsrMode) {
+          __ForEach_action(option, obj, ctx);
+        }
         return ctx;
       };
     }
@@ -324,7 +355,13 @@ function defc(buildCtx, runFun) {
   //     fun = await buildCtx
   // }
   // console.log(fun);
+
   let ctx = fun();
+  if (isSsrMode) {
+    if (glo.__onDefc__) {
+      glo.__onDefc__(ctx);
+    }
+  }
   runFun(ctx);
   return ctx;
 }
@@ -369,7 +406,7 @@ let h3 = new Proxy(customComponents, {
     }
   }
 });
-globalThis.h3 = h3;
+glo.h3 = h3;
 function defComponent(option = {}) {
   let {
     setup,
@@ -381,6 +418,7 @@ function defComponent(option = {}) {
   }
   let fun = function (...args) {
     // console.log(args);
+
     function startWatch(onChange) {
       watch(args, (newVal, oldVal) => {
         if (onChange) {
@@ -400,17 +438,9 @@ function defComponent(option = {}) {
             args,
             isSsrMode
           });
+          let id = Nid();
           if (isSsrMode) {
-            let id = Nid();
             ele.setAttribute('ssr-id', id);
-            if (ssrRender) {
-              if (!jsonMap[id]) {
-                console.log(args);
-                jsonMap[id] = {
-                  ssrRender: [option.name, ['ssrRender']]
-                };
-              }
-            }
           }
           ctx = createCommonCtx(function (childEle, option) {
             // console.log(option);
@@ -423,6 +453,15 @@ function defComponent(option = {}) {
           }, {
             ele
           });
+          if (isSsrMode) {
+            __ssr_setup(ele, args, {
+              id,
+              option,
+              ctx,
+              ssrRender,
+              funcStr: callback?.toString() ?? ''
+            });
+          }
           // console.log(ctx);
           return ctx;
         };
@@ -477,6 +516,11 @@ let Column = defComponent({
     return ele;
   }
 });
+function __ssr_setup(...args) {
+  if (glo.__onSetup__) {
+    glo.__onSetup__(...args);
+  }
+}
 function _text__render(ele, text) {
   _directive_text(ele, text);
 }
@@ -532,6 +576,13 @@ function isConstructor(f) {
   }
   return true;
 }
+
+/**
+ * 
+ * @param {object} ret 
+ * @param {class} cls 
+ * @param {object} param2 
+ */
 function __vm_scanCls(ret, cls, {
   handleKey = null
 } = {}) {
@@ -569,37 +620,48 @@ function __vm_scanCls(ret, cls, {
     }
   });
 }
+
+/**
+ * 
+ * @param {class} target 
+ * @returns 
+ */
+function metaCls(target) {
+  let clsDef = {
+    state: {},
+    getters: {},
+    actions: {}
+  };
+  let extendCls = Reflect.getPrototypeOf(target);
+  // console.log(extendCls);
+
+  if (isConstructor(extendCls)) {
+    let symbols = Object.getOwnPropertySymbols(new extendCls());
+    if (symbols.includes(symbol)) {
+      // console.log('good', Object.getOwnPropertySymbols(new extendCls()));
+      __vm_scanCls(clsDef, extendCls);
+    }
+  }
+  // console.log(Object.getOwnPropertySymbols(Reflect.getPrototypeOf(extendCls)))
+
+  __vm_scanCls(clsDef, target);
+  if (!target.__def__) {
+    target.__def__ = clsDef;
+  }
+  return clsDef;
+}
 function injectControl(name = '') {
   return function (target) {
-    let clsDef = {
-      state: {},
-      getters: {},
-      actions: {}
-    };
-    let extendCls = Reflect.getPrototypeOf(target);
-    // console.log(extendCls);
-
-    if (isConstructor(extendCls)) {
-      let symbols = Object.getOwnPropertySymbols(new extendCls());
-      if (symbols.includes(symbol)) {
-        // console.log('good', Object.getOwnPropertySymbols(new extendCls()));
-        __vm_scanCls(clsDef, extendCls);
-      }
-    }
-    // console.log(Object.getOwnPropertySymbols(Reflect.getPrototypeOf(extendCls)))
-
-    __vm_scanCls(clsDef, target);
-    if (!target.__def__) {
-      target.__def__ = clsDef;
-
-      // currentModelContext.defs[name] = clsDef;
-
-      cachedDefs[name] = clsDef;
-    }
-    // console.log(clsDef);
+    let clsDef = metaCls(target);
+    cachedDefs[name] = clsDef;
   };
 }
 
+/**
+ * 
+ * @param {string | class} cls 
+ * @returns 
+ */
 function useControl(cls) {
   let clsDef = null;
   if (typeof cls === 'string') {
@@ -637,4 +699,4 @@ function useControl(cls) {
   return null;
 }
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getscripts, h3, hc, injectControl, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getscripts, h3, hc, injectControl, metaCls, setGlobal, useControl };

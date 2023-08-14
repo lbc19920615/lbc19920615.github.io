@@ -50,10 +50,8 @@ let customComponents = new Map()
 let ssrComponents = new Map()
 
 
-let jsonMap = {}
 
 export let getscripts = function(domRuntime = globalThis.document) {
-    console.log(ssrComponents);
     return {
         run(jsonMap, dataMap) {
             // console.log(scripts.toString());
@@ -69,9 +67,9 @@ export let getscripts = function(domRuntime = globalThis.document) {
                     if (fun) {
                         let ele = domRuntime.querySelector(`[ssr-id="${key}"]`)
                         if (ele) {
-                            console.log(ele, key);
+                            // console.log(ele, key);
+                                                    fun(ele, dataMap[key] ?? [])
                         }
-                        fun(ele, dataMap[key] ?? [])
                     }
                 }
             })
@@ -367,7 +365,7 @@ function defc(buildCtx, runFun) {
     let ctx = fun()
     if (isSsrMode) {
         if (glo.__onDefc__) {
-            glo.__onDefc__(ctx, jsonMap)
+            glo.__onDefc__(ctx)
         }
     }
     runFun(ctx)
@@ -449,13 +447,6 @@ export function defComponent(option = {}) {
                     let id = Nid()
                     if (isSsrMode) {
                         ele.setAttribute('ssr-id', id)
-                        if (ssrRender) {
-                            if (!jsonMap[id]) {
-                                jsonMap[id] = {
-                                    ssrRender: [option.name, ['ssrRender']]
-                                }
-                            }
-                        }
                     }
                     
                     ctx = createCommonCtx(function(childEle, option) {
@@ -468,7 +459,7 @@ export function defComponent(option = {}) {
                         }
                     }, { ele })
                     if (isSsrMode) {
-                        __ssr_setup(ele, args, {id, option, ctx, funcStr: callback?.toString() ?? ''})
+                        __ssr_setup(ele, args, {id, option, ctx, ssrRender, funcStr: callback?.toString() ?? ''})
                     }
                     // console.log(ctx);
                     return ctx
