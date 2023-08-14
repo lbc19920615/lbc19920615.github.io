@@ -1,7 +1,7 @@
 import { reactive, ref , watch, computed  } from "vue"
 
 
-let dom = globalThis.document || customDoucment;
+let dom = globalThis.document || globalThis.customDoucment;
 
 function createComment(...args) {
     return dom.createComment(...args)
