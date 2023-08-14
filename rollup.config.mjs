@@ -44,6 +44,7 @@ function demoWatcherPlugin() {
           imports['wle'] =  '/' + baseFolder + '/' + newFileName;
           let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports)});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
+          console.log('compile done');
         }
       }
   }

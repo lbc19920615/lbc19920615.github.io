@@ -270,7 +270,29 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
     return ctx
 }
 
-export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
+function __ForEach_action(option = {}, obj, ctx) {
+    let { max = ref(0), list = null } = option
+
+    // console.log(list);
+    watch(max, (newVal, oldVal) => {
+        // console.log('list', newVal, oldVal);
+        // ctx.reload({ max: obj.max, list: obj.list })
+        ctx.reload(obj)
+    }, {
+        deep: true
+    })
+
+    watch(list, (newVal, oldVal) => {
+        // console.log('list', newVal, oldVal);
+        // ctx.reload({ max: obj.max, list: obj.list })
+        ctx.reload(obj)
+    }, {
+        deep: true
+    })
+
+}
+
+export function ForEach(option = {}, {label = ''} = {}) {
     let startFlg = createComment('start' + label)
     let endFlg = createComment('end' + label)
     let ele = [
@@ -278,29 +300,15 @@ export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
         endFlg
     ]
 
-    // let computeMax = computed(() => max)
 
+    let { max = ref(0), list = null } = option
     let obj = reactive({
         max,
         list
     })
 
-    // console.log(list);
-    watch(max, (newVal, oldVal) => {
-        // console.log('list', newVal, oldVal);
-        ctx.reload({ max: obj.max, list: obj.list })
-    }, {
-        deep: true
-    })
-
-    watch(list, (newVal, oldVal) => {
-        // console.log('list', newVal, oldVal);
-        ctx.reload({ max: obj.max, list: obj.list })
-    }, {
-        deep: true
-    })
-
     let ctx;
+    
     return {
         getCtx() {
             return ctx
@@ -308,8 +316,10 @@ export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
         init(callback) {
             // console.log(callback);
             return function () {
-                // console.log(obj);
-                ctx = createForeachCtx(callback, { ele, max: obj.max, list: obj.list })
+                ctx = createForeachCtx(callback, { ele, max: obj.max, list: obj.list });
+                if (!isSsrMode) {
+                    __ForEach_action(option, obj, ctx)
+                }
                 return ctx
             }
         }

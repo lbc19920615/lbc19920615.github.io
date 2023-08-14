@@ -257,41 +257,41 @@ function createForeachCtx(callback, {
   };
   return ctx;
 }
-function ForEach({
-  max = vue.ref(0),
-  list = null
-} = {}, {
-  label = ''
-} = {}) {
-  let startFlg = createComment('start' + label);
-  let endFlg = createComment('end' + label);
-  let ele = [startFlg, endFlg];
-
-  // let computeMax = computed(() => max)
-
-  let obj = vue.reactive({
-    max,
-    list
-  });
+function __ForEach_action(option = {}, obj, ctx) {
+  let {
+    max = vue.ref(0),
+    list = null
+  } = option;
 
   // console.log(list);
   vue.watch(max, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
-    ctx.reload({
-      max: obj.max,
-      list: obj.list
-    });
+    // ctx.reload({ max: obj.max, list: obj.list })
+    ctx.reload(obj);
   }, {
     deep: true
   });
   vue.watch(list, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
-    ctx.reload({
-      max: obj.max,
-      list: obj.list
-    });
+    // ctx.reload({ max: obj.max, list: obj.list })
+    ctx.reload(obj);
   }, {
     deep: true
+  });
+}
+function ForEach(option = {}, {
+  label = ''
+} = {}) {
+  let startFlg = createComment('start' + label);
+  let endFlg = createComment('end' + label);
+  let ele = [startFlg, endFlg];
+  let {
+    max = vue.ref(0),
+    list = null
+  } = option;
+  let obj = vue.reactive({
+    max,
+    list
   });
   let ctx;
   return {
@@ -301,12 +301,14 @@ function ForEach({
     init(callback) {
       // console.log(callback);
       return function () {
-        // console.log(obj);
         ctx = createForeachCtx(callback, {
           ele,
           max: obj.max,
           list: obj.list
         });
+        if (!isSsrMode) {
+          __ForEach_action(option, obj, ctx);
+        }
         return ctx;
       };
     }
