@@ -14,7 +14,8 @@ function createElement(...args) {
 let customComponents = new Map()
 let ssrComponents = new Map()
 
-let isSsrMode = Boolean(globalThis.__ssrMode__)
+let isSsrMode = Boolean(globalThis.__ssrMode__);
+console.log('isSsrMode', isSsrMode);
 
 let jsonMap = {}
 

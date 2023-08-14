@@ -2,11 +2,19 @@
 
 var vue = require('vue');
 
+let dom = globalThis.document || customDoucment;
+function createComment(...args) {
+  return dom.createComment(...args);
+}
+function createElement(...args) {
+  return dom.createElement(...args);
+}
 let customComponents = new Map();
 let ssrComponents = new Map();
 let isSsrMode = Boolean(globalThis.__ssrMode__);
+console.log('isSsrMode', isSsrMode);
 let jsonMap = {};
-let getscripts = function () {
+let getscripts = function (domRuntime = globalThis.document) {
   return {
     run(jsonMap, dataMap) {
       // console.log(scripts.toString());
@@ -20,7 +28,7 @@ let getscripts = function () {
           // console.log(ssrComponents.get(ComponentFunName));
           let fun = ssrComponents.get(ComponentFunName);
           if (fun) {
-            fun(document.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? []);
+            fun(domRuntime.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? []);
           }
         }
       });
@@ -224,8 +232,8 @@ function ForEach({
 } = {}, {
   label = ''
 } = {}) {
-  let startFlg = document.createComment('start' + label);
-  let endFlg = document.createComment('end' + label);
+  let startFlg = createComment('start' + label);
+  let endFlg = createComment('end' + label);
   let ele = [startFlg, endFlg];
 
   // let computeMax = computed(() => max)
@@ -451,7 +459,7 @@ let Button = defComponent({
     let {
       text
     } = _utils_getObjectParam(args);
-    let ele = document.createElement('button');
+    let ele = createElement('button');
     ele.classList.add('button');
     _button__render(ele, text);
     if (!isSsrMode) {
@@ -466,7 +474,7 @@ let Button = defComponent({
 let Column = defComponent({
   name: 'Column',
   setup() {
-    let ele = document.createElement('div');
+    let ele = createElement('div');
     ele.classList.add('column');
     return ele;
   }
@@ -491,7 +499,7 @@ let Text = defComponent({
     isSsrMode
   }) {
     let text = _utils_getAnyParam(args, '');
-    let ele = document.createElement('div');
+    let ele = createElement('div');
     ele.classList.add('text');
     _text__render(ele, text);
     if (!isSsrMode) {
