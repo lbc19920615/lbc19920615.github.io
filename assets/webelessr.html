@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,84 +7,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
-    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-    <script>
-        // VConsole will be exported to `window.VConsole` by default.
-        var vConsole = new window.VConsole();
-    </script> -->
 </head>
 
 <body>
-    <div id="routerroot">
-        <div>
-            <div class="column" ssr-id="e27c514b-c042-452a-aa66-dd48f3b024a3">
-                <div class="text" ssr-id="87ac43fc-953f-41de-8341-307144074273">detail 页面 </div>
-                <button class="button" ssr-id="87ac43fc-953f-41de-8341-307142074273"
-                style="width: 100%; height: 30px; background-color: rgb(175, 238, 238);">button</button>
-            </div>
-        </div>
-    </div>
-    <script src="
-https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
-"></script>
-    <script>
-        globalThis.__ssrMode__ = true
-    </script>
-    <script type="importmap">
-        {
-          "imports": {
+<div class="column" ssr-id="o9t79acm2w"><div class="column" ssr-id="t17emkb2fz"><div class="text" ssr-id="wi7j60gpxb"></div><div class="text" ssr-id="7rce5quw3c">single string</div><div class="text" ssr-id="3u9csypnkn">double string</div><div class="text" ssr-id="tdmjpsu9uq">server Render TextDetail</div></div><div class="column" ssr-id="5dy83re6eq"><div class="column" ssr-id="a9wwqw9xqr"><div class="text" ssr-id="u8oaxph1ai"></div><div class="text" ssr-id="fgj6dp9zi3">single string</div><div class="text" ssr-id="5zs03e6o80">double string</div><div class="text" ssr-id="bb06gvb22l">server Render TextDetail</div></div></div><button class="button" ssr-id="jb935khc40">change text</button></div>
+<script>
+    globalThis.__ssrMode__ = true;
+    window.jsonmap = {wi7j60gpxb:{ssrRender:['Text',['ssrRender']]},'7rce5quw3c':{ssrRender:['Text',['ssrRender']]},'3u9csypnkn':{ssrRender:['Text',['ssrRender']]},tdmjpsu9uq:{ssrRender:['Text',['ssrRender']]},u8oaxph1ai:{ssrRender:['Text',['ssrRender']]},fgj6dp9zi3:{ssrRender:['Text',['ssrRender']]},'5zs03e6o80':{ssrRender:['Text',['ssrRender']]},bb06gvb22l:{ssrRender:['Text',['ssrRender']]},jb935khc40:{ssrRender:['Button',['ssrRender']]}};
+    window.datamap = {o9t79acm2w:['single string'],t17emkb2fz:['single string'],wi7j60gpxb:[],'7rce5quw3c':['single string'],'3u9csypnkn':['double string'],tdmjpsu9uq:['vm.TextDetail'],'5dy83re6eq':['single string'],a9wwqw9xqr:['single string'],u8oaxph1ai:[],fgj6dp9zi3:['single string'],'5zs03e6o80':['double string'],bb06gvb22l:['vm.TextDetail'],jb935khc40:["{text: 'change text', action: vm.action}"]};
+
+    function __gen_data() {
+        function __get(object, path, defval = null) {
+            if (typeof path === "string") {
+                path = path.split(".");
+            }
+            return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : defval), object);
+        }
+
+        function parseArg(str) {
+            return eval("let a = "+str+"; a")
+        }
+
+        Object.keys(datamap).forEach(key => {
+            let params = datamap[key];
+            if (typeof params === 'string') {
+                if (params && params.startsWith && params.startsWith('$')) {
+                    let path = params.slice(1)
+                    datamap[key] = [__get(window, path)]
+                }
+            }
+            if (Array.isArray(params)) {
+                params.forEach((param, index) => {
+                    try {
+                        let v = parseArg(param)
+                        datamap[key][index] = v
+                    } catch(e) {
+                        console.log(e)
+                    }
+                })
+            }
+        })
+    }
+</script>
+<script type="importmap">
+    {
+        "imports": {
             "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
-            "wle": "/assets/webele.js?v=35"
-          }
+            "wle":"/assets/wle.js?v=1"
         }
-    </script>
-    <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
-    <script type="module">
-        import 'https://unpkg.com/xy-ui';
-
-        import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
-        import { Nid, getscripts, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
-
-        class DomCotnrol extends BaseVmControl {
-            title = ''
-            get TextDetail() {
-                return 'detail 页面 ' + this.title
-            }
-            setTitle(v) {
-                this.title = v
-            }
-            action(e) {
-                this.title = Nid()
-            }
+    }
+</script>
+<script type="module">
+    import 'https://unpkg.com/xy-ui';
+    import { Nid, BaseVmControl, injectControl, useControl, getscripts } from "wle";
+    
+    class DomCotnrol extends BaseVmControl {
+        title = ''
+        get TextDetail() {
+            return 'detail 页面 ' + this.title
         }
-
-        injectControl('vm')(DomCotnrol)
-
-        let vm = useControl('vm')
-
-        globalThis.vm = vm
-
-        let jsonMap = {
-            "87ac43fc-953f-41de-8341-307144074273": {
-                "ssrRender": [
-                    "Text",
-                ]
-            },
-            ['87ac43fc-953f-41de-8341-307142074273']: {
-                "ssrRender": [
-                    "Button",
-                ]
-            }
+        setTitle(v) {
+            this.title = v
         }
-
-        let dataMap = {
-            ['87ac43fc-953f-41de-8341-307144074273']: [vm.TextDetail],
-            ['87ac43fc-953f-41de-8341-307142074273']: [{action: vm.action}]
+        action(e) {
+            this.title = Nid()
         }
+    }
 
-        getscripts().run(jsonMap, dataMap)
+    injectControl('vm')(DomCotnrol)
 
-    </script>
+    let vm = useControl('vm')
+
+    globalThis.vm = vm;
+
+    __gen_data();
+   getscripts().run(jsonmap, datamap)
+</script>
 </body>
 
-</html>

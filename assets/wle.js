@@ -29,6 +29,7 @@ let customComponents = new Map();
 let ssrComponents = new Map();
 let jsonMap = {};
 let getscripts = function (domRuntime = globalThis.document) {
+  console.log(ssrComponents);
   return {
     run(jsonMap, dataMap) {
       // console.log(scripts.toString());
@@ -42,7 +43,11 @@ let getscripts = function (domRuntime = globalThis.document) {
           // console.log(ssrComponents.get(ComponentFunName));
           let fun = ssrComponents.get(ComponentFunName);
           if (fun) {
-            fun(domRuntime.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? []);
+            let ele = domRuntime.querySelector(`[ssr-id="${key}"]`);
+            if (ele) {
+              console.log(ele, key);
+            }
+            fun(ele, dataMap[key] ?? []);
           }
         }
       });
@@ -420,8 +425,8 @@ function defComponent(option = {}) {
             args,
             isSsrMode
           });
+          let id = Nid();
           if (isSsrMode) {
-            let id = Nid();
             ele.setAttribute('ssr-id', id);
             if (ssrRender) {
               if (!jsonMap[id]) {
@@ -430,7 +435,6 @@ function defComponent(option = {}) {
                 };
               }
             }
-            __ssr_setup(ele, args);
           }
           ctx = createCommonCtx(function (childEle, option) {
             // console.log(option);
@@ -443,6 +447,14 @@ function defComponent(option = {}) {
           }, {
             ele
           });
+          if (isSsrMode) {
+            __ssr_setup(ele, args, {
+              id,
+              option,
+              ctx,
+              funcStr: callback?.toString() ?? ''
+            });
+          }
           // console.log(ctx);
           return ctx;
         };
@@ -557,6 +569,13 @@ function isConstructor(f) {
   }
   return true;
 }
+
+/**
+ * 
+ * @param {object} ret 
+ * @param {class} cls 
+ * @param {object} param2 
+ */
 function __vm_scanCls(ret, cls, {
   handleKey = null
 } = {}) {
@@ -594,6 +613,12 @@ function __vm_scanCls(ret, cls, {
     }
   });
 }
+
+/**
+ * 
+ * @param {class} target 
+ * @returns 
+ */
 function metaCls(target) {
   let clsDef = {
     state: {},
@@ -622,10 +647,14 @@ function injectControl(name = '') {
   return function (target) {
     let clsDef = metaCls(target);
     cachedDefs[name] = clsDef;
-    // console.log(clsDef);
   };
 }
 
+/**
+ * 
+ * @param {string | class} cls 
+ * @returns 
+ */
 function useControl(cls) {
   let clsDef = null;
   if (typeof cls === 'string') {
