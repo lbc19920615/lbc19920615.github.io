@@ -42,7 +42,10 @@ export let getscripts = function(domRuntime = globalThis.document) {
 }
 
 export function Nid() {
-    return crypto.randomUUID()
+    if (globalThis.__Nid__) {
+        return globalThis.__Nid__()
+    }
+    return globalThis.crypto.randomUUID()
 }
 
 function _utils_getObjectParam(args = [], index = 0) {
