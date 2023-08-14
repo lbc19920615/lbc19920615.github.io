@@ -1,6 +1,4 @@
-'use strict';
-
-var vue = require('vue');
+import { reactive, watch, ref, computed } from 'vue';
 
 let glo = globalThis;
 let dom = glo.document || glo.customDoucment;
@@ -240,7 +238,7 @@ function createForeachCtx(callback, {
   return ctx;
 }
 function ForEach({
-  max = vue.ref(0),
+  max = ref(0),
   list = null
 } = {}, {
   label = ''
@@ -251,13 +249,13 @@ function ForEach({
 
   // let computeMax = computed(() => max)
 
-  let obj = vue.reactive({
+  let obj = reactive({
     max,
     list
   });
 
   // console.log(list);
-  vue.watch(max, (newVal, oldVal) => {
+  watch(max, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
     ctx.reload({
       max: obj.max,
@@ -266,7 +264,7 @@ function ForEach({
   }, {
     deep: true
   });
-  vue.watch(list, (newVal, oldVal) => {
+  watch(list, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
     ctx.reload({
       max: obj.max,
@@ -304,7 +302,7 @@ function If(conditions) {
   }, {
     label: ' if'
   });
-  vue.watch(conditions, (newVal, oldVal) => {
+  watch(conditions, (newVal, oldVal) => {
     // console.log('111', newVal, fragment);
     fragment.getCtx().reload({
       max: Number(newVal)
@@ -324,7 +322,7 @@ function Else() {
   }, {
     label: ' else'
   });
-  vue.watch(conditions, (newVal, oldVal) => {
+  watch(conditions, (newVal, oldVal) => {
     // console.log('111', newVal, fragment);
     fragment.getCtx().reload({
       max: !Number(newVal)
@@ -404,7 +402,7 @@ function defComponent(option = {}) {
     // console.log(args);
 
     function startWatch(onChange) {
-      vue.watch(args, (newVal, oldVal) => {
+      watch(args, (newVal, oldVal) => {
         if (onChange) {
           onChange(newVal, oldVal);
         }
@@ -510,7 +508,7 @@ function _text__render(ele, text) {
 function _text__action(ele, args) {
   let text = _utils_getAnyParam(args, '');
   if (text.__v_isRef) {
-    vue.watch(text, () => {
+    watch(text, () => {
       _text__render(ele, text);
     });
   }
@@ -559,13 +557,6 @@ function isConstructor(f) {
   }
   return true;
 }
-
-/**
- * 
- * @param {object} ret 
- * @param {class} cls 
- * @param {object} param2 
- */
 function __vm_scanCls(ret, cls, {
   handleKey = null
 } = {}) {
@@ -603,12 +594,6 @@ function __vm_scanCls(ret, cls, {
     }
   });
 }
-
-/**
- * 
- * @param {class} target 
- * @returns 
- */
 function metaCls(target) {
   let clsDef = {
     state: {},
@@ -637,14 +622,10 @@ function injectControl(name = '') {
   return function (target) {
     let clsDef = metaCls(target);
     cachedDefs[name] = clsDef;
+    // console.log(clsDef);
   };
 }
 
-/**
- * 
- * @param {string | class} cls 
- * @returns 
- */
 function useControl(cls) {
   let clsDef = null;
   if (typeof cls === 'string') {
@@ -655,12 +636,12 @@ function useControl(cls) {
   // console.log(clsDef);
   if (clsDef) {
     let def = clsDef;
-    let obj = vue.reactive(def.state);
+    let obj = reactive(def.state);
     let getterKeys = [];
     Object.keys(def.getters).forEach(key => {
       // console.log(def.getters[key].bind(obj));
       getterKeys.push(key);
-      obj[key] = vue.computed(def.getters[key].bind(obj));
+      obj[key] = computed(def.getters[key].bind(obj));
     });
     Object.keys(def.actions).forEach(key => {
       obj[key] = def.actions[key].bind(obj);
@@ -670,7 +651,7 @@ function useControl(cls) {
     return new Proxy(obj, {
       get(target, key) {
         if (getterKeys.includes(key)) {
-          return vue.computed(() => {
+          return computed(() => {
             return obj[key];
           });
         } else {
@@ -682,21 +663,4 @@ function useControl(cls) {
   return null;
 }
 
-exports.BaseVmControl = BaseVmControl;
-exports.Button = Button;
-exports.Column = Column;
-exports.Else = Else;
-exports.ForEach = ForEach;
-exports.If = If;
-exports.Nid = Nid;
-exports.Text = Text;
-exports.createCommonCtx = createCommonCtx;
-exports.defComponent = defComponent;
-exports.g = g;
-exports.getscripts = getscripts;
-exports.h3 = h3;
-exports.hc = hc;
-exports.injectControl = injectControl;
-exports.metaCls = metaCls;
-exports.setGlobal = setGlobal;
-exports.useControl = useControl;
+export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getscripts, h3, hc, injectControl, metaCls, setGlobal, useControl };

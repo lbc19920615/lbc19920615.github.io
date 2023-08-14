@@ -18,12 +18,13 @@ let baseFolder = "assets"
 function movePrevMainFile(newName = '') {
   let files = fse.readdirSync(`./${baseFolder}/`).filter(v => v.startsWith('main_esm_'))
   files.forEach(filePath => {
+    fse.copySync(`./${baseFolder}/${filePath}`, `./${baseFolder}/wle.js`)
     if (filePath === newName) {
       return
     }
     fse.moveSync(`./${baseFolder}/${filePath}`, `./${baseFolder}/old/${filePath}`)
   })
-  console.log(files);
+  // console.log(files);
 }
 
 function demoWatcherPlugin() {

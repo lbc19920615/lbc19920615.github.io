@@ -1,16 +1,32 @@
 import { reactive, watch, ref, computed } from 'vue';
 
-let dom = globalThis.document || globalThis.customDoucment;
+let glo = globalThis;
+let dom = glo.document || glo.customDoucment;
+let isSsrMode = Boolean(glo.__ssrMode__);
+function setGlobal(v) {
+  glo = v;
+  dom = glo.document || glo.customDoucment;
+  isSsrMode = Boolean(glo.__ssrMode__);
+  console.log('isSsrMode', isSsrMode);
+}
+function Nid() {
+  if (glo.__Nid__) {
+    return glo.__Nid__();
+  }
+  return glo.crypto.randomUUID();
+}
 function createComment(...args) {
   return dom.createComment(...args);
 }
 function createElement(...args) {
-  return dom.createElement(...args);
+  let d = dom.createElement(...args);
+  // if (isSsrMode) {
+  //     d.setAttribute("ssr-id", Nid())
+  // }
+  return d;
 }
 let customComponents = new Map();
 let ssrComponents = new Map();
-let isSsrMode = Boolean(globalThis.__ssrMode__);
-console.log('isSsrMode', isSsrMode);
 let jsonMap = {};
 let getscripts = function (domRuntime = globalThis.document) {
   return {
@@ -33,12 +49,6 @@ let getscripts = function (domRuntime = globalThis.document) {
     }
   };
 };
-function Nid() {
-  if (globalThis.__Nid__) {
-    return globalThis.__Nid__();
-  }
-  return globalThis.crypto.randomUUID();
-}
 function _utils_getObjectParam(args = [], index = 0) {
   if (!Array.isArray(args)) {
     return {};
@@ -327,7 +337,13 @@ function defc(buildCtx, runFun) {
   //     fun = await buildCtx
   // }
   // console.log(fun);
+
   let ctx = fun();
+  if (isSsrMode) {
+    if (glo.__onDefc__) {
+      glo.__onDefc__(ctx, jsonMap);
+    }
+  }
   runFun(ctx);
   return ctx;
 }
@@ -372,7 +388,7 @@ let h3 = new Proxy(customComponents, {
     }
   }
 });
-globalThis.h3 = h3;
+glo.h3 = h3;
 function defComponent(option = {}) {
   let {
     setup,
@@ -384,6 +400,7 @@ function defComponent(option = {}) {
   }
   let fun = function (...args) {
     // console.log(args);
+
     function startWatch(onChange) {
       watch(args, (newVal, oldVal) => {
         if (onChange) {
@@ -408,12 +425,12 @@ function defComponent(option = {}) {
             ele.setAttribute('ssr-id', id);
             if (ssrRender) {
               if (!jsonMap[id]) {
-                console.log(args);
                 jsonMap[id] = {
                   ssrRender: [option.name, ['ssrRender']]
                 };
               }
             }
+            __ssr_setup(ele, args);
           }
           ctx = createCommonCtx(function (childEle, option) {
             // console.log(option);
@@ -480,6 +497,11 @@ let Column = defComponent({
     return ele;
   }
 });
+function __ssr_setup(...args) {
+  if (glo.__onSetup__) {
+    glo.__onSetup__(...args);
+  }
+}
 function _text__render(ele, text) {
   _directive_text(ele, text);
 }
@@ -535,6 +557,13 @@ function isConstructor(f) {
   }
   return true;
 }
+
+/**
+ * 
+ * @param {object} ret 
+ * @param {class} cls 
+ * @param {object} param2 
+ */
 function __vm_scanCls(ret, cls, {
   handleKey = null
 } = {}) {
@@ -572,37 +601,48 @@ function __vm_scanCls(ret, cls, {
     }
   });
 }
+
+/**
+ * 
+ * @param {class} target 
+ * @returns 
+ */
+function metaCls(target) {
+  let clsDef = {
+    state: {},
+    getters: {},
+    actions: {}
+  };
+  let extendCls = Reflect.getPrototypeOf(target);
+  // console.log(extendCls);
+
+  if (isConstructor(extendCls)) {
+    let symbols = Object.getOwnPropertySymbols(new extendCls());
+    if (symbols.includes(symbol)) {
+      // console.log('good', Object.getOwnPropertySymbols(new extendCls()));
+      __vm_scanCls(clsDef, extendCls);
+    }
+  }
+  // console.log(Object.getOwnPropertySymbols(Reflect.getPrototypeOf(extendCls)))
+
+  __vm_scanCls(clsDef, target);
+  if (!target.__def__) {
+    target.__def__ = clsDef;
+  }
+  return clsDef;
+}
 function injectControl(name = '') {
   return function (target) {
-    let clsDef = {
-      state: {},
-      getters: {},
-      actions: {}
-    };
-    let extendCls = Reflect.getPrototypeOf(target);
-    // console.log(extendCls);
-
-    if (isConstructor(extendCls)) {
-      let symbols = Object.getOwnPropertySymbols(new extendCls());
-      if (symbols.includes(symbol)) {
-        // console.log('good', Object.getOwnPropertySymbols(new extendCls()));
-        __vm_scanCls(clsDef, extendCls);
-      }
-    }
-    // console.log(Object.getOwnPropertySymbols(Reflect.getPrototypeOf(extendCls)))
-
-    __vm_scanCls(clsDef, target);
-    if (!target.__def__) {
-      target.__def__ = clsDef;
-
-      // currentModelContext.defs[name] = clsDef;
-
-      cachedDefs[name] = clsDef;
-    }
-    // console.log(clsDef);
+    let clsDef = metaCls(target);
+    cachedDefs[name] = clsDef;
   };
 }
 
+/**
+ * 
+ * @param {string | class} cls 
+ * @returns 
+ */
 function useControl(cls) {
   let clsDef = null;
   if (typeof cls === 'string') {
@@ -640,4 +680,4 @@ function useControl(cls) {
   return null;
 }
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getscripts, h3, hc, injectControl, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getscripts, h3, hc, injectControl, metaCls, setGlobal, useControl };
