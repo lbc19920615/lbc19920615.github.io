@@ -41,7 +41,7 @@ function demoWatcherPlugin() {
         if (!imports.wle) {
           let newFileName = Object.keys(bundle)[0];
           movePrevMainFile(newFileName)
-          imports['wle'] =  '/' + baseFolder + '/' + newFileName;
+          imports['wle'] =  '/' + baseFolder + '/' + newFileName + '?v='+ Date.now();
           let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports)});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
           console.log('compile done');

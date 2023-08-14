@@ -15,7 +15,6 @@ function Nid() {
   }
   return glo.crypto.randomUUID();
 }
-alert(1);
 function __filterNone() {
   return NodeFilter.FILTER_ACCEPT;
 }
