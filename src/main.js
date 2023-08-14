@@ -1,5 +1,16 @@
 import { reactive, ref , watch, computed  } from "vue"
 
+
+let dom = globalThis.document || customDoucment;
+
+function createComment(...args) {
+    return dom.createComment(...args)
+}
+
+function createElement(...args) {
+    return dom.createElement(...args)
+}
+
 let customComponents = new Map()
 let ssrComponents = new Map()
 
@@ -7,7 +18,7 @@ let isSsrMode = Boolean(globalThis.__ssrMode__)
 
 let jsonMap = {}
 
-export let getscripts = function() {
+export let getscripts = function(domRuntime = globalThis.document) {
     return {
         run(jsonMap, dataMap) {
             // console.log(scripts.toString());
@@ -21,7 +32,7 @@ export let getscripts = function() {
                     // console.log(ssrComponents.get(ComponentFunName));
                     let fun =  ssrComponents.get(ComponentFunName)
                     if (fun) {
-                        fun(document.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? [])
+                        fun(domRuntime.querySelector(`[ssr-id="${key}"]`), dataMap[key] ?? [])
                     }
                 }
             })
@@ -224,8 +235,8 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
 }
 
 export function ForEach({ max = ref(0), list = null } = {}, {label = ''} = {}) {
-    let startFlg = document.createComment('start' + label)
-    let endFlg = document.createComment('end' + label)
+    let startFlg = createComment('start' + label)
+    let endFlg = createComment('end' + label)
     let ele = [
         startFlg,
         endFlg
@@ -436,7 +447,7 @@ export let Button = defComponent({
     name: 'Button',
     setup({getCtx, startWatch, args, isSsrMode}) {
         let { text } = _utils_getObjectParam(args)
-        let ele = document.createElement('button')
+        let ele = createElement('button')
         ele.classList.add('button')
         _button__render(ele, text)
         if (!isSsrMode) {
@@ -452,7 +463,7 @@ export let Button = defComponent({
 export let Column = defComponent({
     name: 'Column',
     setup() {
-        let ele = document.createElement('div')
+        let ele = createElement('div')
         ele.classList.add('column')
         return ele
     },
@@ -475,7 +486,7 @@ export let Text = defComponent({
     name: 'Text',
     setup({getCtx, startWatch, args, isSsrMode}) {
         let text =_utils_getAnyParam(args, '')
-        let ele = document.createElement('div')
+        let ele = createElement('div')
         ele.classList.add('text');
         _text__render(ele, text)
         if (!isSsrMode) {

@@ -15,8 +15,6 @@ function demoWatcherPlugin() {
   return {
       async buildEnd(arg) {
           console.log('ssss', arg);
-
-
       },
       buildStart(){
         this.addWatchFile('src/webele.ejs')
@@ -24,23 +22,34 @@ function demoWatcherPlugin() {
 
       generateBundle(options, bundle, isWrite) {
         console.log(Object.keys(bundle));
-        imports['wle'] =  '/' + baseFolder + '/' + Object.keys(bundle)[0]
-        let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports)});
-
-        // console.log(html);
-        fs.writeFileSync(`./${baseFolder}/webele.html`, html)
+        if (!imports.wle) {
+          imports['wle'] =  '/' + baseFolder + '/' + Object.keys(bundle)[0];
+          let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports)});
+          fs.writeFileSync(`./${baseFolder}/webele.html`, html)
+        }
       }
   }
 }
 
-const config = {
-  input: 'src/main.js',
-  output: {
-    dir: 'assets',
-    format: 'es',
-    entryFileNames: 'main_[hash].js' 
+const config = [
+  {
+    input: 'src/main.js',
+    output: {
+      dir: 'assets',
+      format: 'es',
+      entryFileNames: 'main_esm_[hash].js' 
+    },
+    plugins: [babel({ babelHelpers: 'bundled' }), demoWatcherPlugin()]
   },
-  plugins: [babel({ babelHelpers: 'bundled' }), demoWatcherPlugin()]
-};
+  {
+    input: 'src/main.js',
+    output: {
+      dir: 'assets',
+      format: 'cjs',
+      entryFileNames: 'main_cjs_dev.js' 
+    },
+    plugins: [babel({ babelHelpers: 'bundled' }), demoWatcherPlugin()]
+  }
+];
 
 export default config;
