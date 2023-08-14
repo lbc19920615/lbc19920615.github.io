@@ -20,7 +20,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 "></script>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/main_esm_cc1397a3.js"}
+          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/main_esm_4c08a376.js"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -28,8 +28,10 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         import '/assets/ele/index.js?v=0.0.3';
 
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
-        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
+        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl, getAllComments } from "wle";
 
+
+        window.getAllComments = getAllComments
 
         let rooterRootEle = document.getElementById("routerroot")
 

@@ -28,8 +28,10 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         import '/assets/ele/index.js?v=0.0.3';
 
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
-        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
+        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl, getAllComments } from "wle";
 
+
+        window.getAllComments = getAllComments
 
         let rooterRootEle = document.getElementById("routerroot")
 

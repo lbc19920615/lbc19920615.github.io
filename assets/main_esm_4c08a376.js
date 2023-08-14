@@ -15,6 +15,19 @@ function Nid() {
   }
   return glo.crypto.randomUUID();
 }
+function __filterNone() {
+  return NodeFilter.FILTER_ACCEPT;
+}
+function getAllComments(rootElem) {
+  var comments = [];
+  // Fourth argument, which is actually obsolete according to the DOM4 standard, is required in IE 11
+  var iterator = document.createNodeIterator(rootElem, NodeFilter.SHOW_COMMENT, __filterNone, false);
+  var curNode;
+  while (curNode = iterator.nextNode()) {
+    comments.push(curNode);
+  }
+  return comments;
+}
 function createComment(...args) {
   return dom.createComment(...args);
 }
@@ -692,4 +705,4 @@ function useControl(cls) {
   return null;
 }
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getscripts, h3, hc, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getscripts, h3, hc, injectControl, metaCls, setGlobal, useControl };

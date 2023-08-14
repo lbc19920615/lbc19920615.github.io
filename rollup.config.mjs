@@ -18,6 +18,7 @@ let baseFolder = "assets"
 function movePrevMainFile(newName = '') {
   let files = fse.readdirSync(`./${baseFolder}/`).filter(v => v.startsWith('main_esm_'))
   files.forEach(filePath => {
+    console.log(filePath);
     fse.copySync(`./${baseFolder}/${filePath}`, `./${baseFolder}/wle.js`)
     if (filePath === newName) {
       return
