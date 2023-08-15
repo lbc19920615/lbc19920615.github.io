@@ -32,8 +32,11 @@ function demoWatcherPlugin() {
           // console.log('ssss', arg);
       },
       buildStart(){
-        movePrevMainFile()
-        this.addWatchFile('src/webele.ejs')
+        if (!imports.wle) {
+          this.addWatchFile('src/webele.ejs')
+          this.addWatchFile('src/webele.scss')
+          movePrevMainFile()
+        }
       },
       generateBundle(options, bundle, isWrite) {
         // console.log('generateBundle');
@@ -49,9 +52,11 @@ function demoWatcherPlugin() {
           imports['wle'] =  '/' + baseFolder + '/webelef/' + newFileName + '?v='+ Date.now();
           let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
+          setTimeout(() => {
 
           fse.copySync(`./${baseFolder}/webelef/${newFileName}`, `./${baseFolder}/wle.js`)
           console.log('compile done');
+          }, 300)
         }
       }
   }
@@ -76,9 +81,10 @@ const config = [
   {
     input: 'src/main.js',
     output: {
-      dir: 'assets',
+      dir: 'assets/webelef',
       format: 'cjs',
-      entryFileNames: 'main_cjs_dev.js' 
+      entryFileNames: 'main_cjs_dev.js',
+      assetFileNames: 'webele_[hash][extname]'
     },
     plugins: [...commonPlugins]
   }

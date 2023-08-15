@@ -1,5 +1,6 @@
 import 'https://unpkg.com/xy-ui';
 
+
 export class MyDialog extends customElements.get('xy-dialog') {
     constructor(option = {}) {
         let {type, title}= option

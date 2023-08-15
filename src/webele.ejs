@@ -10,12 +10,21 @@
         // VConsole will be exported to `window.VConsole` by default.
         var vConsole = new window.VConsole();
     </script> -->
+
     <%- links  %>
 </head>
 
 <body>
+    <div id="nav">
+        <div id="toggleTheme">切换主题</div>
+    </div>
     <div id="routerroot">
     </div>
+    <script>
+        document.querySelector('#toggleTheme').addEventListener('click', function() {
+            document.documentElement.classList.toggle('theme-dark')
+        })
+    </script>
     <script src="
 https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 "></script>

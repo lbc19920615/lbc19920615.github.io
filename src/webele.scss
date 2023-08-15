@@ -1,3 +1,10 @@
 :root {
     --borderColor:  rgba(0,0,0,.2);
 }
+
+.theme-dark {
+    body {
+        background: #131212;
+        color: #fff;
+    }
+}

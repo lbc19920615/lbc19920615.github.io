@@ -153,8 +153,9 @@ function setGlobal(v) {
   glo = v;
   dom = glo.document || glo.customDoucment;
   isSsrMode = Boolean(glo.__ssrMode__);
-  console.log('isSsrMode', isSsrMode);
+  // console.log('isSsrMode', isSsrMode);
 }
+
 function Nid() {
   if (glo.__Nid__) {
     return glo.__Nid__();
