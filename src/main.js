@@ -220,8 +220,7 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
                         val = str
                     }
                     if (key === 'size') {
-                        
-                        console.log(key, val, ele);
+                        // console.log(key, val, ele);
                         ele.style['width'] = val
                         ele.style['height'] = val
                     }
