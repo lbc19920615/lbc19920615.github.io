@@ -1,4 +1,3 @@
-import { reactive, computed, ref,  watch } from "vue"
 import { Button, Text, ForEach, If, hc, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
 
 
@@ -16,8 +15,6 @@ class DomCotnrol extends BaseVmControl {
 }
 
 injectControl('vm')(DomCotnrol)
-
-
 
 
 let Text2 = defComponent({
@@ -90,6 +87,7 @@ let LazyList1 = defComponent({
 
 export default function({Page}) {
     let ele =  document.createElement('div');
+    ele.classList.add('detail-page')
     let vm = useControl('vm')
 
     g.defc(Column().init(function (ele) {

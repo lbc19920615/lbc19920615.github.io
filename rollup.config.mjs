@@ -1,4 +1,5 @@
 import { babel } from '@rollup/plugin-babel';
+import scss from 'rollup-plugin-scss'
 import ejs from "ejs"
 import fse from "fs-extra"
 import fs from "node:fs"
@@ -10,22 +11,19 @@ let imports = {
 }
 
 let baseFolder = "assets"
+let lastKeys = []
 
 /**
  * 移动旧的文件
  * @param {*} newName 
  */
-function movePrevMainFile(newName = '') {
-  let files = fse.readdirSync(`./${baseFolder}/`).filter(v => v.startsWith('main_esm_'))
+function movePrevMainFile() {
+  let folderPath = `./${baseFolder}/webelef`
+  let files = fse.readdirSync(folderPath)
+
   files.forEach(filePath => {
-    console.log(filePath);
-    fse.copySync(`./${baseFolder}/${filePath}`, `./${baseFolder}/wle.js`)
-    if (filePath === newName) {
-      return
-    }
-    fse.moveSync(`./${baseFolder}/${filePath}`, `./${baseFolder}/old/${filePath}`)
+    fse.removeSync(`./${folderPath}/${filePath}`)
   })
-  // console.log(files);
 }
 
 function demoWatcherPlugin() {
@@ -34,31 +32,46 @@ function demoWatcherPlugin() {
           // console.log('ssss', arg);
       },
       buildStart(){
+        movePrevMainFile()
         this.addWatchFile('src/webele.ejs')
       },
       generateBundle(options, bundle, isWrite) {
+        // console.log('generateBundle');
         // console.log(Object.keys(bundle));
+        let keys =  Object.keys(bundle)
         if (!imports.wle) {
-          let newFileName = Object.keys(bundle)[0];
-          movePrevMainFile(newFileName)
-          imports['wle'] =  '/' + baseFolder + '/' + newFileName + '?v='+ Date.now();
-          let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports)});
+          let newFileName = keys[0];
+          let cssFiles = keys.filter(v => v.endsWith('.css'))
+          let links = cssFiles.map(cssFile => {
+            return `<link rel="stylesheet" href="/assets/webelef/${cssFile}" />`
+          })
+
+          imports['wle'] =  '/' + baseFolder + '/webelef/' + newFileName + '?v='+ Date.now();
+          let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
+
+          fse.copySync(`./${baseFolder}/webelef/${newFileName}`, `./${baseFolder}/wle.js`)
           console.log('compile done');
         }
       }
   }
 }
 
+let commonPlugins = [
+  babel({ babelHelpers: 'bundled' } ),  scss()
+]
+
 const config = [
   {
     input: 'src/main.js',
     output: {
-      dir: 'assets',
+      dir: 'assets/webelef',
       format: 'es',
-      entryFileNames: 'main_esm_[hash].js' 
+      entryFileNames: 'main_esm_[hash].js',
+          // Removes the hash from the asset filename
+      assetFileNames: 'webele_[hash][extname]'
     },
-    plugins: [babel({ babelHelpers: 'bundled' }), demoWatcherPlugin()]
+    plugins: [...commonPlugins, demoWatcherPlugin()]
   },
   {
     input: 'src/main.js',
@@ -67,7 +80,7 @@ const config = [
       format: 'cjs',
       entryFileNames: 'main_cjs_dev.js' 
     },
-    plugins: [babel({ babelHelpers: 'bundled' })]
+    plugins: [...commonPlugins]
   }
 ];
 
