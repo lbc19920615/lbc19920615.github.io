@@ -1,5 +1,6 @@
 import "./webele.scss"
 import { reactive, ref , watch  } from "vue"
+import nid from "./nid.browser"
 
 let glo = globalThis;
 let dom = glo.document || glo.customDoucment;
@@ -12,11 +13,11 @@ export function setGlobal(v) {
     // console.log('isSsrMode', isSsrMode);
 }
 
-export function Nid() {
+export function Nid(...args) {
     if (glo.__Nid__) {
-        return glo.__Nid__()
+        return glo.__Nid__(...args)
     }
-    return glo.crypto.randomUUID()
+    return nid(...args)
 }
 
 

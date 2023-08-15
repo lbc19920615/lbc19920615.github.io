@@ -32,6 +32,39 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl, getAllComments } from "wle";
 
 
+
+        import {parseArkUI} from "/assets/parser.js?v=0.0.3";
+
+        let code  = `
+        Column('111') {
+            Column({a: 1}) {
+    
+                Text()
+                Text('single string')
+                Text("double string")
+                Text(some.TextDetail)
+            }
+    
+            Column() {
+                Column(['111']) {
+            
+                    Text()
+                    Text('single string')
+                    Text("double string")
+                    Text(some.TextDetail)
+                    Text().size('100%')
+                    
+                }
+            }
+
+            Button({text: 'change text', action: some.action})
+        }
+        `
+
+        let ret = parseArkUI(code);
+        console.log(ret);
+
+
         window.getAllComments = getAllComments
 
         let rooterRootEle = document.getElementById("routerroot")
