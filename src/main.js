@@ -48,6 +48,9 @@ function createElement(...args) {
 let customComponents = new Map();
 let ssrComponents = new Map();
 
+export function getcustomComponents() {
+    return customComponents
+}
 
 /**
  * 运行ssr
@@ -182,17 +185,17 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
 
     let colorNames = ['backgroundColor']
     let borderNames = ['border', 'fontColor']
-    let sizeNames = ['width', 'height', 'fontSize']
+    let sizeNames = ['width', 'height', 'size', 'fontSize']
     let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
 
     let eventNames = ['onLoad']
 
     let proxy = new Proxy(ctx, {
         get(target, key, receiver) {
-            // console.log(target, key, receiver);
             if (ctx[key]) {
                 return ctx[key]
             }
+            
             else if (cssFunNames.includes(key)) {
                 return function (...args) {
                     // console.log('ele', args[0].toString(16));
@@ -216,7 +219,15 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
                         // console.log(width);
                         val = str
                     }
-                    ele.style[key] = val
+                    if (key === 'size') {
+                        
+                        console.log(key, val, ele);
+                        ele.style['width'] = val
+                        ele.style['height'] = val
+                    }
+                    else {
+                        ele.style[key] = val
+                    }
                     return proxy
                 }
                 // console.log('sssss');
@@ -407,6 +418,18 @@ export let g = {
     defc,
 }
 
+
+export function hc2(ComponentConstruct, {args = [], init = function() {}, end = function() {}, afterInit, ready} = {}, ele) {
+    let readyFun = ready ? function(ctx) {
+        ready(ctx)
+        ctx.done(ele)
+    } : function(ctx) {  
+        ctx.done(ele)
+    }
+
+    let ret = ComponentConstruct.apply(null, args).init(init)
+    return defc(ret, readyFun);
+}
 
 export function hc(ComponentConstruct, {args = [], init = function() {}, end = function() {}, afterInit, ready} = {}, ele) {
     let readyFun = ready ? function(ctx) {

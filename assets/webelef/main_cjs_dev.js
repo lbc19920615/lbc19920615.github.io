@@ -282,6 +282,9 @@ function createElement(...args) {
 }
 let customComponents = new Map();
 let ssrComponents = new Map();
+function getcustomComponents() {
+  return customComponents;
+}
 
 /**
  * 运行ssr
@@ -410,12 +413,11 @@ function createCommonCtx(callback, {
   };
   let colorNames = ['backgroundColor'];
   let borderNames = ['border', 'fontColor'];
-  let sizeNames = ['width', 'height', 'fontSize'];
+  let sizeNames = ['width', 'height', 'size', 'fontSize'];
   let cssFunNames = [...colorNames, ...borderNames, ...sizeNames];
   let eventNames = ['onLoad'];
   let proxy = new Proxy(ctx, {
     get(target, key, receiver) {
-      // console.log(target, key, receiver);
       if (ctx[key]) {
         return ctx[key];
       } else if (cssFunNames.includes(key)) {
@@ -439,7 +441,13 @@ function createCommonCtx(callback, {
             // console.log(width);
             val = str;
           }
-          ele.style[key] = val;
+          if (key === 'size') {
+            console.log(key, val, ele);
+            ele.style['width'] = val;
+            ele.style['height'] = val;
+          } else {
+            ele.style[key] = val;
+          }
           return proxy;
         };
         // console.log('sssss');
@@ -648,6 +656,22 @@ function defc(buildCtx, runFun) {
 let g = {
   defc
 };
+function hc2(ComponentConstruct, {
+  args = [],
+  init = function () {},
+  end = function () {},
+  afterInit,
+  ready
+} = {}, ele) {
+  let readyFun = ready ? function (ctx) {
+    ready(ctx);
+    ctx.done(ele);
+  } : function (ctx) {
+    ctx.done(ele);
+  };
+  let ret = ComponentConstruct.apply(null, args).init(init);
+  return defc(ret, readyFun);
+}
 function hc(ComponentConstruct, {
   args = [],
   init = function () {},
@@ -847,9 +871,11 @@ exports.createCommonCtx = createCommonCtx;
 exports.defComponent = defComponent;
 exports.g = g;
 exports.getAllComments = getAllComments;
+exports.getcustomComponents = getcustomComponents;
 exports.getscripts = getscripts;
 exports.h3 = h3;
 exports.hc = hc;
+exports.hc2 = hc2;
 exports.injectControl = injectControl;
 exports.metaCls = metaCls;
 exports.setGlobal = setGlobal;

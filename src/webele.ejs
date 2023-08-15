@@ -29,41 +29,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         import '/assets/ele/index.js?v=0.0.3';
 
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
-        import { Nid, g, Column, Text, BaseVmControl, injectControl, useControl, getAllComments } from "wle";
-
-
-
-        import {parseArkUI} from "/assets/parser.js?v=0.0.3";
-
-        let code  = `
-        Column('111') {
-            Column({a: 1}) {
-    
-                Text()
-                Text('single string')
-                Text("double string")
-                Text(some.TextDetail)
-            }
-    
-            Column() {
-                Column(['111']) {
-            
-                    Text()
-                    Text('single string')
-                    Text("double string")
-                    Text(some.TextDetail)
-                    Text().size('100%')
-                    
-                }
-            }
-
-            Button({text: 'change text', action: some.action})
-        }
-        `
-
-        let ret = parseArkUI(code);
-        console.log(ret);
-
+        import { Nid, g, hc2, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
         window.getAllComments = getAllComments
 

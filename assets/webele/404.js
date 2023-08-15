@@ -1,6 +1,6 @@
 import { reactive, computed  } from "vue"
-import { Button, Text, ForEach, If, Else, Column, defComponent, Nid, hc, g } from "wle";
-
+import { Nid, g, hc2, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
 let FormItem = defComponent({
     name: 'FormItem',
@@ -46,13 +46,14 @@ const defaultFormSetting = {
 let TextArea1 = defComponent({
     name: 'TextArea1',
     setup({getCtx, startWatch, args}) {    
+        let text = args[0] ?? ''
         let ele = document.createElement('elastic-textarea')
         ele.style.display = 'block'
         ele.style.border = '1px solid var(--borderColor,rgba(0,0,0,.2))'
         ele.style.padding = defaultFormSetting.padding
         ele.innerHTML = `<label>
         <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none; font-size: 14px" 
-        name="textarea-1"></textarea>
+        name="textarea-1">${text}</textarea>
     </label>`
         return ele
     }
@@ -241,9 +242,11 @@ export default function({Page}) {
             action3() {
                 data.dialog = true
             },
+            TextDetail: computed(() => vmData.some),
             data
         }
     })();
+    globalThis.vm = vm;
 
     let vmData = vm.data;
 
@@ -258,7 +261,54 @@ export default function({Page}) {
         vmData.max = 2;
     }, 3000)
 
-    globalThis.$vmData = vmData
+    globalThis.$vmData = vmData;
+
+
+
+    let code  = `
+Column('111') {
+    Column({a: 1}) {
+
+        Text()
+        Text('single string')
+        Text("double string")
+        Text(vm.TextDetail)
+    }
+
+    Column() {
+        Column(['111']) {
+    
+            Text()
+            Text('single string')
+            Text("double string")
+            Text(vm.TextDetail)
+            Text().size('100%')
+            
+        }
+    }
+
+    Button({text: 'change text', action: vm.action})
+}
+    `;
+
+    // (function() {
+    //     let data = reactive({
+    //         title: '111'
+    //     })
+    //     globalThis.some = {
+    //         data,
+    //         TextDetail: computed(() => {
+    //             return data.title + 'sssss'
+    //         })
+    //     };
+    // })();
+
+    let ret = parseArkUI(code, {
+        components: getcustomComponents(),
+        hc2
+    });
+    console.log(ret?.def);
+    console.log(ret?.dom);
 
 
     g.defc(Column().init(function (ele) {
@@ -428,6 +478,10 @@ export default function({Page}) {
 
 
     }), function (ctx) { ctx.done(ele) })
+
+    hc2(Text, {args: ['动态string转换为component测试']}, ele);
+    hc2(TextArea1, {args: [code.trim()]}, ele);
+    ele.appendChild(ret.dom)
 
     Page({
         ele,

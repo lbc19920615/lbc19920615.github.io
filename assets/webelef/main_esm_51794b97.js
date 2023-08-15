@@ -280,6 +280,9 @@ function createElement(...args) {
 }
 let customComponents = new Map();
 let ssrComponents = new Map();
+function getcustomComponents() {
+  return customComponents;
+}
 
 /**
  * 运行ssr
@@ -408,12 +411,11 @@ function createCommonCtx(callback, {
   };
   let colorNames = ['backgroundColor'];
   let borderNames = ['border', 'fontColor'];
-  let sizeNames = ['width', 'height', 'fontSize'];
+  let sizeNames = ['width', 'height', 'size', 'fontSize'];
   let cssFunNames = [...colorNames, ...borderNames, ...sizeNames];
   let eventNames = ['onLoad'];
   let proxy = new Proxy(ctx, {
     get(target, key, receiver) {
-      // console.log(target, key, receiver);
       if (ctx[key]) {
         return ctx[key];
       } else if (cssFunNames.includes(key)) {
@@ -437,7 +439,13 @@ function createCommonCtx(callback, {
             // console.log(width);
             val = str;
           }
-          ele.style[key] = val;
+          if (key === 'size') {
+            console.log(key, val, ele);
+            ele.style['width'] = val;
+            ele.style['height'] = val;
+          } else {
+            ele.style[key] = val;
+          }
           return proxy;
         };
         // console.log('sssss');
@@ -646,6 +654,22 @@ function defc(buildCtx, runFun) {
 let g = {
   defc
 };
+function hc2(ComponentConstruct, {
+  args = [],
+  init = function () {},
+  end = function () {},
+  afterInit,
+  ready
+} = {}, ele) {
+  let readyFun = ready ? function (ctx) {
+    ready(ctx);
+    ctx.done(ele);
+  } : function (ctx) {
+    ctx.done(ele);
+  };
+  let ret = ComponentConstruct.apply(null, args).init(init);
+  return defc(ret, readyFun);
+}
 function hc(ComponentConstruct, {
   args = [],
   init = function () {},
@@ -833,4 +857,4 @@ let Text = defComponent({
   }
 });
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getscripts, h3, hc, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };
