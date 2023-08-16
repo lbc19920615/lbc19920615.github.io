@@ -7,6 +7,7 @@
     "toc:articles": "node cmd.js --type build-toc --dist assets/article.toc.js",
     "build:dev": "cross-env NODE_ENV=development ./node_modules/.bin/webpack",
     "build": "npm run build:css && rollup --c",
+    "build:wle": "rollup --c",
     "build:css": "unocss -c ./uno.config.ts",
     "serve": "cross-env NODE_ENV=production npx webpack serve"
   },

@@ -506,6 +506,7 @@ function createForeachCtx(callback, {
       ctx.parent = parent;
       appendCommon(ctx, ele);
       ctx.ele = ele;
+      // console.log('foreach', max, list);
       ctx.build(max, list);
     },
     reload({
@@ -622,8 +623,9 @@ let currentCondition = null;
 function If(conditions) {
   // console.log(conditions);
   currentCondition = conditions;
+  let val = conditions?.__v_isRef ? conditions.value : conditions;
   let fragment = ForEach({
-    max: Number(conditions.value)
+    max: Number(val)
   }, {
     label: ' if'
   });
@@ -642,13 +644,15 @@ function Else() {
     return;
   }
   let conditions = currentCondition;
+  let val = conditions?.__v_isRef ? conditions.value : conditions;
+  // console.log('currentCondition', currentCondition, val,  Number(!val));
   let fragment = ForEach({
-    max: !Number(conditions.value)
+    max: Number(!val)
   }, {
     label: ' else'
   });
   watch(conditions, (newVal, oldVal) => {
-    // console.log('111', newVal, fragment);
+    // console.log('if', newVal, fragment);
     fragment.getCtx().reload({
       max: !Number(newVal)
     });

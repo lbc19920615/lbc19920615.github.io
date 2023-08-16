@@ -287,7 +287,8 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
             ctx.curRoot = parent
             ctx.parent = parent
             appendCommon(ctx, ele);
-            ctx.ele = ele
+            ctx.ele = ele;
+            // console.log('foreach', max, list);
             ctx.build(max, list)
         },
         reload({ max, list } = {}) {
@@ -396,7 +397,8 @@ let currentCondition = null;
 export function If(conditions) {
     // console.log(conditions);
     currentCondition = conditions;
-    let fragment = ForEach({ max: Number(conditions.value) }, {label: ' if'})
+    let val = conditions?.__v_isRef  ? conditions.value : conditions
+    let fragment = ForEach({ max: Number(val) }, {label: ' if'})
     watch(conditions, (newVal, oldVal) => {
         // console.log('111', newVal, fragment);
         fragment.getCtx().reload({ max: Number(newVal) })
@@ -411,10 +413,12 @@ export function Else() {
         return;
     }
     
-    let conditions = currentCondition
-    let fragment = ForEach({ max: !Number(conditions.value) }, {label: ' else'})
+    let conditions = currentCondition;
+    let val = conditions?.__v_isRef  ? conditions.value : conditions;
+    // console.log('currentCondition', currentCondition, val,  Number(!val));
+    let fragment = ForEach({ max: Number(!val) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
-        // console.log('111', newVal, fragment);
+        // console.log('if', newVal, fragment);
         fragment.getCtx().reload({ max: !Number(newVal) })
     })
     return fragment

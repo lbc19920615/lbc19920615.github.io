@@ -379,6 +379,7 @@ export default function({Page}) {
     let vmDataMax = computed(() => vmData.max > 1)
     let vmStrSome = computed(() => vmData.some)
 
+    globalThis.vmDataMax = vmDataMax;
 
     setTimeout(() => {
         vmData.list[0] = 3;
@@ -406,18 +407,32 @@ Column({modifier: Modifier}) {
             Text('single string')
             Text("double string")
             Text(vm.TextDetail)
-            Text().size('100%')
+            Text()
             
         }
+    }
+
+    ForEach({max: 3}) {
+        Text('single string')
+    }
+
+    If(vmDataMax) {
+        Text('if is true')
+    }
+
+    Else() {
+        Text('else is true')
     }
 
     Button({text: 'change text', action: vm.action})
 }
     `;
     let ret = parseArkUI(code, {
+        glo: globalThis,
         components: getcustomComponents(),
         hc2
     });
+    console.log(vmDataMax.value);
     // console.log(ret?.def);
     // console.log(ret?.dom);
 
