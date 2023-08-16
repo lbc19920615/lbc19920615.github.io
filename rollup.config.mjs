@@ -44,11 +44,11 @@ function demoWatcherPlugin() {
         let keys =  Object.keys(bundle)
         if (!imports.wle) {
           let newFileName = keys[0];
-          let cssFiles = keys.filter(v => v.endsWith('.css'))
+          let cssFiles = keys.filter(v => v.endsWith('.css'));
           let links = cssFiles.map(cssFile => {
             return `<link rel="stylesheet" href="/assets/webelef/${cssFile}" />`
           })
-
+          links.push('<link rel="stylesheet" href="/assets/uno.css" />')
           imports['wle'] =  '/' + baseFolder + '/webelef/' + newFileName + '?v='+ Date.now();
           let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)

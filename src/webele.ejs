@@ -11,11 +11,27 @@
         var vConsole = new window.VConsole();
     </script> -->
 
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            margin: 0;
+        }
+        #routerroot {
+            overflow: auto;
+        }
+        #nav {
+            position: sticky;
+            top: 0;
+        }
+    </style>
     <%- links  %>
 </head>
 
 <body>
-    <div id="routerroot"></div>
+    <div id="routerroot" class="h-full"></div>
     <script src="
 https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 "></script>
@@ -29,7 +45,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         import '/assets/ele/index.js?v=0.0.3';
 
         import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
-        import { Nid, g, hc2, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
+        import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
         window.getAllComments = getAllComments
 
@@ -58,7 +74,41 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             keepLives
         }
 
+        class AppCotnrol extends BaseVmControl {
+            title = ''
+            get TextDetail() {
+                return 'detail 页面 ' + this.title
+            }
+            get navs() {
+                return [
+                    ['detail', {}]
+                ]
+            }
+            setTitle(v) {
+                this.title = v
+            }
+            action(e) {
+                globalThis.wRoute.back()
+            }
+        }
+
+        injectControl('app')(AppCotnrol);
+        let app = useControl('app');
+
+        window.getApp = function() {
+            return {
+                $vm: app
+            }
+        }
+
+        /**
+         *@param rooterRootEle {Element} 
+         */
         function pageBeforeRender(rooterRootEle) {
+
+            rooterRootEle.classList.add('dis-flex');
+            rooterRootEle.style.setProperty('--app-nav-w', '90px');
+
             let nav = document.createElement('div')
             nav.id = 'nav'
             let dom = document.createElement('div')
@@ -66,8 +116,29 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             dom.onclick = function() {
                 document.documentElement.classList.toggle('theme-dark')
             }
-            nav.appendChild(dom)
+            nav.style.width = 'var(--app-nav-w)'
+            nav.appendChild(dom);
+
+            hc2(ForEach, {args: [{list: app.navs}], init: (ele, option) => {
+                let name = option.item[0];
+                let ctx = hc2(Text, {args: [name]}, ele);
+                ctx.ele.onclick = function() {
+                    globalThis.wRoute.push(name, {
+                        paramA: 'from nav'
+                    })
+                }
+            }}, nav);
+
+
+            let mainContent = document.createElement('div')
+            mainContent.id = 'mainContent';
+            mainContent.classList.add('flex-1');
+
             rooterRootEle.appendChild(nav)
+            rooterRootEle.appendChild(mainContent)
+            return {
+                tureRoot: mainContent
+            }
         }
 
 
@@ -76,8 +147,8 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 
             function render(rootEle) {
                 rooterRootEle.innerHTML = ''
-                pageBeforeRender(rooterRootEle)
-                rooterRootEle.appendChild(rootEle)
+                let { tureRoot } = pageBeforeRender(rooterRootEle)
+                tureRoot.appendChild(rootEle)
             }
 
             function createPageFun(nid = '', params) {
@@ -137,6 +208,11 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             const pushRoute = (path = '', params = {}) => {
                 // event = event || window.event;
                 // event.preventDefault();
+                let keys = [...pageMap.keys()];
+                // console.log(keys.at(-1));
+                if (keys.at(-1) === path) {
+                    return
+                }
                 window.history.pushState({}, "", "#/" + path);
                 handleLocation(params);
             };
