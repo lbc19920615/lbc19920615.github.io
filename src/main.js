@@ -91,6 +91,10 @@ function _utils_getObjectParam(args = [], index = 0) {
     return args[index] ?? {}
 }
 
+export let Utils = {
+    getObjectParam: _utils_getObjectParam
+}
+
 function _utils_getAnyParam(args = [], defaultVal, index = 0) {
     return args[index] ?? defaultVal
 }
@@ -247,6 +251,7 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
         done(parent) {
             ctx.curRoot = parent
             ctx.parent = parent
+            // ctx.parentCtx = this
             appendCommon(ctx, ele)
             ctx.ele = ele
             callback(ele, {parent})
@@ -481,6 +486,7 @@ export let h3 = new Proxy(customComponents, {
 export function defComponent(option = {}) {
     let {setup, ssrRender} = option
     let ctx = null;
+    
     function getCompCtx() {
         return ctx
     }
@@ -504,7 +510,12 @@ export function defComponent(option = {}) {
             init(callback) {
                 // console.log(callback);
                 return function () {
-                    let ele = setup({getCompCtx, startWatch, args, isSsrMode})
+                    let _setCreatedCallback = null
+                    function setCreated(v) {
+                        _setCreatedCallback = v
+                    }
+
+                    let ele = setup({getCompCtx, setCreated, startWatch, args, isSsrMode})
                     let id = Nid()
                     if (isSsrMode) {
                         ele.setAttribute('ssr-id', id)
@@ -513,12 +524,20 @@ export function defComponent(option = {}) {
                     ctx = createCommonCtx(function(childEle, option) {
                         // console.log(option);
                         // console.dir(ele.parentElement);
+                        
+                    if (_setCreatedCallback) {
+                        _setCreatedCallback(ctx)
+                    }
                         callback(childEle)
                         // currentRoot = childEle
                         if (option.afterRender) {
                             option.afterRender(childEle, option)
                         }
-                    }, { ele })
+                    }, { ele });
+
+                    // console.log(ctx)
+
+
                     if (isSsrMode) {
                         __ssr_setup(ele, args, {id, option, ctx, ssrRender, funcStr: callback?.toString() ?? ''})
                     }

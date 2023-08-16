@@ -1,6 +1,38 @@
 import { reactive, computed  } from "vue"
-import { Nid, g, hc2, Modifier, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
+import { Nid, g, hc2, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
 import {parseArkUI} from "/assets/parser.js?v=0.0.3";
+
+function getParentComp(parent, {cls = ''} = {}) {
+    let ret = parent;
+    if (!ret.classList.contains(cls)) {
+        ret = ret?.closest('.' + cls)
+    }
+    return ret
+}
+
+let Form1 = defComponent({
+    name: "Form1",
+    setup({setCreated, startWatch, args}) {  
+        let config = Utils.getObjectParam(args, 0)
+        let innerModel = {}
+
+        let ele = document.createElement('div');
+        ele.classList.add('form');
+        ele.setAttribute('name', config?.name)
+        
+        ele.$formCtx = {
+            setModel(name, val) {
+                // console.log('name', val);
+                innerModel[name] = val
+            },
+            getModel() {
+                return innerModel
+            }
+        }
+
+        return ele
+    }
+})
 
 let FormItem = defComponent({
     name: 'FormItem',
@@ -9,9 +41,33 @@ let FormItem = defComponent({
         // div.innerHTML = 'end form item'
         ele.appendChild(div)
     },
-    setup({getCompCtx, startWatch, args}) {         
+    setup({setCreated, startWatch, args}) {         
+        let error_cls = 'form-item__error'
+
         let ele = document.createElement('div')
-        ele.classList.add('form-item')
+        ele.classList.add('form-item');
+
+        let name = args[0];
+        ele.$formItemCtx = {
+            form: null,
+            name: name,
+            setValid(isValid = true) {
+                console.log('setValid', isValid);
+                // let cls = isValid ? 'form-item__sucess' : 'form-item__error'
+                if (isValid) {
+                    ele.classList.remove(error_cls)
+                } else {
+                    ele.classList.add(error_cls)
+                }
+            },
+            callOnChange(newVal, target) {
+                // console.log('e', e, target);
+                ele.$formItemCtx.setModel(name, newVal)
+            },
+            setModel(name, val) {
+                ele.$formItemCtx.form?.$formCtx?.setModel(name, val)
+            }
+        }
 
         hc(Column, {
             init(ele)  {
@@ -29,6 +85,12 @@ let FormItem = defComponent({
         }
     
         render(ele)
+
+        setCreated(function(ctx) {
+            let parent = ctx?.parent;
+            let form = getParentComp(parent, {cls: 'form'})
+            ele.$formItemCtx.form = form
+        })
     
         startWatch(() => {
             render(ele)
@@ -43,9 +105,27 @@ const defaultFormSetting = {
     padding: '.35em .625em'
 }
 
+function __getParentFormItemCtx(ctx) {
+    let formItem = getParentComp(ctx?.parent, {cls: 'form-item'})
+    // console.log(formItem);
+    return formItem?.$formItemCtx
+}
+
+function __forItem_action({ele, ctx}) {
+    // console.log('sssssssssssssss', ctx?.parent);
+    
+    let formCtx = __getParentFormItemCtx(ctx);
+    ele.onchange = function(e) {
+        console.log(e);
+        let val = e?.detail ? e.detail?.value : e.target?.value 
+        formCtx.callOnChange(val, ele)
+        // console.log('ele', e, ctx);
+    }
+}
+
 let TextArea1 = defComponent({
     name: 'TextArea1',
-    setup({getCtx, startWatch, args}) {    
+    setup({setCreated, startWatch, args}) {    
         let text = args[0] ?? ''
         let ele = document.createElement('elastic-textarea')
         ele.style.display = 'block'
@@ -55,13 +135,19 @@ let TextArea1 = defComponent({
         <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none; font-size: 14px" 
         name="textarea-1">${text}</textarea>
     </label>`
+    setCreated(function(ctx) {
+        __forItem_action({ele: ele.children[0].children[0],  ctx})
+    });
+
         return ele
     }
 })
 
+
+
 let Input1 = defComponent({
     name: 'Input1',
-    setup({getCtx, startWatch, args}) {    
+    setup({setCreated, startWatch, args}) {    
         let option = args[0] ?? {}
         // console.log(option);
 
@@ -107,13 +193,17 @@ let Input1 = defComponent({
                 close.style.setProperty("width", 'var(--input-addon-w)');
             }
         }
+
+        setCreated(function(ctx) {
+            __forItem_action({ele: input,  ctx})
+        });
         return ele
     }
 })
 
 let Select1 = defComponent({
     name: 'Select1',
-    setup({getCtx, startWatch, args}) {    
+    setup({setCreated, startWatch, args}) {
         let option = args[0] ?? {}
         let ele = document.createElement('xy-select')
 
@@ -124,7 +214,11 @@ let Select1 = defComponent({
                 optionEle.innerHTML = `option${option.index + 1}`
                 option.appendChild(optionEle)
             }
-        }, ele)
+        }, ele);
+
+        setCreated(function(ctx) {
+            __forItem_action({ele,  ctx})
+        });
 
         return ele
     }
@@ -133,9 +227,9 @@ let Select1 = defComponent({
 
 let CheckboxGroup = defComponent({
     name: 'CheckboxGroup',
-    setup({getCtx, startWatch, args}) {    
+    setup({setCreated, startWatch, args}) {    
         let option = args[0] ?? {}
-        let ele = document.createElement('div')
+        let ele = document.createElement('xy-checkbox-group')
         ele.classList.add('checkbox-group')
 
         hc(ForEach, {args: [{max: 6}], 
@@ -145,7 +239,12 @@ let CheckboxGroup = defComponent({
                 checkbox.innerHTML = Nid()
                 option.appendChild(checkbox)
             }
-        }, ele)
+        }, ele);
+
+        setCreated(function(ctx) {
+            __forItem_action({ele,  ctx})
+        });
+
 
         return ele
     }
@@ -154,9 +253,9 @@ let CheckboxGroup = defComponent({
 
 let RadioboxGroup = defComponent({
     name: 'RadioboxGroup',
-    setup({getCtx, startWatch, args}) {    
+    setup({setCreated, startWatch, args}) {    
         let option = args[0] ?? {}
-        let ele = document.createElement('div')
+        let ele = document.createElement('xy-radio-group')
         ele.classList.add('radio-group')
 
         hc(ForEach, {args: [{max: 6}], 
@@ -166,7 +265,12 @@ let RadioboxGroup = defComponent({
                 radio.innerHTML = Nid()
                 option.appendChild(radio)
             }
-        }, ele)
+        }, ele);
+
+        setCreated(function(ctx) {
+            __forItem_action({ele,  ctx})
+        });
+
 
         return ele
     }
@@ -176,7 +280,7 @@ let RadioboxGroup = defComponent({
 
 let Dialog1 = defComponent({
     name: 'Dialog1',
-    setup({getCtx, startWatch, args}) {    
+    setup({setCreated, startWatch, args}) {    
         let option = args[0] ?? {}
         let MyDialog = customElements.get('my-dialog')
         let ele = new MyDialog({title: 'dialog1'})
@@ -241,6 +345,11 @@ export default function({Page}) {
             },
             action3() {
                 data.dialog = true
+            },
+            submitForm() {
+                let formName = 'form1'
+                console.log(formName, document.querySelector(`.form[name=${formName}]`)?.$formCtx.getModel())
+                // alert('console.log查看')
             },
             TextDetail: computed(() => vmData.some),
             data
@@ -374,69 +483,79 @@ Column({modifier: Modifier}) {
                 ctx.done(ele)
             });
 
-
             
             ; g.defc(Text('form测试').init(function (ele) {
             }), function (ctx) {
                 ctx.done(ele)
             });
 
-            ; g.defc(FormItem('select').init(function (ele) {
-                ; g.defc(Select1().init(function (ele) {
+            ; g.defc(Form1({name: 'form1'}).init(function (ele) {
+    
+                ; g.defc(FormItem('select').init(function (ele) {
+                    ; g.defc(Select1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
                 }), function (ctx) {
                     ctx.done(ele)
                 });
+    
+                
+                ; g.defc(FormItem('textarea').init(function (ele) {
+                    ; g.defc(TextArea1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+    
+                ; g.defc(FormItem('input text').init(function (ele) {
+                    ; g.defc(Input1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+                ; g.defc(FormItem('input number').init(function (ele) {
+                    ; g.defc(Input1({type: "number"}).init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+    
+                ; g.defc(FormItem('checkbox').init(function (ele) {
+                    ; g.defc(CheckboxGroup().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+                ; g.defc(FormItem('radio').init(function (ele) {
+                    ; g.defc(RadioboxGroup().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+
+                hc2(Button, {args: [{text: '获取当前model值 console查看', action: vm.submitForm}]}, ele);
+
             }), function (ctx) {
                 ctx.done(ele)
             });
-
             
-            ; g.defc(FormItem('textarea').init(function (ele) {
-                ; g.defc(TextArea1().init(function (ele) {
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-            }), function (ctx) {
-                ctx.done(ele)
-            });
 
-
-            ; g.defc(FormItem('input text').init(function (ele) {
-                ; g.defc(Input1().init(function (ele) {
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-            }), function (ctx) {
-                ctx.done(ele)
-            });
-
-            ; g.defc(FormItem('input number').init(function (ele) {
-                ; g.defc(Input1({type: "number"}).init(function (ele) {
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-            }), function (ctx) {
-                ctx.done(ele)
-            });
-
-
-            ; g.defc(FormItem('checkbox').init(function (ele) {
-                ; g.defc(CheckboxGroup().init(function (ele) {
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-            }), function (ctx) {
-                ctx.done(ele)
-            });
-
-            ; g.defc(FormItem('radio').init(function (ele) {
-                ; g.defc(RadioboxGroup().init(function (ele) {
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-            }), function (ctx) {
-                ctx.done(ele)
-            });
 
             
         }), function (ctx) {

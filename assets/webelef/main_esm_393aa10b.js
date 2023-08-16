@@ -320,6 +320,9 @@ function _utils_getObjectParam(args = [], index = 0) {
   }
   return args[index] ?? {};
 }
+let Utils = {
+  getObjectParam: _utils_getObjectParam
+};
 function _utils_getAnyParam(args = [], defaultVal, index = 0) {
   return args[index] ?? defaultVal;
 }
@@ -461,6 +464,7 @@ function createCommonCtx(callback, {
     done(parent) {
       ctx.curRoot = parent;
       ctx.parent = parent;
+      // ctx.parentCtx = this
       appendCommon(ctx, ele);
       ctx.ele = ele;
       callback(ele, {
@@ -747,8 +751,13 @@ function defComponent(option = {}) {
       init(callback) {
         // console.log(callback);
         return function () {
+          let _setCreatedCallback = null;
+          function setCreated(v) {
+            _setCreatedCallback = v;
+          }
           let ele = setup({
             getCompCtx,
+            setCreated,
             startWatch,
             args,
             isSsrMode
@@ -760,6 +769,10 @@ function defComponent(option = {}) {
           ctx = createCommonCtx(function (childEle, option) {
             // console.log(option);
             // console.dir(ele.parentElement);
+
+            if (_setCreatedCallback) {
+              _setCreatedCallback(ctx);
+            }
             callback(childEle);
             // currentRoot = childEle
             if (option.afterRender) {
@@ -768,6 +781,9 @@ function defComponent(option = {}) {
           }, {
             ele
           });
+
+          // console.log(ctx)
+
           if (isSsrMode) {
             __ssr_setup(ele, args, {
               id,
@@ -869,4 +885,4 @@ let Text = defComponent({
   }
 });
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Modifier, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Modifier, Nid, Text, Utils, createCommonCtx, defComponent, g, getAllComments, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };
