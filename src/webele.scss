@@ -2,6 +2,12 @@
     --borderColor:  rgba(0,0,0,.2);
 }
 
+// reset
+xy-date-picker.date-picker {
+    all: initial;
+}
+
+//  theme
 .theme-dark {
     body {
         background: #131212;

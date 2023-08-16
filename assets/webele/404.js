@@ -276,6 +276,21 @@ let RadioboxGroup = defComponent({
     }
 })
 
+let DatePicker1 = defComponent({
+    name: 'DatePicker1',
+    setup({setCreated, startWatch, args}) {    
+        let option = args[0] ?? {}
+        let ele = document.createElement('xy-date-picker')
+        ele.classList.add('date-picker')
+
+        setCreated(function(ctx) {
+            __forItem_action({ele,  ctx})
+        });
+
+        return ele
+    }
+})
+
 
 
 let Dialog1 = defComponent({
@@ -529,6 +544,15 @@ Column({modifier: Modifier}) {
                     ctx.done(ele)
                 });
     
+                ; g.defc(FormItem('datepicker').init(function (ele) {
+                    ; g.defc(DatePicker1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
     
                 ; g.defc(FormItem('checkbox').init(function (ele) {
                     ; g.defc(CheckboxGroup().init(function (ele) {
