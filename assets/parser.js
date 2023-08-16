@@ -1,6 +1,6 @@
 import { Nid } from "wle";
 
-export function parseArkUI(code = '', {components, hc2 } = {}) {
+export function parseArkUI(code = '', {components = new Map(), hc2 = function() {} } = {}) {
 
     // console.log(components);
     let reg = /([\w\d]*)(\s*\()([^\)]*)\)\s*{/g;
@@ -114,17 +114,6 @@ export function parseArkUI(code = '', {components, hc2 } = {}) {
                     let funcs = [];
                     ` + runDef + ' ;let a = function() {' + funcBody + '}; a(); funcs;'
                     let allFuncs = eval(newRetCode);
-
-                    // console.log(allFuncs);
-
-                    // console.log(getFunBody(b[0]));
-                    // if (!funcBody.includes('function')) {
-                        // console.log(funcBody);
-                    
-
-                        // let fnas = [...new Set(funs.map(v => v[1]))]
-                        // console.log(fnas);
-                    // }
                     curFuncDefArr.set(funcName, {
                         args: argArr[1],
                         funcBody: funcBody,
@@ -140,29 +129,7 @@ export function parseArkUI(code = '', {components, hc2 } = {}) {
                             item.appendChild(param)
                         }
                         ele.appendChild(item);
-
-                        // console.log(v[0].replaceAll('(', '\\\(').replaceAll(')', '\\\)'));
-                        // let index = funcBody.indexOf(v[0])
-                        // console.log('index', v[0], v.index, funcBody[parseInt(v.index) + v[0].length]);
-                        let funcArgs = v[1]
-                        // if (funcBody[v.index + v[0].length]  === '.') {
-                        //     let prefix  = v[0].replaceAll('(', '\\\(').replaceAll(')', '\\\)')
-                        //     let finded = new RegExp(prefix + '(\\s*)(\\.{1}[^\\n]+)')
-                        //     if (funcBody.match(finded)) {
-                        //         let funarr = funcBody.match(finded)
-                        //         // console.log(funarr);
-                        //         if (!item.querySelector('method')) {
-                        //             let param = document.createElement('method')
-                        //             param.innerHTML = funarr[2]
-                        //             item.appendChild(param);
-                        //             // funcArgs = funarr[2]
-                        //         }
-
-                        //     }
-                        // }
-
-
-                    //   console.log(funcArgs);
+                        let funcArgs = v[1];
         
                         function __get(object, path, defval = null) {
                             if (typeof path === "string") {
@@ -171,7 +138,6 @@ export function parseArkUI(code = '', {components, hc2 } = {}) {
                             return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : defval), object);
                         }
         
-
                         // console.log(funcArgs);
                         funcArgs = funcArgs.map(v => {
 
@@ -211,7 +177,9 @@ export function parseArkUI(code = '', {components, hc2 } = {}) {
                     })
                 }
             } catch (e) {
-                // console.log(e)
+                if (!e.message.includes('is not defined')) {
+                    console.log(e)
+                }
             }
         })
         // let keys = [...curFuncDefArr.keys()]
@@ -221,7 +189,7 @@ export function parseArkUI(code = '', {components, hc2 } = {}) {
     context.dom =  document.createElement('div')
     findFun(code, context, {parent: context.root, dom: context.dom})
 
-    // console.log(curFuncDefArr, context.root);
+    console.log(context.root);
 
     return {
         def: context.root,
