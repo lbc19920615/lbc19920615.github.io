@@ -4,8 +4,10 @@
   --borderColor: rgba(0,0,0,.2);
 }
 
-xy-date-picker.date-picker {
+my-date-picker.date-picker {
   all: initial;
+  height: 39px;
+  display: block;
 }
 
 .theme-dark body {

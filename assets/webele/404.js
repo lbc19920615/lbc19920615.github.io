@@ -280,7 +280,7 @@ let DatePicker1 = defComponent({
     name: 'DatePicker1',
     setup({setCreated, startWatch, args}) {    
         let option = args[0] ?? {}
-        let ele = document.createElement('xy-date-picker')
+        let ele = document.createElement('my-date-picker')
         ele.classList.add('date-picker')
 
         setCreated(function(ctx) {

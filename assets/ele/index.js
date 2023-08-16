@@ -1,5 +1,84 @@
 import 'https://unpkg.com/xy-ui';
 
+const toDate = (d) => {
+    const date = new Date(d);
+    const year = date.getFullYear();
+    const month = date.getMonth()+1;
+    const day = date.getDate();
+    return [year,month,day];
+}
+
+
+const parseDate = (date,type="date") => {
+    const [year,month,day] = toDate(date);
+    let value = '';
+    switch (type) {
+        case 'date':
+            value = year + '-' + (month+'').padStart(2,0) + '-' + (day+'').padStart(2,0);
+            break;
+        case 'month':
+            value = year + '-' + (month+'').padStart(2,0);
+            break;
+        default:
+            value = year + '';
+            break;
+    }
+    return value;
+}
+
+export class MyDatePicker extends customElements.get('xy-date-picker') {
+    // constructor(option = {}) {
+    //     super(option);
+    //     // console.log(option, this.shadowRoot);
+    // }
+
+    render(date=this.$value){
+        if (!this.$value) {
+            return ''
+        }
+        super.render(date)
+    }
+
+    get value() {
+        // console.log(this.$value);
+        if (!this.$value) {
+            return ''
+        }
+        return parseDate(this.$value,this.type);
+    }
+
+    set value(value) {
+
+        if (typeof value === 'undefined' || !value) {
+            this.$value = ''
+            this.datetxt.textContent = ''
+        } else {
+            this.$value = value;
+            this.datetxt.textContent = this.range?this.value.join('~'):this.value;
+        }
+
+        
+        if(this.nativeclick){
+            this.nativeclick = false;
+            this.dispatchEvent(new CustomEvent('change', {
+                detail: {
+                    value: this.value,
+                    date: this.date
+                }
+            }));
+        }else{
+            if(this.datePane){
+                this.datePane.value = this.value;
+            }else{
+                this.defaultvalue = this.range?this.value.join('~'):this.value;
+            }
+        }
+    }
+}
+
+if (!customElements.get('my-date-picker')) {
+    customElements.define('my-date-picker', MyDatePicker)
+}
 
 export class MyDialog extends customElements.get('xy-dialog') {
     constructor(option = {}) {

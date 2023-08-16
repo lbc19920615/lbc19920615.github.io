@@ -21,7 +21,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         return s
     })
 
-    console.log(code) 
+    // console.log(code) 
 
     let newfuncNames = funcNames.slice(0)
     let curFuncDefArr = new Map()
@@ -32,7 +32,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
     context.root = document.createElement('div');
 
-    console.log( context.newfuncNames);
+    // console.log( context.newfuncNames);
 
     function getFunBody(Func) {
         var entire = Func.toString();
@@ -95,7 +95,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         return args.map(v => {
             try {
                 let o = eval(`let a = ${v}; a;`);
-                console.log(v, o);
+                // console.log(v, o);
                 return o
             } catch(e) {
                 if (typeof v === 'string') {
