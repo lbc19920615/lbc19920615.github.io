@@ -381,34 +381,7 @@ let cssHelper = {
     return val;
   }
 };
-
-/**
- * 
- * @param {Function} callback 
- * @param {{ele: Element, id: string}} param1 
- * @returns 
- */
-function createCommonCtx(callback, {
-  ele,
-  id = Nid()
-} = {}) {
-  let ctx = {
-    id,
-    curRoot: undefined,
-    getEle() {
-      return ele;
-    },
-    done(parent) {
-      ctx.curRoot = parent;
-      ctx.parent = parent;
-      appendCommon(ctx, ele);
-      ctx.ele = ele;
-      callback(ele, {
-        parent
-      });
-    },
-    afterFuns: []
-  };
+function createModifier(ctx) {
   let colorNames = ['backgroundColor'];
   let borderNames = ['border', 'fontColor'];
   let sizeNames = ['width', 'height', 'size', 'fontSize'];
@@ -439,12 +412,8 @@ function createCommonCtx(callback, {
             // console.log(width);
             val = str;
           }
-          if (key === 'size') {
-            // console.log(key, val, ele);
-            ele.style['width'] = val;
-            ele.style['height'] = val;
-          } else {
-            ele.style[key] = val;
+          if (ctx.resolveStyle) {
+            ctx.resolveStyle(key, val);
           }
           return proxy;
         };
@@ -453,13 +422,15 @@ function createCommonCtx(callback, {
         return function (...args) {
           // console.log(args[0]);
           let callback = args[0];
-          callback({});
+          if (callback) {
+            callback({});
+          }
           return proxy;
         };
       } else if (['hookEnd'].includes(key)) {
         return function (...args) {
           if (args[0]) {
-            ctx.afterFuns.push(args[0]);
+            ctx?.afterFuns?.push(args[0]);
           }
           // console.log(args, ele, ctx);
           return proxy;
@@ -467,6 +438,47 @@ function createCommonCtx(callback, {
       }
     }
   });
+  return proxy;
+}
+let Modifier = createModifier({});
+
+/**
+ * 
+ * @param {Function} callback 
+ * @param {{ele: Element, id: string}} param1 
+ * @returns 
+ */
+function createCommonCtx(callback, {
+  ele,
+  id = Nid()
+} = {}) {
+  let ctx = {
+    id,
+    curRoot: undefined,
+    getEle() {
+      return ele;
+    },
+    done(parent) {
+      ctx.curRoot = parent;
+      ctx.parent = parent;
+      appendCommon(ctx, ele);
+      ctx.ele = ele;
+      callback(ele, {
+        parent
+      });
+    },
+    resolveStyle(key, val) {
+      if (key === 'size') {
+        // console.log(key, val, ele);
+        ele.style['width'] = val;
+        ele.style['height'] = val;
+      } else {
+        ele.style[key] = val;
+      }
+    },
+    afterFuns: []
+  };
+  let proxy = createModifier(ctx);
   return proxy;
 }
 
@@ -857,4 +869,4 @@ let Text = defComponent({
   }
 });
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Modifier, Nid, Text, createCommonCtx, defComponent, g, getAllComments, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };

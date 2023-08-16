@@ -1,5 +1,5 @@
 import { reactive, computed  } from "vue"
-import { Nid, g, hc2, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+import { Nid, g, hc2, Modifier, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
 import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
 let FormItem = defComponent({
@@ -266,7 +266,7 @@ export default function({Page}) {
 
 
     let code  = `
-Column('111') {
+Column({modifier: Modifier}) {
     Column({a: 1}) {
 
         Text()
@@ -290,25 +290,12 @@ Column('111') {
     Button({text: 'change text', action: vm.action})
 }
     `;
-
-    // (function() {
-    //     let data = reactive({
-    //         title: '111'
-    //     })
-    //     globalThis.some = {
-    //         data,
-    //         TextDetail: computed(() => {
-    //             return data.title + 'sssss'
-    //         })
-    //     };
-    // })();
-
     let ret = parseArkUI(code, {
         components: getcustomComponents(),
         hc2
     });
-    console.log(ret?.def);
-    console.log(ret?.dom);
+    // console.log(ret?.def);
+    // console.log(ret?.dom);
 
 
     g.defc(Column().init(function (ele) {
