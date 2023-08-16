@@ -27,16 +27,102 @@ const parseDate = (date,type="date") => {
 }
 
 export class MyDatePicker extends customElements.get('xy-date-picker') {
-    // constructor(option = {}) {
-    //     super(option);
-    //     // console.log(option, this.shadowRoot);
-    // }
+    constructor(option = {}) {
+        super(option);
+        // console.log(option, this.shadowRoot);
+        this.shadowRoot.innerHTML = `
+        <style>
+        :host{
+            display:inline-block;
+            font-size: 14px;
+        }
+        :host([block]){
+            display:block;
+        }
+        
+        :host(:focus-within) xy-popover,:host(:hover) xy-popover{ 
+            z-index: 2;
+        }
+        :host([disabled]){
+            pointer-events:none;
+        }
+        xy-popover{
+            width:100%;
+            height:100%;
+        }
+        #select{
+            display:flex;
+            width:100%;
+            height:100%;
+            font-size: inherit;
+        }
+        #select span{
+            flex:1;
+            text-align:left;
+        }
+        .icon{
+            position:relative;
+            margin-right:.5em;
+            pointer-events:none;
+            width:1em;
+            height:1em;
+            fill:currentColor;
+        }
+        xy-popover{
+            display:block;
+        }
+        xy-popcon{
+            min-width:100%;
+        }
+        .pop-footer{
+            display:flex;
+            justify-content:flex-end;
+            padding:0 .8em .8em;
+        }
+        .pop-footer xy-button{
+            font-size: .8em;
+            margin-left: .8em;
+        }
+        </style>
+        <xy-popover class="date-picker" id="popover" ${this.dir? "dir='"+this.dir+"'" : ""}>
+            <xy-button id="select" ${this.disabled? "disabled" : ""}><svg class="icon" viewBox="0 0 1024 1024"><path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32z m-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z" p-id="8054"></path></svg><span id="datetxt"></span></xy-button>
+            <xy-popcon id="popcon" class="date-pane">
+                <div class="pop-footer">
+                    <xy-button autoclose>取 消</xy-button>
+                    <xy-button type="primary" id="btn-submit" autoclose>确 认</xy-button>
+                </div>
+            </xy-popcon>
+        </xy-popover>
+        `
+    }
 
     render(date=this.$value){
         if (!this.$value) {
             return ''
         }
         super.render(date)
+    }
+
+    get defaultvalue() {
+        const defaultvalue = this.getAttribute('defaultvalue');
+        // console.log('defaultvalue', defaultvalue);
+        if (!defaultvalue){
+            return ''
+        }
+        if(this.range){
+            if(defaultvalue){
+                const arr = defaultvalue.split('~');
+                if(arr[0]>arr[1]){
+                    return [arr[1],arr[0]]
+                }else{
+                    return arr
+                }
+            }else{
+                return [new Date,new Date]
+            }
+        }else{
+            return defaultvalue || new Date;
+        }
     }
 
     get value() {
