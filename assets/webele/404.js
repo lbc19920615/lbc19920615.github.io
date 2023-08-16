@@ -413,7 +413,8 @@ Column({modifier: Modifier}) {
     }
 
     ForEach({max: 3}) {
-        Text('single string')
+        Text('foreach single str')
+        Text("foreach double string")
     }
 
     If(vmDataMax) {
@@ -432,7 +433,7 @@ Column({modifier: Modifier}) {
         components: getcustomComponents(),
         hc2
     });
-    console.log(vmDataMax.value);
+    // console.log(vmDataMax.value);
     // console.log(ret?.def);
     // console.log(ret?.dom);
 
