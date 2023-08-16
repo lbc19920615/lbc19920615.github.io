@@ -4,14 +4,18 @@
   --borderColor: rgba(0,0,0,.2);
 }
 
+html {
+  font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+}
+
+textarea {
+  font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+}
+
 my-date-picker.date-picker {
   all: initial;
   height: 39px;
   display: block;
-}
-
-html {
-  font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
 }
 
 .theme-dark body {
