@@ -351,16 +351,9 @@ export default function({Page}) {
                 console.log('onDialogClose');
             },
             action2() {
-                if (location.hostname === '127.0.0.1') {
-                    globalThis.wRoute.push('remote', {
-                        paramA: Nid()
-                    })
-                }
-                else {
-                    globalThis.wRoute.push('detail', {
-                        paramA: Nid()
-                    })
-                }
+                globalThis.wRoute.push('detail', {
+                    paramA: Nid()
+                })
             },
             action3() {
                 data.dialog = true

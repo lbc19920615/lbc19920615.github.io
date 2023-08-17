@@ -59,9 +59,6 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             detail: (params) => {
                 return import(BaseDir + 'webele/detail.js?v=' + Date.now())
             },
-            remote: (params) => {
-                return import('http://localhost:7001/miniapp/script?name=[%27../esm/input.js%27]')
-            },
         };
 
 

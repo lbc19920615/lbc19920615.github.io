@@ -38,7 +38,7 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
 "></script>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_09e299ce.js?v=1692235494149"}
+          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_09e299ce.js?v=1692236953475"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -59,9 +59,6 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
             },
             detail: (params) => {
                 return import(BaseDir + 'webele/detail.js?v=' + Date.now())
-            },
-            remote: (params) => {
-                return import('http://localhost:7001/miniapp/script?name=[%27../esm/input.js%27]')
             },
         };
 
