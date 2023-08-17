@@ -23,10 +23,29 @@ import 'https://unpkg.com/xy-ui/components/xy-text.js';
 // import 'https://unpkg.com/xy-ui/components/xy-view.js';
 import 'https://unpkg.com/xy-ui/components/xy-datalist.js';
 import XyDialog from 'https://unpkg.com/xy-ui/components/xy-dialog.js';
-import XyMessage from 'https://unpkg.com/xy-ui/components/xy-message.js';
+import 'https://unpkg.com/xy-ui/components/xy-message.js';
 window.XyDialog = XyDialog;
-window.XyMessage = XyMessage;
+// window.XyMessage = XyMessage;
 
+let messageContent = document.getElementById('message-content');
+window.XyMessage = new Proxy({}, {
+    get(target, key) {
+        return function(text, duration, onclose) {
+            let cls = customElements.get('xy-message');
+            const message = new cls();
+            message.timer && clearTimeout(message.timer);
+            messageContent.appendChild(message);
+            message.type = key;
+            message.textContent = text;
+            message.show = true;
+            message.onclose = onclose;
+            message.timer = setTimeout(()=>{
+                message.show = false;
+            },duration||3000);
+            return message;
+        }
+    }
+})
 
 const DATE_PICKER_HAS_STATE = 'date-picker--has-val'
 
