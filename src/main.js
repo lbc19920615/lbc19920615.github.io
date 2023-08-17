@@ -246,7 +246,12 @@ export let Modifier =  {
             }
         })
     },
-
+    create(handleFun) {
+        let self = this;
+        return function(ele) {
+            handleFun(self.setCurEle(ele))
+        }
+    }
 }
 
 

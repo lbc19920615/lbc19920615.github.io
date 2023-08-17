@@ -43,46 +43,46 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
     // console.log(__MODEIFIER_ARR);
 
-    for (let i = 0; i < __MODEIFIER_ARR.length - 1; i++) {
-        ssscode = ssscode.replace(sss2reg, function(s, ...args) {
-            // console.log(args);
-            let mapTag = args[0].match(/(.*)__/);
-            let prefix = sssMap[mapTag[1]];
-            // console.log(prefix);
-            let body = getFunBody(s);
-            let funcDec = s.replace(body, '');
-            let setArr = funcDec.match(moddssdReg);
-            let funcName = 'Column__' + Nid();
-            funcNames.push(funcName)
-            // console.log(s);
-            modifierMap.set(funcName,  setArr[2])
-            code = code.replace('Column('+prefix+'modifier: ' + setArr[2], `function ${funcName}(`+prefix+`modifier: ` +  `$__${Nid()}\$`)
-            return ''
-        })
-    }
+    // for (let i = 0; i < __MODEIFIER_ARR.length - 1; i++) {
+    //     ssscode = ssscode.replace(sss2reg, function(s, ...args) {
+    //         // console.log(args);
+    //         let mapTag = args[0].match(/(.*)__/);
+    //         let prefix = sssMap[mapTag[1]];
+    //         // console.log(prefix);
+    //         let body = getFunBody(s);
+    //         let funcDec = s.replace(body, '');
+    //         let setArr = funcDec.match(moddssdReg);
+    //         let funcName = 'Column__' + Nid();
+    //         funcNames.push(funcName)
+    //         // console.log(s);
+    //         modifierMap.set(funcName,  setArr[2])
+    //         code = code.replace('Column('+prefix+'modifier: ' + setArr[2], `function ${funcName}(`+prefix+`modifier: ` +  `$__${Nid()}\$`)
+    //         return ''
+    //     })
+    // }
 
     // console.log(ssscode);
-    let finnalprefix;
-    let finalCode = ssscode.replace(/__MODEIFIER_([^]*)__/, function(s, ...args) {
-        finnalprefix = sssMap[args[0]];
-        // console.log('sss', s, finnalprefix);
-        return 'function Column('
-    });
+    // let finnalprefix;
+    // let finalCode = ssscode.replace(/__MODEIFIER_([^]*)__/, function(s, ...args) {
+    //     finnalprefix = sssMap[args[0]];
+    //     // console.log('sss', s, finnalprefix);
+    //     return 'function Column('
+    // });
 
-    console.log(finalCode);
+    // // console.log(finalCode);
 
-    let body = getFunBody(finalCode);
-    let funcDec = finalCode.replace(body, '');
-    let setArr = funcDec.match(moddssdReg);
-    let funcName = 'Column__' + Nid();
-    funcNames.push(funcName)
-    modifierMap.set(funcName,  setArr[2])
-    code = code.replace('Column('+finnalprefix+'modifier: ' + setArr[2], `function ${funcName}(`+finnalprefix+`modifier: ` +  `$__${Nid()}\$`)
+    // let body = getFunBody(finalCode);
+    // let funcDec = finalCode.replace(body, '');
+    // let setArr = funcDec.match(moddssdReg);
+    // let funcName = 'Column__' + Nid();
+    // funcNames.push(funcName)
+    // modifierMap.set(funcName,  setArr[2])
+    // code = code.replace('Column('+finnalprefix+'modifier: ' + setArr[2], `function ${funcName}(`+finnalprefix+`modifier: ` +  `$__${Nid()}\$`)
     // code = code.replace(funcName + '({})', funcName + '()')
     // code = code.replace(new RegExp(funcName + '\\(\\)[^{]{'), function(s, ...args) {
     //     return s + ` /*{modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}*/`
     // })
-    console.log(code);
+    // console.log(code);
 
 
     // code = code.replace(withModifierReg, function (s, ...args) {
@@ -106,7 +106,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
     code = code.replace(reg, function (s, ...args) {
         if (args[0]) {
             if (args[0].trim().includes('__') ) {
-                console.log(s)
+                // console.log(s)
                 s = s.replace(args[2], '');
                 let newRegs = args[2].replace(modifierReg, function(cs, ...cargs) {
                     // console.log(cargs);
@@ -123,14 +123,14 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         return s
     })
 
-    console.log(code) 
+    // console.log(code) 
 
-    let newfuncNames = funcNames.slice(0)
-    let curFuncDefArr = new Map()
+    let newfuncNames = funcNames.slice(0);
+    let curFuncDefArr = new Map();
 
     let context = {
         newfuncNames
-    }
+    };
 
     context.root = document.createElement('div');
 
@@ -221,6 +221,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
 
     function findFun(code, context, {parent, dom} = {}) {
+        // console.log(code);
         let newCode =  preDef + ' let a = function(){' + code + ` return [__FUNC__] }; a()`;
 
         // console.log(newCode);
@@ -232,8 +233,9 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                 let b = eval(curCode);
                 // console.log(b)
                 if (b[0]) {
-                    let funcBody = getFunBody(b[0])
-                    let argArr = funcBody.match(argsReg) ?? []
+                    let funcBody = getFunBody(b[0]);
+                    // console.log(funcBody);
+                    let argArr = funcBody.match(argsReg) ?? [];
                     let arr = funcName.split('__');
 
                     // tag
@@ -251,7 +253,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                         } catch(e) {
                             console.log('func_args', e);
                         }
-                        console.log(arr[0], func_args[0]);
+                        // console.log(arr[0], func_args[0]);
 
                         if (['ForEach', 'If', 'Else'].includes(arr[0])) {
                             

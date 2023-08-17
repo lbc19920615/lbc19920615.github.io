@@ -361,7 +361,7 @@ export default function({Page}) {
             },
             submitForm() {
                 let formName = 'form1'
-                console.log(formName, document.querySelector(`.form[name=${formName}]`)?.$formCtx.getModel())
+                console.log(formName, document.querySelector(`.form[name=a{formName}]`)?.$formCtx.getModel())
                 // alert('console.log查看')
             },
             TextDetail: computed(() => vmData.some),
@@ -373,11 +373,20 @@ export default function({Page}) {
     let vmData = vm.data;
 
     let vmDataList = vmData.list
+    let vmmodifierFactory = (ele) => {
+        return Modifier?.setCurEle(ele).width('100%')
+    }
+    let vmmodifierFactory2 = Modifier.create(ctx => {
+        ctx.width('100%')?.backgroundColor('var(--cus-background)')
+    })
     let vmDataDialog = computed(() => vmData.dialog)
     let vmDataMax = computed(() => vmData.max > 1)
     let vmStrSome = computed(() => vmData.some)
 
+
     globalThis.vmDataMax = vmDataMax;
+    globalThis.vmmodifierFactory = vmmodifierFactory;
+    globalThis.vmmodifierFactory2 = vmmodifierFactory2;
 
     setTimeout(() => {
         vmData.list[0] = 3;
@@ -389,8 +398,8 @@ export default function({Page}) {
 
 
     let code  = `
-Column({space: 5, modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}) {
-    Column() {
+Column({space: 5, modifier: vmmodifierFactory2}) {
+    Column({a: 1, modifier: vmmodifierFactory}) {
 
         Text().size('100%')
         Text('single string')
@@ -426,7 +435,7 @@ Column({space: 5, modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-
     Button({text: 'change text', action: vm.action})
 }
 
-Column({a: 1, modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}) {
+Column({a: 1, modifier: vmmodifierFactory}) {
     Column() {
     }
 }

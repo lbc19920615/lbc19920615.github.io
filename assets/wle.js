@@ -451,6 +451,13 @@ let Modifier = {
         // console.log(key, val,target,receiver, ele);
       }
     });
+  },
+
+  create(handleFun) {
+    let self = this;
+    return function (ele) {
+      handleFun(self.setCurEle(ele));
+    };
   }
 };
 
