@@ -4,15 +4,43 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
     // console.log(components);
     let reg = /([\w\d]*)(\s*\()([^\)]*)\)\s*{/g;
+    let withModifierReg = /(Column)\(([^]*)(Modifier[\?\.]+[^\)]*\))/g
     let mreg = /([A-Z]{1}[\w\d]+)\(/g
 
     let allMethods = [...code.matchAll(mreg)].map(v => v[1])
-    let uniMethods = [...new Set(allMethods)]
+    let uniMethods = [...new Set(allMethods)];
+
+    let modifierReg = /\$__([^\$]*)\$/
     // console.log(uniMethods);
 
-    let funcNames = []
+    let funcNames = [];
+    let modifierMap = new Map();
+
+    code = code.replace(withModifierReg, function (s, ...args) {
+        if (args[0]) {
+            let funcName = args[0].trim() + '__' + Nid()
+            funcNames.push(funcName)
+            s = 'function ' + s.replace(args[0], funcName);
+            modifierMap.set(funcName, args[2])
+            s = s.replace(args[2], `$__${Nid()}\$`) 
+        }
+        return s
+    });
+
+    // console.log(modifierMap, funcNames);
+
     code = code.replace(reg, function (s, ...args) {
         if (args[0]) {
+            if (args[0].trim().includes('__')) {
+                // console.log(args)
+                s = s.replace(args[2], '');
+                let newRegs = args[2].replace(modifierReg, function(cs, ...cargs) {
+                    // console.log(cargs);
+                    let sss =  modifierMap.get(args[0])?.replace('Modifier', 'Modifier.setCurEle(ele)');
+                    return cs.replace('$__' + cargs[0]+ '$', '(ele) => ' + sss)
+                })
+                return s + '/*'+ newRegs +'*/'
+            }
             let funcName = args[0].trim() + '__' + Nid()
             funcNames.push(funcName)
             s = 'function ' + s.replace(args[0], funcName)
@@ -56,6 +84,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                     function ${v}(...args) {
                         return p
                     }
+
                     `
     }).join('\n')
 
@@ -83,6 +112,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                         funcs.push(curFunArr);
                         return p
                     }
+
                     `
     }).join('\n')
 
@@ -151,6 +181,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                         } catch(e) {
                             console.log('func_args', e);
                         }
+                        console.log(arr[0], func_args[0]);
 
                         if (['ForEach', 'If', 'Else'].includes(arr[0])) {
                             

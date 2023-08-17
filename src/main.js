@@ -84,6 +84,7 @@ export let getscripts = function(domRuntime = globalThis.document) {
     }
 }
 
+
 function _utils_getObjectParam(args = [], index = 0) {
     if (!Array.isArray(args)) {
         return {}
@@ -233,11 +234,23 @@ function createModifier(ctx) {
     return proxy
 }
 
-export let Modifier = createModifier({
-    resolveStyle(key, val,target,receiver) {
-        console.log(key, val,target,receiver, this);
-    }
-})
+let _Modifier_eles = {};
+let _currentModifierEle = null;
+export let Modifier =  {
+    setCurEle(ele) {
+        _currentModifierEle = ele;
+        return createModifier({
+            resolveStyle(key, val,target,receiver) {
+                ele.style[key] = val
+                // console.log(key, val,target,receiver, ele);
+            }
+        })
+    },
+
+}
+
+
+
 
 /**
  * 
@@ -595,8 +608,13 @@ export let Button = defComponent({
 
 export let Column = defComponent({
     name: 'Column',
-    setup() {
-        let ele = createElement('div')
+    setup({getCtx, startWatch, args, isSsrMode}) {
+        let firstArg = _utils_getObjectParam(args);
+        let ele = createElement('div');
+        // console.log('firstArg', firstArg);
+        if (firstArg && firstArg?.modifier) {
+            firstArg.modifier(ele)
+        }
         ele.classList.add('column')
         return ele
     },

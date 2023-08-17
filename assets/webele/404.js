@@ -4,6 +4,7 @@ import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
 // let moditer = Modifier.width('100%')
 // console.log(moditer);
+globalThis.Modifier = Modifier;
 
 function getParentComp(parent, {cls = ''} = {}) {
     let ret = parent;
@@ -388,8 +389,8 @@ export default function({Page}) {
 
 
     let code  = `
-Column({modifier: Modifier}) {
-    Column({a: 1}) {
+Column({modifier: Modifier?.width('100%')}) {
+    Column() {
 
         Text().size('100%')
         Text('single string')
@@ -398,7 +399,7 @@ Column({modifier: Modifier}) {
     }
 
     Column() {
-        Column(['111']) {
+        Column() {
     
             Text()
             Text('single string')

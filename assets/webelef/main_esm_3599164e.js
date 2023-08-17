@@ -443,11 +443,16 @@ function createModifier(ctx) {
   });
   return proxy;
 }
-let Modifier = createModifier({
-  resolveStyle(key, val, target, receiver) {
-    console.log(key, val, target, receiver, this);
+let Modifier = {
+  setCurEle(ele) {
+    return createModifier({
+      resolveStyle(key, val, target, receiver) {
+        ele.style[key] = val;
+        // console.log(key, val,target,receiver, ele);
+      }
+    });
   }
-});
+};
 
 /**
  * 
@@ -850,8 +855,18 @@ let Button = defComponent({
 });
 let Column = defComponent({
   name: 'Column',
-  setup() {
+  setup({
+    getCtx,
+    startWatch,
+    args,
+    isSsrMode
+  }) {
+    let firstArg = _utils_getObjectParam(args);
     let ele = createElement('div');
+    // console.log('firstArg', firstArg);
+    if (firstArg && firstArg?.modifier) {
+      firstArg.modifier(ele);
+    }
     ele.classList.add('column');
     return ele;
   }
