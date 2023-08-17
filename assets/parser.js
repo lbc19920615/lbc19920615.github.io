@@ -128,7 +128,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         context.newfuncNames.filter(v => !keys.includes(v)).forEach(funcName => {
             try {
                 let curCode = newCode.replace('__FUNC__', funcName);
-                console.log(curCode)
+                // console.log(curCode)
                 let b = eval(curCode);
                 // console.log(b)
                 if (b[0]) {
