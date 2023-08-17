@@ -143,7 +143,7 @@ my-date-picker.date-picker {
     --baseline-browser-supported-bg: #5bb974;
     --baseline-browser-unsupported-bg: #9aa0a6;
     --field-background: rgb(59, 59, 59);
-    --fontColor: #fff;
+    --fontColor: #d1d1d1;
     --datepicker-trigger-bgc: var(--field-background);
     --borderColor: #d1d1d1;
     color-scheme: dark;
@@ -167,6 +167,7 @@ my-date-picker.date-picker {
 @media (prefers-color-scheme: dark) {
     :root {
         @include setDartkVar();
+        color: var(--fontColor);
     }
     @include theme-dark();
 }
