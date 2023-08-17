@@ -4,7 +4,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
     // console.log(components);
     let reg = /([\w\d]*)(\s*\()([^\)]*)\)\s*{/g;
-    let withModifierReg = /(Column)\(([^]*)(Modifier[\?\.]+[^\)]*\))/g
+    let withModifierReg = /(Column)\(([^]*)(Modifier[\?\.]+[^\n]*)\}/g
     let mreg = /([A-Z]{1}[\w\d]+)\(/g
 
     let allMethods = [...code.matchAll(mreg)].map(v => v[1])
@@ -19,7 +19,10 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
     code = code.replace(withModifierReg, function (s, ...args) {
         if (args[0]) {
             let funcName = args[0].trim() + '__' + Nid()
-            funcNames.push(funcName)
+            funcNames.push(funcName);
+
+            console.log(args[2]);
+            
             s = 'function ' + s.replace(args[0], funcName);
             modifierMap.set(funcName, args[2])
             s = s.replace(args[2], `$__${Nid()}\$`) 
@@ -158,7 +161,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         context.newfuncNames.filter(v => !keys.includes(v)).forEach(funcName => {
             try {
                 let curCode = newCode.replace('__FUNC__', funcName);
-                // console.log(curCode)
+                console.log(curCode)
                 let b = eval(curCode);
                 // console.log(b)
                 if (b[0]) {

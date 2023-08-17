@@ -389,7 +389,7 @@ export default function({Page}) {
 
 
     let code  = `
-Column({modifier: Modifier?.width('100%')}) {
+Column({modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}) {
     Column() {
 
         Text().size('100%')

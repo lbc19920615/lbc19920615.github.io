@@ -18,6 +18,10 @@ my-date-picker.date-picker {
     display: block;
 }
 
+:root {
+    --cus-background: #bfd5ff;
+}
+
 //  theme
 @mixin setDartkVar() {
     --text-primary: #fff;
@@ -146,6 +150,7 @@ my-date-picker.date-picker {
     --fontColor: #d1d1d1;
     --datepicker-trigger-bgc: var(--field-background);
     --borderColor: #d1d1d1;
+    --cus-background: rgb(59, 59, 59);
     color-scheme: dark;
 }
 
