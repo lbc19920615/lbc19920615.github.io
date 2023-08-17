@@ -409,60 +409,6 @@ export default function({Page}) {
     });
 
 
-    let code  = `
-Column({space: 5, modifier: vmmodifierFactory2}) {
-    Column({a: 1, modifier: vmmodifierFactory}) {
-
-        Text().size('100%')
-        Text('single string')
-        Text("double string")
-        Text(vm.TextDetail)
-    }
-
-    Column() {
-        Column() {
-    
-            Text()
-            Text('single string')
-            Text("double string")
-            Text(vm.TextDetail)
-            Text()
-            
-        }
-    }
-
-    ForEach({max: 3}) {
-        Text('foreach single str')
-        Text("foreach double string")
-    }
-
-    If(vmDataMax) {
-        Text('if is true')
-    }
-
-    Else() {
-        Text('else is true')
-    }
-
-    Button({text: 'change text', action: vm.action})
-}
-
-Column({a: 1, modifier: vmmodifierFactory}) {
-    Column() {
-    }
-}
-    `;
-    let ret = parseArkUI(code, {
-        glo: globalThis,
-        interpreter,
-        components: getcustomComponents(),
-        hc2
-    });
-    // console.log(vmDataMax.value);
-    // console.log(ret?.def);
-    // console.log(ret?.dom);
-
-
     g.defc(Column().init(function (ele) {
         ; g.defc(Text(vmStrSome).init(function (ele) {
         }), function (ctx) {
@@ -650,9 +596,63 @@ Column({a: 1, modifier: vmmodifierFactory}) {
 
     }), function (ctx) { ctx.done(ele) })
 
+
+    let code  = `
+Column({space: 5, modifier: vmmodifierFactory2}) {
+    Column({a: 1, modifier: vmmodifierFactory}) {
+
+        Text().size('100%')
+        Text('single string')
+        Text("double string")
+        Text(vm.TextDetail)
+    }
+
+    Column() {
+        Column() {
+    
+            Text()
+            Text('single string')
+            Text("double string")
+            Text(vm.TextDetail)
+            Text()
+            
+        }
+    }
+
+    ForEach({max: 3}) {
+        Text('foreach single str')
+        Text("foreach double string")
+    }
+
+    If(vmDataMax) {
+        Text('if is true')
+    }
+
+    Else() {
+        Text('else is true')
+    }
+
+    Button({text: 'change text', action: vm.action})
+}
+
+Column({a: 1, modifier: vmmodifierFactory}) {
+    Column() {
+    }
+}
+    `;
+    let ret = parseArkUI(code, {
+        glo: globalThis,
+        interpreter,
+        components: getcustomComponents(),
+        hc2
+    });
+    // console.log(ret?.def);
+    // console.log(ret?.dom);
+    
     hc2(Text, {args: ['动态string转换为component测试']}, ele);
     hc2(TextArea1, {args: [code.trim()]}, ele);
-    ele.appendChild(ret.dom)
+    ele.appendChild(ret.dom);
+    
 
     Page({
         ele,
