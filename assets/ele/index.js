@@ -1,4 +1,32 @@
-import 'https://unpkg.com/xy-ui';
+// import 'https://unpkg.com/xy-ui';
+
+import 'https://unpkg.com/xy-ui/components/xy-button.js';
+import 'https://unpkg.com/xy-ui/components/xy-slider.js';
+import 'https://unpkg.com/xy-ui/components/xy-select.js';
+import 'https://unpkg.com/xy-ui/components/xy-loading.js';
+import 'https://unpkg.com/xy-ui/components/xy-switch.js';
+import 'https://unpkg.com/xy-ui/components/xy-checkbox.js';
+import 'https://unpkg.com/xy-ui/components/xy-radio.js';
+import 'https://unpkg.com/xy-ui/components/xy-tips.js';
+import 'https://unpkg.com/xy-ui/components/xy-icon.js';
+// import 'https://unpkg.com/xy-ui/components/xy-layout.js';
+import 'https://unpkg.com/xy-ui/components/xy-input.js';
+import 'https://unpkg.com/xy-ui/components/xy-img.js';
+import 'https://unpkg.com/xy-ui/components/xy-rate.js';
+import 'https://unpkg.com/xy-ui/components/xy-popover.js';
+import 'https://unpkg.com/xy-ui/components/xy-color-picker.js';
+// import 'https://unpkg.com/xy-ui/components/xy-form.js';
+import 'https://unpkg.com/xy-ui/components/xy-pagination.js';
+import 'https://unpkg.com/xy-ui/components/xy-date-picker.js';
+// import 'https://unpkg.com/xy-ui/components/xy-table.js';
+import 'https://unpkg.com/xy-ui/components/xy-text.js';
+// import 'https://unpkg.com/xy-ui/components/xy-view.js';
+import 'https://unpkg.com/xy-ui/components/xy-datalist.js';
+import XyDialog from 'https://unpkg.com/xy-ui/components/xy-dialog.js';
+import XyMessage from 'https://unpkg.com/xy-ui/components/xy-message.js';
+window.XyDialog = XyDialog;
+window.XyMessage = XyMessage;
+
 
 const DATE_PICKER_HAS_STATE = 'date-picker--has-val'
 
