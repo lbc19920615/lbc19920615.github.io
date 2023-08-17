@@ -418,7 +418,7 @@ function createModifier(ctx) {
             val = str;
           }
           if (ctx.resolveStyle) {
-            ctx.resolveStyle(key, val);
+            ctx.resolveStyle(key, val, target, receiver);
           }
           return proxy;
         };
@@ -445,7 +445,11 @@ function createModifier(ctx) {
   });
   return proxy;
 }
-let Modifier = createModifier({});
+let Modifier = createModifier({
+  resolveStyle(key, val, target, receiver) {
+    console.log(key, val, target, receiver, this);
+  }
+});
 
 /**
  * 
@@ -685,6 +689,7 @@ function hc2(ComponentConstruct, {
 } = {}, ele) {
   let readyFun = ready ? function (ctx) {
     ready(ctx);
+    // console.log('ready', ctx);
     ctx.done(ele);
   } : function (ctx) {
     ctx.done(ele);

@@ -202,7 +202,7 @@ function createModifier(ctx) {
                         val = str
                     }
                     if (ctx.resolveStyle) {
-                        ctx.resolveStyle(key, val)
+                        ctx.resolveStyle(key, val, target, receiver)
                     }
                     return proxy
                 }
@@ -233,7 +233,11 @@ function createModifier(ctx) {
     return proxy
 }
 
-export let Modifier = createModifier({})
+export let Modifier = createModifier({
+    resolveStyle(key, val,target,receiver) {
+        console.log(key, val,target,receiver, this);
+    }
+})
 
 /**
  * 
@@ -444,7 +448,8 @@ export let g = {
 
 export function hc2(ComponentConstruct, {args = [], init = function() {}, end = function() {}, afterInit, ready} = {}, ele) {
     let readyFun = ready ? function(ctx) {
-        ready(ctx)
+        ready(ctx);
+        // console.log('ready', ctx);
         ctx.done(ele)
     } : function(ctx) {  
         ctx.done(ele)

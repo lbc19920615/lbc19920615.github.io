@@ -2,6 +2,9 @@ import { reactive, computed  } from "vue"
 import { Nid, g, hc2, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
 import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
+// let moditer = Modifier.width('100%')
+// console.log(moditer);
+
 function getParentComp(parent, {cls = ''} = {}) {
     let ret = parent;
     if (!ret.classList.contains(cls)) {
@@ -395,7 +398,7 @@ export default function({Page}) {
 Column({modifier: Modifier}) {
     Column({a: 1}) {
 
-        Text()
+        Text().size('100%')
         Text('single string')
         Text("double string")
         Text(vm.TextDetail)

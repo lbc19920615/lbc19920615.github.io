@@ -43,13 +43,18 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
     let runFunReg = /([A-Z]{1}[\w\d]+)\(([^\)]*)\)/g;
 
-    let preDef = uniMethods.map(v => {
+    let preDef = /*javascript*/`
+    let p = new Proxy({}, {
+        get(target, key, receiver) {
+            return function(...args) {
+                return p
+            }
+        }
+    });
+    ` + uniMethods.map(v => {
         return `
                     function ${v}(...args) {
-                        return {
-                            init() {
-                            }
-                        }
+                        return p
                     }
                     `
     }).join('\n')
@@ -65,10 +70,12 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         get(target, key, receiver) {
             return function(...args) {
                 curFunArr[2].push([key, args])
+
+                // console.log(p)
                 return p
             }
         }
-    })
+    });
     `+ uniMethods.map(v => {
         return `
                     function ${v}(...args) {
@@ -121,7 +128,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
         context.newfuncNames.filter(v => !keys.includes(v)).forEach(funcName => {
             try {
                 let curCode = newCode.replace('__FUNC__', funcName);
-                // console.log(curCode)
+                console.log(curCode)
                 let b = eval(curCode);
                 // console.log(b)
                 if (b[0]) {
@@ -147,7 +154,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
                         if (['ForEach', 'If', 'Else'].includes(arr[0])) {
                             
-                            console.log(arr[0], func_args);
+                            // console.log(arr[0], func_args);
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {
                                 dom1 = initEle;
                                 // console.log('init');
@@ -159,6 +166,8 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {
                                 dom1 = initEle;
                                 onParentInit()
+                            }, ready(ctx) {
+                                // console.log('ready', ctx.size);
                             }}, dom);
                             dom1 = ctx.ele
                         }
