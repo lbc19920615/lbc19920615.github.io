@@ -389,7 +389,7 @@ export default function({Page}) {
 
 
     let code  = `
-Column({modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}) {
+Column({space: 5, modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}) {
     Column() {
 
         Text().size('100%')
@@ -424,6 +424,11 @@ Column({modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background
     }
 
     Button({text: 'change text', action: vm.action})
+}
+
+Column({a: 1, modifier: Modifier?.width('100%')?.backgroundColor('var(--cus-background)')}) {
+    Column() {
+    }
 }
     `;
     let ret = parseArkUI(code, {
