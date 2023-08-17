@@ -1,5 +1,7 @@
 import 'https://unpkg.com/xy-ui';
 
+const DATE_PICKER_HAS_STATE = 'date-picker--has-val'
+
 const toDate = (d) => {
     const date = new Date(d);
     const year = date.getFullYear();
@@ -30,7 +32,7 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
     constructor(option = {}) {
         super(option);
         // console.log(option, this.shadowRoot);
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*html*/`
         <style>
         :host{
             display:inline-block;
@@ -83,9 +85,29 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
             font-size: .8em;
             margin-left: .8em;
         }
+        #clear {
+            display: none;
+            padding: 0 .8em;
+        }
+        .${DATE_PICKER_HAS_STATE} #clear {
+            display: block;
+        }
+        .trigger {
+            height:100%;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--borderColor,rgba(0,0,0,.2));
+        }
+        .trigger xy-button {
+            border: none;
+            flex: 1;
+        }
         </style>
-        <xy-popover class="date-picker" id="popover" ${this.dir? "dir='"+this.dir+"'" : ""}>
-            <xy-button id="select" ${this.disabled? "disabled" : ""}><svg class="icon" viewBox="0 0 1024 1024"><path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32z m-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z" p-id="8054"></path></svg><span id="datetxt"></span></xy-button>
+        <xy-popover class="date-picker ${this.value ? DATE_PICKER_HAS_STATE : ''}" id="popover" ${this.dir? "dir='"+this.dir+"'" : ""}>
+            <div class="trigger">
+            <xy-button id="select" ${this.disabled? "disabled" : ""}><svg class="icon" viewBox="0 0 1024 1024"><path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32z m-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z" p-id="8054"></path></svg><span id="datetxt"></span></xy-button><div id="clear">&#x2715</div>
+            
+            </div>
             <xy-popcon id="popcon" class="date-pane">
                 <div class="pop-footer">
                     <xy-button autoclose>取 消</xy-button>
@@ -96,11 +118,21 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
         `
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+        this.clear =  this.shadowRoot.getElementById('clear');
+        this.clear.addEventListener('click',(e)=>{
+            e.stopPropagation();
+            this.value = ''
+            return false
+        })
+    }
+
     render(date=this.$value){
-        if (!this.$value) {
+        if (!date) {
             return ''
         }
-        super.render(date)
+        super.render(date);
     }
 
     get defaultvalue() {
@@ -125,8 +157,26 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
         }
     }
 
+    togglePopoverClsState(value) {
+        let popover = this.shadowRoot.getElementById('popover')
+        // console.log(popover)
+        if (!popover) {
+            return
+        }
+        if (value) {
+            if (!popover.classList.contains(DATE_PICKER_HAS_STATE)) {
+                popover.classList.add(DATE_PICKER_HAS_STATE)
+            }
+        } else {
+            popover.classList.remove(DATE_PICKER_HAS_STATE)
+        }
+    }
+
+    set defaultvalue(value){
+        this.setAttribute('defaultvalue', value);
+    }
+
     get value() {
-        // console.log(this.$value);
         if (!this.$value) {
             return ''
         }
@@ -143,6 +193,8 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
             this.datetxt.textContent = this.range?this.value.join('~'):this.value;
         }
 
+        // console.log(this.shadowRoot);
+        this.togglePopoverClsState(value)
         
         if(this.nativeclick){
             this.nativeclick = false;
@@ -153,6 +205,9 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
                 }
             }));
         }else{
+            if (!value) {
+                return
+            }
             if(this.datePane){
                 this.datePane.value = this.value;
             }else{

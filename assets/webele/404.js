@@ -116,7 +116,7 @@ function __forItem_action({ele, ctx}) {
     
     let formCtx = __getParentFormItemCtx(ctx);
     ele.onchange = function(e) {
-        console.log(e);
+        // console.log(e);
         let val = e?.detail ? e.detail?.value : e.target?.value 
         formCtx.callOnChange(val, ele)
         // console.log('ele', e, ctx);
