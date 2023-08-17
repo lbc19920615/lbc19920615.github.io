@@ -33,9 +33,6 @@
 
 <body>
     <div id="routerroot" class="h-full"></div>
-    <script src="
-https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
-"></script>
     <script type="importmap">
         {
           "imports": <%- importmap %>
@@ -266,6 +263,19 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         });
 
         routerModule(option)
+    </script>
+    <script>
+        function __load_async_lib() {
+            let asyncLib = [
+                '/assets/virtualized-list.min.js'
+            ];
+            asyncLib.forEach(libSrc => {
+                let script = document.createElement('script');
+                script.src = libSrc;
+                document.body.appendChild(script)
+            })
+        }
+        __load_async_lib()
     </script>
 </body>
 

@@ -34,12 +34,9 @@
 
 <body>
     <div id="routerroot" class="h-full"></div>
-    <script src="
-https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
-"></script>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_68835d44.js?v=1692271694519"}
+          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_68835d44.js?v=1692274939857"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -267,6 +264,19 @@ https://cdn.jsdelivr.net/npm/virtualized-list@2.2.0/umd/virtualized-list.min.js
         });
 
         routerModule(option)
+    </script>
+    <script>
+        function __load_async_lib() {
+            let asyncLib = [
+                '/assets/virtualized-list.min.js'
+            ];
+            asyncLib.forEach(libSrc => {
+                let script = document.createElement('script');
+                script.src = libSrc;
+                document.body.appendChild(script)
+            })
+        }
+        __load_async_lib()
     </script>
 </body>
 
