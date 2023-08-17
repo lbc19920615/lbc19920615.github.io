@@ -132,7 +132,9 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
         if (!date) {
             return ''
         }
-        super.render(date);
+        setTimeout(() => {
+            super.render(date);
+        }, 0)
     }
 
     get defaultvalue() {
