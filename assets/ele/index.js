@@ -97,6 +97,7 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
             display: flex;
             align-items: center;
             border: 1px solid var(--borderColor,rgba(0,0,0,.2));
+            background-color: var(--datepicker-trigger-bgc);
         }
         .trigger xy-button {
             border: none;

@@ -282,7 +282,7 @@ let RadioboxGroup = defComponent({
 let DatePicker1 = defComponent({
     name: 'DatePicker1',
     setup({setCreated, startWatch, args}) {    
-        let option = args[0] ?? {}
+        // let option = args[0] ?? {}
         let ele = document.createElement('my-date-picker')
         ele.setAttribute('defaultvalue', '')
         ele.classList.add('date-picker')
