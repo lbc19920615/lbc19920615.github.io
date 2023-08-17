@@ -6,8 +6,11 @@ function getFunBody(Func) {
     return body
 }
 
-export function parseArkUI(code = '', {glo = globalThis, components = new Map(), hc2 = function() {} } = {}) {
+export function parseArkUI(code = '', {glo = globalThis, interpreter, components = new Map(), hc2 = function() {} } = {}) {
 
+    let evalFun =  interpreter?.evaluate ? function(...args) {
+        return  interpreter?.evaluate(...args)
+    } : eval;
     // console.log(components);
     let reg = /([\w\d]*)(\s*\()([^\)]*)\)\s*{/g;
     // let withModifierReg = /(Column)\(([^]*)(Modifier[\?\.]+[^\n]*)\}/g;
@@ -201,7 +204,8 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
     function evalArgs(args = []) {
         return args.map(v => {
             try {
-                let o = eval(`let a = ${v}; a;`);
+                // let o = eval(`let a = ${v}; a;`);
+                let o = evalFun(`var a = ${v}; a;`);
                 // console.log(v, o);
                 return o
             } catch(e) {
@@ -213,7 +217,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                     } 
                 }
 
-                // console.log(v, e);
+                console.log(v, e);
                 return v
             }
         })
@@ -222,7 +226,7 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
 
     function findFun(code, context, {parent, dom} = {}) {
         // console.log(code);
-        let newCode =  preDef + ' let a = function(){' + code + ` return [__FUNC__] }; a()`;
+        let newCode =  preDef + ' var a = function(){' + code + ` return [__FUNC__] }; return a()`;
 
         // console.log(newCode);
         let keys = [...curFuncDefArr.keys()];
@@ -230,7 +234,9 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
             try {
                 let curCode = newCode.replace('__FUNC__', funcName);
                 // console.log(curCode)
-                let b = eval(curCode);
+                // let b = eval(curCode);
+                let c = new Function('', curCode);
+                let b = c();
                 // console.log(b)
                 if (b[0]) {
                     let funcBody = getFunBody(b[0]);
@@ -280,8 +286,10 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                    function onParentInit() {
                         let newRetCode = `
                         let funcs = [];
-                        ` + runDef + ' ;let a = function() {' + funcBody + '}; a(); funcs;'
-                        let allFuncs = eval(newRetCode);
+                        ` + runDef + ' ;let a = function() {' + funcBody + '}; a(); return funcs;'
+                        // let allFuncs = eval(newRetCode);
+                        let allFuncsC = new Function('', newRetCode);
+                        let allFuncs = allFuncsC();
                         curFuncDefArr.set(funcName, {
                             args: argArr[1],
                             funcBody: funcBody,
@@ -302,7 +310,9 @@ export function parseArkUI(code = '', {glo = globalThis, components = new Map(),
                             // console.log(funcArgs);
                             funcArgs = funcArgs.map(v => {
                                 try {
-                                    let o = eval(`let a = ${v}; a;`);
+                                    // let o = eval(`let a = ${v}; a;`);
+                                    // console.log(evalFun);
+                                    let o = evalFun(`var a = ${v}; a;`);
                                     // console.log(v, o);
                                     return o
                                 } catch(e) {

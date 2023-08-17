@@ -370,6 +370,8 @@ export default function({Page}) {
     })();
     globalThis.vm = vm;
 
+
+
     let vmData = vm.data;
 
     let vmDataList = vmData.list
@@ -388,6 +390,8 @@ export default function({Page}) {
     globalThis.vmmodifierFactory = vmmodifierFactory;
     globalThis.vmmodifierFactory2 = vmmodifierFactory2;
 
+
+
     setTimeout(() => {
         vmData.list[0] = 3;
         vmData.max = 2;
@@ -395,6 +399,14 @@ export default function({Page}) {
 
     globalThis.$vmData = vmData;
 
+    const interpreter = new eval5.Interpreter({
+        vmDataMax,
+        vmmodifierFactory,
+        vmmodifierFactory2
+    }, {
+        rootContext: globalThis,
+        timeout: 1000,
+    });
 
 
     let code  = `
@@ -442,6 +454,7 @@ Column({a: 1, modifier: vmmodifierFactory}) {
     `;
     let ret = parseArkUI(code, {
         glo: globalThis,
+        interpreter,
         components: getcustomComponents(),
         hc2
     });
