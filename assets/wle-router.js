@@ -1,3 +1,5 @@
+import { Nid } from "wle";
+
 export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, keepLives = [] } = {}) {
     let pageMap = new Map();
 
@@ -9,7 +11,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         tureRoot.appendChild(rootEle)
     }
 
-    function createPageFun(nid = '', params) {
+    function createPageFun(nid = '', params, {routerName} = {}) {
         return function Page(option) {
             let { ele, lifeTimes = {} } = option
 
@@ -20,6 +22,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
             let pageCtx = {
                 nid,
                 ele,
+                routerName,
                 lifeTimes,
                 params: {},
                 reload(params) {
@@ -78,8 +81,14 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         if (keys.at(-1) === path) {
             return
         }
-        window.history.pushState({}, "", "#/" + path);
-        handleLocation(params, {
+        let stateID = Nid()
+        window.history.pushState({
+            path,
+            stateID
+        }, "", "#/" + path);
+        handleLocation( {
+            params,
+            stateID,
             onLoadCache(ret) {        
                 if (Array.isArray(ret) && ret.length == 2) {
                     pagesCache.push(ret)
@@ -92,20 +101,25 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         history.back()
     }
 
-    const handleLocation = async (params = {}, {onLoadCache} = {}) => {
+    const handleLocation = async ({params = {}, stateID, onLoadCache} = {}) => {
         const path = window.location.hash;
 
         let baseLen = '#/'
         const pathName = path.slice(baseLen.length)
 
-        let routerName = pathName ? pathName : '404'
-        // console.log(routerName);
+        let routerName = pathName ?? '';
         
-        const route = routes[routerName] ?? routes['404'];
+        let route = routes[routerName];
+        if (!route) {
+            route = routes['404'];
+            routerName = '404'
+        }
+
+        // console.log(routerName, route);
 
         const m = await route(params);
 
-        let nid = routerName ?? Nid()
+        let nid = stateID ?? Nid()
 
         if (keepLives.includes(nid) && pageMap.get(nid)) {
             let cached = pageMap.get(nid)
@@ -116,27 +130,49 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
             // return [nid, cached]
         } else {
 
-            let Page = createPageFun(nid, params)
+            let Page = createPageFun(nid, params, {
+                routerName
+            })
             if (m.default) {
                 m.default({ Page })
             }
         }
 
-
     };
 
-    window.onpopstate = async function () {
-        let pages = getCurrentPages();
-        let lastPage = pages.at(-1);
+    function unLoadLastPage(lastPage) {
         if (lastPage?.lifeTimes?.onUnload) {
             lastPage.lifeTimes.onUnload()
         }
         removeLastPage();
-        // window.history.popState()
-        console.log(lastPage);
-        let prevPage = getCurrentPages().at(-1);
-        prevPage.reloadFormCache();
-        // await handleLocation()
+    }
+
+    function __detect_page(state) {
+        let pages = getCurrentPages();
+        if (pages.length > 1) {
+            let lastPage = pages.at(-1);
+            let prevPage = pages.at(-2);
+            if (prevPage.nid === state?.stateID || state == null){
+                unLoadLastPage(lastPage)
+                prevPage?.reloadFormCache();
+            }
+        }
+        else if (pages.length > 0) {
+        }
+    }
+
+    window.onpopstate = async function (e) {
+
+        let state = e.state;
+        console.log('onpopstate', state);
+        if (!state) {
+            __detect_page();
+            return
+        }
+        else {
+            __detect_page(state)
+        }
+    
     };
 
     window.wRoute = {
@@ -144,5 +180,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         back: backRoute
     };
 
-    handleLocation();
+    handleLocation({
+        stateID: 'main'
+    });
 });

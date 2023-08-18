@@ -53,6 +53,9 @@
 
         let BaseDir = '/assets/'
         const routes = {
+            ['']: (params) => {
+                return import(BaseDir + 'webele/main.js?v=' + Date.now())
+            },
             404: (params) => {
                 return import(BaseDir + 'webele/404.js?v=' + Date.now())
             },
@@ -73,7 +76,7 @@
             }
             get navs() {
                 return [
-                    ['404', {
+                    ['', {
                         label: 'main'
                     }],
                     ['detail', {

@@ -399,24 +399,339 @@ export default function({Page}) {
 
     globalThis.$vmData = vmData;
 
+    const interpreter = new eval5.Interpreter({
+        vmDataMax,
+        vmmodifierFactory,
+        vmmodifierFactory2
+    }, {
+        rootContext: globalThis,
+        timeout: 1000,
+    });
 
 
     g.defc(Column().init(function (ele) {
-        ; g.defc(Text('404').init(function (ele) {
+        ; g.defc(Text(vmStrSome).init(function (ele) {
         }), function (ctx) {
             ctx.done(ele)
         });
+
+        g.defc(Column({ space: 5 }).init(function (ele) {
+
+            ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
+
+            ; g.defc(Text('for测试').init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(ForEach({ list: vmDataList }).init(function (ele, option) {
+                g.defc(Text(option.item).init(function (ele) {
+
+                }), function (ctx) {
+                    ctx.width('100%').height(30).backgroundColor(0x00FFFF);
+                    ctx.done(ele)
+                })
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(Text('if测试').init(function (ele) {
+            }), function (ctx) {
+                // ctx.fontSize(9).fontColor(0xCCCCCC).width('90
+                ctx.done(ele)
+            });
+
+            ; g.defc(If(vmDataMax).init(function (ele) {
+                g.defc(Text('if ok').init(function (ele) {
+
+                }), function (ctx) { ctx.done(ele) })
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+            ; g.defc(Else().init(function (ele) {
+                g.defc(Text('else ok').init(function (ele) {
+
+                }), function (ctx) { ctx.done(ele) })
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(Text('router测试').init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+            ; g.defc(Button({ text: 'detail', action: vm.action2 }).init(function (ele) { })
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
+
+
+            ; g.defc(Text('dialog测试').init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+            ; g.defc(Button({ text: 'dialog', action: vm.action3 }).init(function (ele) { })
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
+
+            
+            ; g.defc(Text('form测试').init(function (ele) {
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+
+            ; g.defc(Form1({name: 'form1'}).init(function (ele) {
+    
+                ; g.defc(FormItem('select').init(function (ele) {
+                    ; g.defc(Select1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+                
+                ; g.defc(FormItem('textarea').init(function (ele) {
+                    ; g.defc(TextArea1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+    
+                ; g.defc(FormItem('input text').init(function (ele) {
+                    ; g.defc(Input1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+                ; g.defc(FormItem('input number').init(function (ele) {
+                    ; g.defc(Input1({type: "number"}).init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+                ; g.defc(FormItem('datepicker').init(function (ele) {
+                    ; g.defc(DatePicker1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+    
+                ; g.defc(FormItem('checkbox').init(function (ele) {
+                    ; g.defc(CheckboxGroup().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+    
+                ; g.defc(FormItem('radio').init(function (ele) {
+                    ; g.defc(RadioboxGroup().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+
+                hc2(Button, {args: [{text: '获取当前model值 console查看', action: vm.submitForm}]}, ele);
+
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+            
+
+
+            
+        }), function (ctx) {
+            ctx.onLoad((e) => { vm.onLoad(e) }).border({ width: 1 });
+            ctx.done(ele)
+        });
         
+        ; g.defc(If(vmDataDialog).init(function (ele) {
+            ; g.defc(Dialog1({onClose: vm.onDialogClose}).init(function (ele) {
+                
+                ; g.defc(FormItem('input text').init(function (ele) {
+                    ; g.defc(Input1().init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+            }), function (ctx) {
+                ctx.done(ele)
+            });
+        }), function (ctx) {
+            ctx.done(ele)
+        });
 
 
     }), function (ctx) { ctx.done(ele) })
 
 
+    let code  = `
+Column({space: 5, modifier: vmmodifierFactory2}) {
+    Column({a: 1, modifier: vmmodifierFactory}) {
 
+        Text().size('100%')
+        Text('single string')
+        Text("double string")
+        Text(vm.TextDetail)
+    }
 
+    Column() {
+        Column() {
+    
+            Text()
+            Text('single string')
+            Text("double string")
+            Text(vm.TextDetail)
+            Text()
+            
+        }
+    }
 
+    ForEach({max: 3}) {
+        Text('foreach single str')
+        Text("foreach double string")
+    }
 
+    If(vmDataMax) {
+        Text('if is true')
+    }
 
+    Else() {
+        Text('else is true')
+    }
+
+    Button({text: 'change text', action: vm.action})
+}
+
+Column({a: 1, modifier: vmmodifierFactory}) {
+    Column() {
+    }
+}
+    `;
+
+    function __get(object, path, defval = null) {
+        if (typeof path === "string") {
+            path = path.split(".");
+        }
+        return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : defval), object);
+    }
+
+    function __evalArgs(args = []) {
+        return args.map(v => {
+            try {
+                // let o = eval(`let a = ${v}; a;`);
+                let o = interpreter.evaluate(`var a = ${v}; a;`);
+                // console.log(v, o);
+                return o
+            } catch(e) {
+                if (typeof v === 'string') {
+                    let val = __get(glo, v?.trim().split('.'))
+                    // console.log(v, val);
+                    if (typeof val !== 'undefined' && val != null) {
+                        return val
+                    } 
+                }
+
+                console.log(v, e);
+                return v
+            }
+        })
+    }
+
+    let ret = parseArkUI(code, {
+        glo: globalThis,
+        interpreter,
+        components: getcustomComponents(),
+        hc2,
+        handleXmlBuild(tag = '', argArr, {originStrArg} = {}) {
+            let strArg = argArr;
+            let args = []
+            if (Array.isArray(argArr) && argArr.input) {
+                // args = __evalArgs([argArr[1]])
+                strArg = argArr[1]
+            }
+
+            // console.log(argArr);
+
+            let tagName = 'zy-' + tag
+            let item = null;
+            if (tag === 'ForEach') {
+                item = document.createElement('zy-foreach');
+                item.setAttribute(':condition', strArg)
+                let tpl = document.createElement('template');
+                tpl.setAttribute('v-slot:default', 'scope')
+
+                item.appendChild(tpl)
+                return [item, tpl]
+            }
+            else if (tag === 'If') { 
+                item = document.createElement('template');
+                item.setAttribute('v-if', strArg);          
+            }
+            else if (tag === 'Else') { 
+                item = document.createElement('template');
+                item.setAttribute('v-else', '')
+            }
+            else {
+                item = document.createElement(tagName);
+                // console.log(tag, argArr, originStrArg);
+                if (Array.isArray(strArg) && tag === 'Text') {
+                    if (strArg[0]?.__v_isRef) {
+                        item.innerHTML = originStrArg
+                    }
+                    else {
+                        item.innerHTML = strArg[0] ?? ''
+                    }
+                }
+            }
+
+            
+
+            return [item]
+        }
+    });
+
+    window.getParsedRet = function(name = 'def') {
+        return ret[name]
+    }
+    console.log(ret?.def);
+    // console.log(ret?.dom);
+    
+    hc2(Text, {args: ['动态string转换为component测试']}, ele);
+    hc2(TextArea1, {args: [code.trim()]}, ele);
+    ele.appendChild(ret.dom);
     
 
     Page({
