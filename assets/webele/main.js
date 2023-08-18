@@ -2,8 +2,6 @@ import { reactive, computed  } from "vue"
 import { Nid, g, hc2, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
 import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
-// let moditer = Modifier.width('100%')
-// console.log(moditer);
 globalThis.Modifier = Modifier;
 
 function getParentComp(parent, {cls = ''} = {}) {
@@ -714,6 +712,11 @@ Column({a: 1, modifier: vmmodifierFactory}) {
                     else {
                         item.innerHTML = strArg[0] ?? ''
                     }
+                }
+
+                if (Array.isArray(strArg) && tag === 'Button') {
+                    console.log(tag, argArr, originStrArg);
+                    item.innerHTML = strArg[0]?.text ?? ''
                 }
             }
 
