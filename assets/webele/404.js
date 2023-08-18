@@ -640,13 +640,88 @@ Column({a: 1, modifier: vmmodifierFactory}) {
     }
 }
     `;
+
+    function __get(object, path, defval = null) {
+        if (typeof path === "string") {
+            path = path.split(".");
+        }
+        return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : defval), object);
+    }
+
+    function __evalArgs(args = []) {
+        return args.map(v => {
+            try {
+                // let o = eval(`let a = ${v}; a;`);
+                let o = interpreter.evaluate(`var a = ${v}; a;`);
+                // console.log(v, o);
+                return o
+            } catch(e) {
+                if (typeof v === 'string') {
+                    let val = __get(glo, v?.trim().split('.'))
+                    // console.log(v, val);
+                    if (typeof val !== 'undefined' && val != null) {
+                        return val
+                    } 
+                }
+
+                console.log(v, e);
+                return v
+            }
+        })
+    }
+
     let ret = parseArkUI(code, {
         glo: globalThis,
         interpreter,
         components: getcustomComponents(),
-        hc2
+        hc2,
+        handleXmlBuild(tag = '', argArr, {originStrArg} = {}) {
+            let strArg = argArr
+            let args = []
+            if (Array.isArray(argArr) && argArr.input) {
+                // args = __evalArgs([argArr[1]])
+                strArg = argArr[1]
+            }
+
+            // console.log(argArr);
+
+            let tagName = 'zy-' + tag
+            let item = null;
+            if (tag === 'ForEach') {
+                item = document.createElement('zy-foreach');
+                item.setAttribute(':condition', strArg)
+            }
+            else if (tag === 'If') { 
+                item = document.createElement('template');
+                item.setAttribute('v-if', strArg);          
+            }
+            else if (tag === 'Else') { 
+                item = document.createElement('template');
+                item.setAttribute('v-else', '')
+            }
+            else {
+                item = document.createElement(tagName);
+                // console.log(tag, argArr, originStrArg);
+                if (Array.isArray(strArg) && tag === 'Text') {
+                    if (strArg[0]?.__v_isRef) {
+                        item.innerHTML = originStrArg
+                    }
+                    else {
+                        item.innerHTML = strArg[0] ?? ''
+                    }
+                }
+            }
+
+            
+
+            return item
+        }
     });
-    // console.log(ret?.def);
+
+    window.getParsedRet = function(name = 'def') {
+        return ret[name]
+    }
+    console.log(ret?.def);
     // console.log(ret?.dom);
     
     hc2(Text, {args: ['动态string转换为component测试']}, ele);

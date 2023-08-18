@@ -6,7 +6,7 @@ function getFunBody(Func) {
     return body
 }
 
-export function parseArkUI(code = '', {glo = globalThis, interpreter, components = new Map(), hc2 = function() {} } = {}) {
+export function parseArkUI(code = '', {glo = globalThis, interpreter, components = new Map(), hc2 = function() {}, handleXmlBuild } = {}) {
 
     let evalFun =  interpreter?.evaluate ? function(...args) {
         return  interpreter?.evaluate(...args)
@@ -181,7 +181,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
     `+ uniMethods.map(v => {
         return `
                     function ${v}(...args) {
-                        curFunArr = [${v}.name, args, []]
+                        curFunArr = [${v}.name, args, [], funcs.length]
                         funcs.push(curFunArr);
                         return p
                     }
@@ -242,12 +242,18 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                     let funcBody = getFunBody(b[0]);
                     // console.log(funcBody);
                     let argArr = funcBody.match(argsReg) ?? [];
+   
+
                     let arr = funcName.split('__');
 
                     // tag
-                    let ele = document.createElement('div');   
-                    ele.setAttribute('tag', arr[0])
-                    ele.setAttribute('id', arr[1])
+                    let tagName = arr[0];
+                    let ele = document.createElement(tagName);   
+                    if (handleXmlBuild) {
+                        ele = handleXmlBuild(tagName, argArr)
+                    }
+                    // ele.setAttribute('tag', arr[0])
+                    // ele.setAttribute('id', arr[1])
                     parent.appendChild(ele);
          
                     let dom1 = document.createElement('div');
@@ -264,10 +270,12 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                         if (['ForEach', 'If', 'Else'].includes(arr[0])) {
                             
                             // console.log(arr[0], func_args);
+                            let __index = 0;
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {
                                 dom1 = initEle;
-                                // console.log('init');
-                                onParentInit()
+                                // console.log('init', arr[0], __index);
+                                onParentInit(arr[0], __index);
+                                __index = __index + 1;
                             }}, dom);
                             dom1 = ctx.ele
                         }
@@ -283,7 +291,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                     }
 
 
-                   function onParentInit() {
+                   function onParentInit(looptag, loopIndex = 0) {
                         let newRetCode = `
                         let funcs = [];
                         ` + runDef + ' ;let a = function() {' + funcBody + '}; a(); return funcs;'
@@ -295,17 +303,42 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                             funcBody: funcBody,
                         });
                         findFun(funcBody, context, {parent: ele, dom: dom1});
-                        let funs = allFuncs
+
+                        let funLikes = [...funcBody.matchAll(runFunReg)];
+            
+
+                        let funs = allFuncs;
                         funs.forEach(v => {
-                            let item = document.createElement('div')
-                            item.setAttribute('tag', v[0])
-                            if (v[1]) {
-                                let param = document.createElement('param1')
-                                param.innerHTML = v[1]
-                                item.appendChild(param)
+                            let obj = funLikes[v[3]];
+                            // console.log(funLikes);
+                            let originStrArg = ''
+                            if (Array.isArray(obj) && obj[2]) {
+                                // console.log('very good', obj);
+                                originStrArg = obj[2]
                             }
-                            ele.appendChild(item);
-                            let funcArgs = v[1];
+                            let funcArgs = v[1].slice(0);
+                            let item = document.createElement(v[0]);
+                            
+                            // item.setAttribute('tag', v[0])
+                            // if (v[1]) {
+                            //     let param = document.createElement('param1')
+                            //     param.innerHTML = v[1]
+                            //     item.appendChild(param)
+                            // }
+                            if (handleXmlBuild) {
+                                item = handleXmlBuild(v[0], funcArgs, {originStrArg})
+                            }
+
+                            // console.log(looptag);
+                            if (looptag === 'ForEach') {
+                                if (loopIndex < 1) {
+                                    ele.appendChild(item);
+                                }
+                            }
+                            else {
+                                ele.appendChild(item);
+                            }
+              
      
                             // console.log(funcArgs);
                             funcArgs = funcArgs.map(v => {
@@ -360,7 +393,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
     context.dom =  document.createElement('div')
     findFun(code, context, {parent: context.root, dom: context.dom})
 
-    console.log(context.root);
+    // console.log(context.root);
 
     return {
         def: context.root,
