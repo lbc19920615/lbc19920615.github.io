@@ -246,15 +246,31 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
 
                     let arr = funcName.split('__');
 
+        
                     // tag
                     let tagName = arr[0];
                     let ele = document.createElement(tagName);   
+        
+                    let buildRet = null;
                     if (handleXmlBuild) {
-                        ele = handleXmlBuild(tagName, argArr)
+                        buildRet = handleXmlBuild(tagName, argArr)
                     }
+
+                    // [ele, parentDom] 
+                    if (buildRet[0]) {
+                        ele = buildRet[0]
+                    }
+                    let parentDom = ele;
+
+                    if (buildRet[1]) {
+                        parentDom = buildRet[1]
+                    }
+          
+                    // console.log(parentDom);
+                    parent.appendChild(ele);
                     // ele.setAttribute('tag', arr[0])
                     // ele.setAttribute('id', arr[1])
-                    parent.appendChild(ele);
+
          
                     let dom1 = document.createElement('div');
                     if (components.has(arr[0])) {
@@ -274,7 +290,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {
                                 dom1 = initEle;
                                 // console.log('init', arr[0], __index);
-                                onParentInit(arr[0], __index);
+                                onParentInit(parentDom, arr[0], __index);
                                 __index = __index + 1;
                             }}, dom);
                             dom1 = ctx.ele
@@ -282,7 +298,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                         else {
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {
                                 dom1 = initEle;
-                                onParentInit()
+                                onParentInit(parentDom)
                             }, ready(ctx) {
                                 // console.log('ready', ctx.size);
                             }}, dom);
@@ -291,7 +307,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                     }
 
 
-                   function onParentInit(looptag, loopIndex = 0) {
+                   function onParentInit(parentDom, looptag, loopIndex = 0) {
                         let newRetCode = `
                         let funcs = [];
                         ` + runDef + ' ;let a = function() {' + funcBody + '}; a(); return funcs;'
@@ -302,7 +318,8 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                             args: argArr[1],
                             funcBody: funcBody,
                         });
-                        findFun(funcBody, context, {parent: ele, dom: dom1});
+                 
+                        findFun(funcBody, context, {parent: parentDom, dom: dom1});
 
                         let funLikes = [...funcBody.matchAll(runFunReg)];
             
@@ -325,18 +342,29 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                             //     param.innerHTML = v[1]
                             //     item.appendChild(param)
                             // }
+                            let buildRet;
+                            // let parentDom = ele;
                             if (handleXmlBuild) {
-                                item = handleXmlBuild(v[0], funcArgs, {originStrArg})
+                                buildRet = handleXmlBuild(v[0], funcArgs, {originStrArg})
                             }
+
+                            item = buildRet[0];
+                            if (buildRet[1]) {
+                                parentDom = buildRet[1]
+                            }
+
+
+
 
                             // console.log(looptag);
                             if (looptag === 'ForEach') {
                                 if (loopIndex < 1) {
-                                    ele.appendChild(item);
+                                    console.log(buildRet, ele, parent, parentDom);
+                                    parentDom.appendChild(item);
                                 }
                             }
                             else {
-                                ele.appendChild(item);
+                                parentDom.appendChild(item);
                             }
               
      

@@ -676,7 +676,7 @@ Column({a: 1, modifier: vmmodifierFactory}) {
         components: getcustomComponents(),
         hc2,
         handleXmlBuild(tag = '', argArr, {originStrArg} = {}) {
-            let strArg = argArr
+            let strArg = argArr;
             let args = []
             if (Array.isArray(argArr) && argArr.input) {
                 // args = __evalArgs([argArr[1]])
@@ -690,6 +690,11 @@ Column({a: 1, modifier: vmmodifierFactory}) {
             if (tag === 'ForEach') {
                 item = document.createElement('zy-foreach');
                 item.setAttribute(':condition', strArg)
+                let tpl = document.createElement('template');
+                tpl.setAttribute('v-slot:default', 'scope')
+
+                item.appendChild(tpl)
+                return [item, tpl]
             }
             else if (tag === 'If') { 
                 item = document.createElement('template');
@@ -714,7 +719,7 @@ Column({a: 1, modifier: vmmodifierFactory}) {
 
             
 
-            return item
+            return [item]
         }
     });
 
