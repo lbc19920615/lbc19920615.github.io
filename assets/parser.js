@@ -359,7 +359,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                             // console.log(looptag);
                             if (looptag === 'ForEach') {
                                 if (loopIndex < 1) {
-                                    console.log(buildRet, ele, parent, parentDom);
+                                    // console.log(buildRet, ele, parent, parentDom);
                                     parentDom.appendChild(item);
                                 }
                             }
