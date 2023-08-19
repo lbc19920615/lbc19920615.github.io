@@ -415,10 +415,16 @@ export function ForEach(option = {}, {label = ''} = {}) {
 }
 customComponents.set('ForEach', ForEach)
 
+
+let currentConditionArr = [];
 let currentCondition = null;
 export function If(conditions) {
+    currentConditionArr = [];
     // console.log(conditions);
     currentCondition = conditions;
+    currentConditionArr.push(function() {
+        return conditions?.__v_isRef  ? conditions.value : conditions
+    })
     let val = conditions?.__v_isRef  ? conditions.value : conditions
     let fragment = ForEach({ max: Number(val) }, {label: ' if'})
     watch(conditions, (newVal, oldVal) => {
@@ -437,6 +443,11 @@ export function Else() {
     
     let conditions = currentCondition;
     let val = conditions?.__v_isRef  ? conditions.value : conditions;
+
+    let someIsTrue = currentConditionArr.some(fun => {
+        return fun()
+    });
+    console.log('someIsTrue', val, currentConditionArr, someIsTrue);
     // console.log('currentCondition', currentCondition, val,  Number(!val));
     let fragment = ForEach({ max: Number(!val) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
