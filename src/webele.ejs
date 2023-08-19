@@ -36,6 +36,7 @@
 
 <body>
     <div id="routerroot" class="h-full"></div>
+    <div id="app"></div>
     <script type="importmap">
         {
           "imports": <%- importmap %>
@@ -188,6 +189,7 @@
             mainContent.id = 'mainContent';
             mainContent.classList.add('flex-1');
             mainContent.classList.add('overflow-hidden');
+            mainContent.style['overflow-y'] = 'auto';
 
             let swCon = document.createElement('swiper-container');
 
