@@ -362,6 +362,11 @@ export default function({Page}) {
                 console.log(formName, document.querySelector(`.form[name=a{formName}]`)?.$formCtx.getModel())
                 // alert('console.log查看')
             },
+            getFun() {
+                return function() {
+
+                }
+            },
             TextDetail: computed(() => vmData.some),
             data
         }
@@ -387,7 +392,7 @@ export default function({Page}) {
     globalThis.vmDataMax = vmDataMax;
     globalThis.vmmodifierFactory = vmmodifierFactory;
     globalThis.vmmodifierFactory2 = vmmodifierFactory2;
-
+    globalThis.vm = vm;
 
 
     setTimeout(() => {
@@ -399,6 +404,7 @@ export default function({Page}) {
 
     const interpreter = new eval5.Interpreter({
         vmDataMax,
+        vm,
         vmmodifierFactory,
         vmmodifierFactory2
     }, {
@@ -630,7 +636,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
         Text('else is true')
     }
 
-    Button({text: 'change text', action: vm.action})
+    Button({text: 'change text', s: vm.getFun(),  action: vm.action})
 }
 
 Column({a: 1, modifier: vmmodifierFactory}) {

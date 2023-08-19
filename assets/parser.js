@@ -12,7 +12,9 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
         return  interpreter?.evaluate(...args)
     } : eval;
     // console.log(components);
-    let reg = /([\w\d]*)(\s*\()([^\)]*)\)\s*{/g;
+    // let reg = /([\w\d]*)(\s*\()([^\)]*)\)\s*{/g;
+    let reg = /([\w\d]*)(\s*\()([^\n]*)\)\s*{/g;
+    let methodNameReg = /(\.){1}\s*([\w\d\_]*)(\s*\()/g;
     // let withModifierReg = /(Column)\(([^]*)(Modifier[\?\.]+[^\n]*)\}/g;
     let moddssdReg = /([^]*)(Modifier[\?\.]+[^\}]*)/
     let mreg = /([A-Z]{1}[\w\d]+)\(/g
@@ -105,6 +107,10 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
     // });
 
     // console.log(modifierMap, funcNames);
+
+    let methodNameArr = [...code.matchAll(methodNameReg)];
+    let methodNames = [...new Set(methodNameArr.map(v => v[2]))]
+    // console.log(methodNames);
 
     code = code.replace(reg, function (s, ...args) {
         if (args[0]) {

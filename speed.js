@@ -1,4 +1,4 @@
-// const fibonacci = n => {
+// const factorial = n => {
 //     let a = 0, b = 1, c = n;
 
 //     for(let i = 2; i <= n; i++) {
@@ -23,4 +23,4 @@ function factorial (n) {
   return trampoline(f(1, n));
 }
 
-fibonacci(35)
+factorial(35)
