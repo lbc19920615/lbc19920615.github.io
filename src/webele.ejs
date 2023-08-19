@@ -43,7 +43,10 @@
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-        import * as Vue from "vue"
+        import * as Vue from "vue";
+        // console.dir(Vue)
+        let vueapp = Vue.createApp({});
+        vueapp.config.devtools = true;
         let VueDemi = (function () {
             var _VueDemi = {}
             for (var key in Vue) {

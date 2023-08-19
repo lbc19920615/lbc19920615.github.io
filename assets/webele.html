@@ -39,12 +39,15 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692442338561"}
+          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692442539902"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-        import * as Vue from "vue"
+        import * as Vue from "vue";
+        // console.dir(Vue)
+        let vueapp = Vue.createApp({});
+        vueapp.config.devtools = true;
         let VueDemi = (function () {
             var _VueDemi = {}
             for (var key in Vue) {
