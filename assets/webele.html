@@ -36,7 +36,7 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692436171211"}
+          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692441142744"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -143,6 +143,20 @@
             let mainContent = document.createElement('div')
             mainContent.id = 'mainContent';
             mainContent.classList.add('flex-1');
+            mainContent.classList.add('overflow-hidden');
+
+            let swCon = document.createElement('swiper-container');
+
+            hc2(ForEach, {args: [{max: 3}], init: (ele, option) => {
+                // console.log('ele', ele)
+                let swSlide = document.createElement('swiper-slide')
+                swSlide.innerHTML = 'slide' + option.index;
+                swSlide.style.height = '300px';
+                option.appendChild(swSlide)
+            }}, swCon);
+            
+
+            mainContent.appendChild(swCon)
 
             rooterRootEle.appendChild(nav)
             rooterRootEle.appendChild(mainContent)
@@ -156,9 +170,10 @@
         routerModule(option)
     </script>
     <script>
-        function __load_async_lib() {
+       function __load_async_lib() {
             let asyncLib = [
-                '/assets/virtualized-list.min.js'
+                '/assets/virtualized-list.min.js',
+                'https://cdn.jsdelivr.net/npm/swiper@10/swiper-element-bundle.min.js'
             ];
             asyncLib.forEach(libSrc => {
                 let script = document.createElement('script');

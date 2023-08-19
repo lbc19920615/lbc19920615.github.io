@@ -142,6 +142,20 @@
             let mainContent = document.createElement('div')
             mainContent.id = 'mainContent';
             mainContent.classList.add('flex-1');
+            mainContent.classList.add('overflow-hidden');
+
+            let swCon = document.createElement('swiper-container');
+
+            hc2(ForEach, {args: [{max: 3}], init: (ele, option) => {
+                // console.log('ele', ele)
+                let swSlide = document.createElement('swiper-slide')
+                swSlide.innerHTML = 'slide' + option.index;
+                swSlide.style.height = '300px';
+                option.appendChild(swSlide)
+            }}, swCon);
+            
+
+            mainContent.appendChild(swCon)
 
             rooterRootEle.appendChild(nav)
             rooterRootEle.appendChild(mainContent)
@@ -155,9 +169,10 @@
         routerModule(option)
     </script>
     <script>
-        function __load_async_lib() {
+       function __load_async_lib() {
             let asyncLib = [
-                '/assets/virtualized-list.min.js'
+                '/assets/virtualized-list.min.js',
+                'https://cdn.jsdelivr.net/npm/swiper@10/swiper-element-bundle.min.js'
             ];
             asyncLib.forEach(libSrc => {
                 let script = document.createElement('script');
