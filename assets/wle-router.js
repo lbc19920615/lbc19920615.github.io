@@ -43,8 +43,8 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                 }
             }
 
-            if (lifeTimes.onLoad) {
-                lifeTimes.onLoad(pageVm)
+            if (lifeTimes?.onCreated) {
+                lifeTimes.onCreated(pageVm)
             }
 
 
@@ -183,4 +183,5 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     handleLocation({
         stateID: 'main'
     });
+    
 });

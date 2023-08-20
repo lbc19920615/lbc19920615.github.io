@@ -747,29 +747,19 @@ Column({a: 1, modifier: vmmodifierFactory}) {
     hc2(TextArea1, {args: [code.trim()]}, ele);
     ele.appendChild(ret.dom);
     
-    const { defineStore } = globalThis.Pinia;
 
-    const useCounterStore = defineStore('counter', {
-      state: () => {
-        return { count: 0 }
-      },
-      // could also be defined as
-      // state: () => ({ count: 0 })
-      actions: {
-        increment() {
-          this.count++
-        },
-      },
-    });
 
-    useCounterStore()
 
 
     Page({
         ele,
         lifeTimes: {
-            onLoad() {
+            onCreated() {
                 console.log("main 加载完成");
+            },
+            onReady({appConfig} = {}) {
+                let countStore = appConfig?.useCounterStore()
+                console.log(countStore);
             }
         }
     })

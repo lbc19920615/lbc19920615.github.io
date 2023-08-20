@@ -44,6 +44,7 @@
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
         import * as Vue from "vue";
+        import {runApp} from "/assets/app.js"
         // console.dir(Vue)
         let vueapp = Vue.createApp({});
         vueapp.config.devtools = true;
@@ -78,14 +79,6 @@
         })();
         globalThis.VueDemi = VueDemi;
 
-        let s = document.createElement('script');
-        s.src = 'https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.iife.js';
-        document.body.appendChild(s);
-
-        s.onload = function() {
-            const pinia = Pinia.createPinia()
-	        vueapp.use(pinia)
-        }
 
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.0.3'
@@ -144,7 +137,8 @@
 
         window.getApp = function () {
             return {
-                $vm: app
+                $vm: app,
+                globalConfig: globalThis.appConfig
             }
         }
 
@@ -226,7 +220,27 @@
 
 
 
-        routerModule(option)
+        routerModule(option);
+
+        let s = document.createElement('script');
+        s.src = 'https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.iife.js';
+        document.body.appendChild(s);
+
+        s.onload = function() {
+            const pinia = Pinia.createPinia()
+	        vueapp.use(pinia);
+
+            let pages = getCurrentPages();
+            // console.log(pages);
+
+            runApp(Pinia);
+
+            pages.forEach(page => {
+                if (page?.lifeTimes?.onReady) {
+                    page.lifeTimes.onReady(globalThis)
+                }
+            })
+        }
     </script>
     <script>
         function __load_async_lib() {

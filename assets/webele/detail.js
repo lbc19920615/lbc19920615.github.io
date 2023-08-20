@@ -116,7 +116,7 @@ export default function({Page}) {
     Page({
         ele,
         lifeTimes: {
-            onLoad(pageVm) {
+            onCreated(pageVm) {
                 console.log("detail 加载完成", pageVm.$getParams());
 
                 vm.setTitle(JSON.stringify( pageVm.$getParams()))

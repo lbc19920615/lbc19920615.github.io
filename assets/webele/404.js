@@ -21,11 +21,6 @@ export default function({Page}) {
     
 
     Page({
-        ele,
-        lifeTimes: {
-            onLoad() {
-                console.log("main 加载完成");
-            }
-        }
+        ele
     })
 }
