@@ -9,6 +9,7 @@ let mainFileStr = fs.readFileSync('./src/webele.ejs').toString()
 let imports = {
   // "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
   "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js",
+  "wlepre": "/assets/wle-provider/index.js?v=0.0.3",
   // "pinia": "https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.esm-browser.js",
 }
 
