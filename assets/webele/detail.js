@@ -94,7 +94,26 @@ export default function({Page}) {
     ele.classList.add('detail-page')
     let vm = useControl('vm')
 
+
     g.defc(Column().init(function (ele) {
+
+        
+        let swCon = document.createElement('swiper-container');
+        swCon.id = 'swCon';
+        ele.appendChild(swCon);
+
+        hc2(ForEach, {
+            args: [{ max: 3 }], init: (ele, option) => {
+                // console.log('ele', ele)
+                let swSlide = document.createElement('swiper-slide')
+                swSlide.innerHTML = 'slide' + option.index;
+                swSlide.style.height = '300px';
+                option.appendChild(swSlide)
+            }
+        }, swCon);
+
+
+
         ; g.defc(Text2(vm.TextDetail).init(function (ele) {
         }), function (ctx) {
             ctx.done(ele)

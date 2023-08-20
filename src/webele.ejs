@@ -6,6 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
     <script src="/assets/eval5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
+    <script>
+        let vueapp = window.Vue.createApp({});
+        vueapp.config.devtools = true;
+        let VueDemi = (function () {
+            var _VueDemi = {}
+            for (var key in Vue) {
+                _VueDemi[key] = Vue[key]
+            }
+            _VueDemi.isVue2 = false
+            _VueDemi.isVue3 = true
+            _VueDemi.install = function () { }
+            _VueDemi.Vue = Vue
+            _VueDemi.Vue2 = undefined
+            _VueDemi.version = Vue.version
+            _VueDemi.set = function (target, key, val) {
+                if (Array.isArray(target)) {
+                    target.length = Math.max(target.length, key)
+                    target.splice(key, 1, val)
+                    return val
+                }
+                target[key] = val
+                return val
+            }
+            _VueDemi.del = function (target, key) {
+                if (Array.isArray(target)) {
+                    target.splice(key, 1)
+                    return
+                }
+                delete target[key]
+            }
+            return _VueDemi
+        })();
+        globalThis.VueDemi = VueDemi;
+    </script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.iife.js"></script>
     <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
         // VConsole will be exported to `window.VConsole` by default.
@@ -45,41 +81,8 @@
     <script type="module">
         import * as Vue from "vue";
         import { runApp } from "/assets/app.js"
-        // console.dir(Vue)
-        let vueapp = Vue.createApp({});
-        vueapp.config.devtools = true;
-        let VueDemi = (function () {
-            var _VueDemi = {}
-            for (var key in Vue) {
-                _VueDemi[key] = Vue[key]
-            }
-            _VueDemi.isVue2 = false
-            _VueDemi.isVue3 = true
-            _VueDemi.install = function () { }
-            _VueDemi.Vue = Vue
-            _VueDemi.Vue2 = undefined
-            _VueDemi.version = Vue.version
-            _VueDemi.set = function (target, key, val) {
-                if (Array.isArray(target)) {
-                    target.length = Math.max(target.length, key)
-                    target.splice(key, 1, val)
-                    return val
-                }
-                target[key] = val
-                return val
-            }
-            _VueDemi.del = function (target, key) {
-                if (Array.isArray(target)) {
-                    target.splice(key, 1)
-                    return
-                }
-                delete target[key]
-            }
-            return _VueDemi
-        })();
-        globalThis.VueDemi = VueDemi;
-
-
+        console.dir(Vue)
+        
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.0.3'
 
@@ -197,21 +200,7 @@
                 let vueapphack = document.createElement('div');
                 mainContent.appendChild(vueapphack);
 
-                // let swCon = document.createElement('swiper-container');
-                // swCon.id = 'swCon';
 
-                // hc2(ForEach, {
-                //     args: [{ max: 3 }], init: (ele, option) => {
-                //         // console.log('ele', ele)
-                //         let swSlide = document.createElement('swiper-slide')
-                //         swSlide.innerHTML = 'slide' + option.index;
-                //         swSlide.style.height = '300px';
-                //         option.appendChild(swSlide)
-                //     }
-                // }, swCon);
-
-
-                // mainContent.appendChild(swCon)
 
                 rooterRootEle.appendChild(nav)
                 rooterRootEle.appendChild(mainContent);
@@ -230,7 +219,7 @@
                 console.log('load from cache');
                 return {
                     tureRoot: cachedRootDom
-                }   
+                }
             }
         }
 
@@ -238,27 +227,21 @@
 
         routerModule(option);
 
-        let s = document.createElement('script');
-        s.src = 'https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.iife.js';
-        document.body.appendChild(s);
+        const pinia = Pinia.createPinia()
+        vueapp.use(pinia);
 
-        s.onload = function () {
-            const pinia = Pinia.createPinia()
-            vueapp.use(pinia);
+        let pages = getCurrentPages();
+        // console.log(pages);
 
-            let pages = getCurrentPages();
-            // console.log(pages);
+        runApp(Pinia, rooterRootEle);
 
-            runApp(Pinia, rooterRootEle);
+        isLoaded = true;
 
-            isLoaded = true;
-
-            pages.forEach(page => {
-                if (page?.lifeTimes?.onReady) {
-                    page.lifeTimes.onReady(globalThis)
-                }
-            })
-        }
+        pages.forEach(page => {
+            if (page?.lifeTimes?.onReady) {
+                page.lifeTimes.onReady(globalThis)
+            }
+        })
     </script>
     <script>
         function __load_async_lib() {

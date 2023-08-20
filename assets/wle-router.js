@@ -6,10 +6,11 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     let firstBuild = true;
     let pagesCache = [];
 
-    function render(rootEle, isReload) {
+    function render(rootEle, reloadStr) {
         // rooterRootEle.innerHTML = ''
         let { tureRoot } = pageBeforeRender(rooterRootEle, firstBuild)
-        tureRoot.innerHTML = ''
+        tureRoot.innerHTML = '';
+        console.log('reloadFormCache', reloadStr);
         tureRoot.appendChild(rootEle);
     }
 
@@ -17,8 +18,8 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         return function Page(option) {
             let { ele, lifeTimes = {} } = option
 
-            function reRender(innerEle) {
-                render(innerEle, true)
+            function reRender(innerEle, reloadFormCache) {
+                render(innerEle, reloadFormCache)
             }
 
             let pageCtx = {
@@ -32,7 +33,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                     reRender(ele)
                 },
                 reloadFormCache() {
-                    reRender(ele)
+                    reRender(ele, 'reloadFormCache')
                 }
             }
 
@@ -194,7 +195,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     };
 
     handleLocation({
-        stateID: 'main'
+        stateID: Nid()
     });
     
 });
