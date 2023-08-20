@@ -107,7 +107,7 @@ export default function({Page}) {
                 // console.log('ele', ele)
                 let swSlide = document.createElement('swiper-slide')
                 swSlide.innerHTML = 'slide' + option.index;
-                swSlide.style.height = '300px';
+                swSlide.style.height = '180px';
                 option.appendChild(swSlide)
             }
         }, swCon);
