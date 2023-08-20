@@ -6,6 +6,8 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     let firstBuild = true;
     let pagesCache = [];
 
+    let unloadIds = [];
+
     function render(rootEle, reloadStr) {
         // rooterRootEle.innerHTML = ''
         let { tureRoot } = pageBeforeRender(rooterRootEle, firstBuild)
@@ -79,6 +81,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     }
 
     function removePage(key) {
+        unloadIds.push(key)
         pageMap.delete(key)
     }
 
@@ -166,6 +169,14 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         if (pages.length > 1) {
             let lastPage = pages.at(-1);
             let prevPage = pages.at(-2);
+
+            if (state?.stateID) {
+                // let cachedIndex = pages.findIndex(page => page.nid === state?.stateID);
+                if (unloadIds.includes(state.stateID)) {
+                    console.log('page is unload', unloadIds, state);
+                    return
+                }
+            }
             if (prevPage.nid === state?.stateID || state == null){
                 unLoadLastPage(lastPage)
                 prevPage?.reloadFormCache();
