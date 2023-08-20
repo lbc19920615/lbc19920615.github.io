@@ -1,7 +1,5 @@
 'use strict';
 
-var vue = require('vue');
-
 const dc = y => y.map(x => x.map(n => String.fromCharCode(n)).join(''));
 const cl = [[0x66, 0x75, 0x63, 0x6b], [0x73, 0x68, 0x69, 0x74], [0x63, 0x75, 0x6e, 0x74], [0x6e, 0x69, 0x67, 0x67], [0x63, 0x6f, 0x63, 0x6b], [0x73, 0x75, 0x63, 0x6b], [0x62, 0x69, 0x74, 0x63, 0x68], [0x61, 0x73, 0x73], [0x68, 0x6f, 0x6c, 0x65], [0x77, 0x68, 0x6f, 0x72, 0x65], [0x77, 0x61, 0x6e, 0x6b], [0x73, 0x6c, 0x75, 0x74], [0x70, 0x75, 0x73, 0x73], [0x65, 0x72, 0x72, 0x6F, 0x72]];
 const defaults = {
@@ -98,6 +96,12 @@ Nid$1.curses = () => default_cursed_list;
 Nid$1.len = defaults.len;
 Nid$1.alphabet = defaults.alphabet;
 
+// import { reactive, ref , watch, computed  } from "vue"
+
+const {
+  reactive: reactive$1,
+  computed
+} = globalThis.VueDemi;
 let symbol = Symbol('BaseControl');
 class BaseVmControl {
   static [symbol] = 1;
@@ -217,12 +221,12 @@ function useControl(cls) {
   // console.log(clsDef);
   if (clsDef) {
     let def = clsDef;
-    let obj = vue.reactive(def.state);
+    let obj = reactive$1(def.state);
     let getterKeys = [];
     Object.keys(def.getters).forEach(key => {
       // console.log(def.getters[key].bind(obj));
       getterKeys.push(key);
-      obj[key] = vue.computed(def.getters[key].bind(obj));
+      obj[key] = computed(def.getters[key].bind(obj));
     });
     Object.keys(def.actions).forEach(key => {
       obj[key] = def.actions[key].bind(obj);
@@ -232,7 +236,7 @@ function useControl(cls) {
     return new Proxy(obj, {
       get(target, key) {
         if (getterKeys.includes(key)) {
-          return vue.computed(() => {
+          return computed(() => {
             return obj[key];
           });
         } else {

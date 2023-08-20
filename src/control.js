@@ -1,4 +1,7 @@
-import { reactive, ref , watch, computed  } from "vue"
+// import { reactive, ref , watch, computed  } from "vue"
+
+
+const { reactive, computed  } = globalThis.VueDemi;
 
 let symbol = Symbol('BaseControl')
 
