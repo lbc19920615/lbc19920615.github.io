@@ -244,6 +244,11 @@ function useControl(cls) {
   return null;
 }
 
+const {
+  reactive,
+  ref,
+  watch
+} = globalThis.VueDemi;
 let glo = globalThis;
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
@@ -574,19 +579,19 @@ function createForeachCtx(callback, {
 }
 function __ForEach_action(option = {}, obj, ctx) {
   let {
-    max = vue.ref(0),
+    max = ref(0),
     list = null
   } = option;
 
   // console.log(list);
-  vue.watch(max, (newVal, oldVal) => {
+  watch(max, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
     // ctx.reload({ max: obj.max, list: obj.list })
     ctx.reload(obj);
   }, {
     deep: true
   });
-  vue.watch(list, (newVal, oldVal) => {
+  watch(list, (newVal, oldVal) => {
     // console.log('list', newVal, oldVal);
     // ctx.reload({ max: obj.max, list: obj.list })
     ctx.reload(obj);
@@ -608,10 +613,10 @@ function ForEach(option = {}, {
   let endFlg = createComment('end' + label);
   let ele = [startFlg, endFlg];
   let {
-    max = vue.ref(0),
+    max = ref(0),
     list = null
   } = option;
-  let obj = vue.reactive({
+  let obj = reactive({
     max,
     list
   });
@@ -652,7 +657,7 @@ function If(conditions) {
   }, {
     label: ' if'
   });
-  vue.watch(conditions, (newVal, oldVal) => {
+  watch(conditions, (newVal, oldVal) => {
     // console.log('111', newVal, fragment);
     fragment.getCtx().reload({
       max: Number(newVal)
@@ -678,7 +683,7 @@ function Else() {
   }, {
     label: ' else'
   });
-  vue.watch(conditions, (newVal, oldVal) => {
+  watch(conditions, (newVal, oldVal) => {
     // console.log('if', newVal, fragment);
     fragment.getCtx().reload({
       max: !Number(newVal)
@@ -771,7 +776,7 @@ function defComponent(option = {}) {
     // console.log(args);
 
     function startWatch(onChange) {
-      vue.watch(args, (newVal, oldVal) => {
+      watch(args, (newVal, oldVal) => {
         if (onChange) {
           onChange(newVal, oldVal);
         }
@@ -900,7 +905,7 @@ function _text__render(ele, text) {
 function _text__action(ele, args) {
   let text = _utils_getAnyParam(args, '');
   if (text.__v_isRef) {
-    vue.watch(text, () => {
+    watch(text, () => {
       _text__render(ele, text);
     });
   }

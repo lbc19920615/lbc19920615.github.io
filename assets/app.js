@@ -1,5 +1,5 @@
 import { Provider, Subscriber } from "wlepre"
-import { watch  } from "vue"
+
 
 export function runApp(Pinia, rooterRootEle) {
     const { defineStore } = Pinia;
@@ -22,13 +22,15 @@ export function runApp(Pinia, rooterRootEle) {
 
     // console.log(rooterRootEle);
 
-    watch(countStore, function(newVal, oldVal) {
+    VueDemi.watch(countStore, function(newVal, oldVal) {
         
         let swCon = rooterRootEle.querySelector('#swCon');
         // console.log('sssssssssssssssssssssssss',  swCon.children[0], newVal.count);
-        swCon.children[0].innerHTML = `
-        <div>  ${ 'swCon' + newVal.count}</div>
-          `
+        if (swCon) {
+            swCon.children[0].innerHTML = `
+            <div>  ${ 'swCon' + newVal.count}</div>
+              `
+        }
     })
 
     

@@ -79,14 +79,12 @@
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-        import * as Vue from "vue";
         import { runApp } from "/assets/app.js"
-        console.dir(Vue)
-        
+
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.0.3'
 
-        import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
+        const { reactive, onMounted, computed, watchEffect, ref, watch } = globalThis.VueDemi;
         import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
         window.getAllComments = getAllComments;

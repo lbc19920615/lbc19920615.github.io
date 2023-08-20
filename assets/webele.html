@@ -75,19 +75,17 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_077a2b27.js?v=1692526332161"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_d2650ad4.js?v=1692527204755"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-        import * as Vue from "vue";
         import { runApp } from "/assets/app.js"
-        console.dir(Vue)
-        
+
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.0.3'
 
-        import { reactive, onMounted, computed, watchEffect, ref, watch } from "vue"
+        const { reactive, onMounted, computed, watchEffect, ref, watch } = globalThis.VueDemi;
         import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
         window.getAllComments = getAllComments;

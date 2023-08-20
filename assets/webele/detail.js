@@ -152,8 +152,6 @@ export default function({Page}) {
                 vm.setTitle(JSON.stringify( pageVm.$getParams()))
             },
             onReady({appConfig} = {}) {
-
-                // console.log(countStore);
             },
             onUnload() {
                 console.log("detail 结束");

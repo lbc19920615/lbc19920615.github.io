@@ -1,6 +1,7 @@
 import "./webele.scss"
-import { reactive, ref , watch  } from "vue"
 import nid from "./nid.browser"
+
+const {reactive, ref, watch} = globalThis.VueDemi;
 
 let glo = globalThis;
 let dom = glo.document || glo.customDoucment;
