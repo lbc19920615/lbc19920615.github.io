@@ -135,9 +135,12 @@
         injectControl('app')(AppCotnrol);
         let app = useControl('app');
 
+        let isLoaded = false;
+
         window.getApp = function () {
             return {
                 $vm: app,
+                isLoaded,
                 globalConfig: globalThis.appConfig
             }
         }
@@ -234,6 +237,8 @@
             // console.log(pages);
 
             runApp(Pinia);
+
+            isLoaded = true;
 
             pages.forEach(page => {
                 if (page?.lifeTimes?.onReady) {

@@ -39,7 +39,7 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692513724898"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692519301836"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -136,9 +136,12 @@
         injectControl('app')(AppCotnrol);
         let app = useControl('app');
 
+        let isLoaded = false;
+
         window.getApp = function () {
             return {
                 $vm: app,
+                isLoaded,
                 globalConfig: globalThis.appConfig
             }
         }
@@ -235,6 +238,8 @@
             // console.log(pages);
 
             runApp(Pinia);
+
+            isLoaded = true;
 
             pages.forEach(page => {
                 if (page?.lifeTimes?.onReady) {

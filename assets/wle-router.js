@@ -43,10 +43,17 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                 }
             }
 
+            let app = window.getApp();
+
             if (lifeTimes?.onCreated) {
-                lifeTimes.onCreated(pageVm)
+                lifeTimes.onCreated(pageVm, {app})
             }
 
+            if (app.isLoaded) {
+                if (lifeTimes?.onReady) {
+                    lifeTimes.onReady({appConfig: app.globalConfig})
+                }
+            }
 
 
             pageMap.set(nid, pageCtx);

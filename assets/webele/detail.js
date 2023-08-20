@@ -116,12 +116,13 @@ export default function({Page}) {
     Page({
         ele,
         lifeTimes: {
-            onCreated(pageVm) {
+            onCreated(pageVm, {app} = {}) {
                 console.log("detail 加载完成", pageVm.$getParams());
-
                 vm.setTitle(JSON.stringify( pageVm.$getParams()))
-                
-    // console.log( vm.TextDetail.value);
+            },
+            onReady({appConfig} = {}) {
+                let countStore = appConfig?.useCounterStore()
+                console.log(countStore);
             },
             onUnload() {
                 console.log("detail 结束");
