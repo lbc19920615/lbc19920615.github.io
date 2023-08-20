@@ -1,4 +1,4 @@
-import { Button, Text, ForEach, If, hc, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+import { Button, Text, ForEach, If,  hc2, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
 
 
 class DomCotnrol extends BaseVmControl {
@@ -12,6 +12,10 @@ class DomCotnrol extends BaseVmControl {
     action(e) {
         globalThis.wRoute.back()
     }
+    action2() {
+        let countStore = getApp()?.globalConfig?.useCounterStore();
+        countStore.increment()
+    }
 }
 
 injectControl('vm')(DomCotnrol)
@@ -22,11 +26,11 @@ let Text2 = defComponent({
         let ele = document.createElement('div')
         ele.classList.add('text2')
 
-        hc(Column, {
+        hc2(Column, {
             init(ele)  {
-                hc(Text, {args: ['text2 com start']}, ele)
-                hc(Text, {args: args}, ele)
-                hc(Text, {args: ['text2 com end']}, ele)
+                hc2(Text, {args: ['text2 com start']}, ele)
+                hc2(Text, {args: args}, ele)
+                hc2(Text, {args: ['text2 com end']}, ele)
             },
             done(ctx) {
                 ctx.width('100%')
@@ -96,6 +100,14 @@ export default function({Page}) {
             ctx.done(ele)
         });
 
+        hc2(Button, {args: [{text: 'pinia', action: vm.action2}], ready(ctx) {
+            ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+        }}, ele);
+
+        hc2(Text, {args: ['router'], ready(ctx) {
+            ctx.marginBottom(20)
+        }}, ele);
+
         ; g.defc(Button({ text: 'back', action: vm.action }).init(function (ele) { 
         }), function (ctx) {
             ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
@@ -121,8 +133,8 @@ export default function({Page}) {
                 vm.setTitle(JSON.stringify( pageVm.$getParams()))
             },
             onReady({appConfig} = {}) {
-                let countStore = appConfig?.useCounterStore()
-                console.log(countStore);
+
+                // console.log(countStore);
             },
             onUnload() {
                 console.log("detail 结束");

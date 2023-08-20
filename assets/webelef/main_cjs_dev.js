@@ -389,7 +389,7 @@ let cssHelper = {
 function createModifier(ctx) {
   let colorNames = ['backgroundColor'];
   let borderNames = ['border', 'fontColor'];
-  let sizeNames = ['width', 'height', 'size', 'fontSize'];
+  let sizeNames = ['width', 'height', 'size', 'marginBottom', 'marginTop', 'marginLeft', 'marginRight', 'paddingBottom', 'paddingTop', 'paddingLeft', 'paddingRight', 'fontSize'];
   let cssFunNames = [...colorNames, ...borderNames, ...sizeNames];
   let eventNames = ['onLoad'];
   let proxy = new Proxy(ctx, {
@@ -668,10 +668,10 @@ function Else() {
   }
   let conditions = currentCondition;
   let val = conditions?.__v_isRef ? conditions.value : conditions;
-  let someIsTrue = currentConditionArr.some(fun => {
+  currentConditionArr.some(fun => {
     return fun();
   });
-  console.log('someIsTrue', val, currentConditionArr, someIsTrue);
+  // console.log('someIsTrue', val, currentConditionArr, someIsTrue);
   // console.log('currentCondition', currentCondition, val,  Number(!val));
   let fragment = ForEach({
     max: Number(!val)

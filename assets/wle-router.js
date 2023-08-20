@@ -3,12 +3,14 @@ import { Nid } from "wle";
 export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, keepLives = [] } = {}) {
     let pageMap = new Map();
 
+    let firstBuild = true;
     let pagesCache = [];
 
-    function render(rootEle) {
-        rooterRootEle.innerHTML = ''
-        let { tureRoot } = pageBeforeRender(rooterRootEle)
-        tureRoot.appendChild(rootEle)
+    function render(rootEle, isReload) {
+        // rooterRootEle.innerHTML = ''
+        let { tureRoot } = pageBeforeRender(rooterRootEle, firstBuild)
+        tureRoot.innerHTML = ''
+        tureRoot.appendChild(rootEle);
     }
 
     function createPageFun(nid = '', params, {routerName} = {}) {
@@ -16,7 +18,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
             let { ele, lifeTimes = {} } = option
 
             function reRender(innerEle) {
-                render(innerEle)
+                render(innerEle, true)
             }
 
             let pageCtx = {
@@ -49,6 +51,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                 lifeTimes.onCreated(pageVm, {app})
             }
 
+            // console.log(app);
             if (app.isLoaded) {
                 if (lifeTimes?.onReady) {
                     lifeTimes.onReady({appConfig: app.globalConfig})
@@ -144,6 +147,9 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                 m.default({ Page })
             }
         }
+
+        
+        firstBuild = false
 
     };
 

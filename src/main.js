@@ -168,7 +168,9 @@ function createModifier(ctx) {
 
     let colorNames = ['backgroundColor']
     let borderNames = ['border', 'fontColor']
-    let sizeNames = ['width', 'height', 'size', 'fontSize']
+    let sizeNames = ['width', 'height', 'size', 
+    'marginBottom', 'marginTop', 'marginLeft', 'marginRight',  
+    'paddingBottom', 'paddingTop', 'paddingLeft', 'paddingRight', 'fontSize']
     let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
 
     let eventNames = ['onLoad']
@@ -447,7 +449,7 @@ export function Else() {
     let someIsTrue = currentConditionArr.some(fun => {
         return fun()
     });
-    console.log('someIsTrue', val, currentConditionArr, someIsTrue);
+    // console.log('someIsTrue', val, currentConditionArr, someIsTrue);
     // console.log('currentCondition', currentCondition, val,  Number(!val));
     let fragment = ForEach({ max: Number(!val) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
