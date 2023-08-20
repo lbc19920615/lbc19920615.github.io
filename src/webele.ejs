@@ -36,7 +36,6 @@
 
 <body>
     <div id="routerroot" class="h-full"></div>
-    <div id="app"></div>
     <script type="importmap">
         {
           "imports": <%- importmap %>
@@ -185,11 +184,15 @@
             }, nav);
 
 
-            let mainContent = document.createElement('div')
+            let mainContent = document.createElement('div');
             mainContent.id = 'mainContent';
             mainContent.classList.add('flex-1');
             mainContent.classList.add('overflow-hidden');
             mainContent.style['overflow-y'] = 'auto';
+
+
+            let vueapphack = document.createElement('div');
+            mainContent.appendChild(vueapphack);
 
             let swCon = document.createElement('swiper-container');
 
@@ -207,7 +210,11 @@
             mainContent.appendChild(swCon)
 
             rooterRootEle.appendChild(nav)
-            rooterRootEle.appendChild(mainContent)
+            rooterRootEle.appendChild(mainContent);
+
+            setTimeout(() => {
+                vueapp.mount(vueapphack)
+            }, 30)
             return {
                 tureRoot: mainContent
             }

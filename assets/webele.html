@@ -37,10 +37,9 @@
 
 <body>
     <div id="routerroot" class="h-full"></div>
-    <div id="app"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692445667471"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wle":"/assets/webelef/main_esm_4dd1a155.js?v=1692512161503"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -186,11 +185,15 @@
             }, nav);
 
 
-            let mainContent = document.createElement('div')
+            let mainContent = document.createElement('div');
             mainContent.id = 'mainContent';
             mainContent.classList.add('flex-1');
             mainContent.classList.add('overflow-hidden');
             mainContent.style['overflow-y'] = 'auto';
+
+
+            let vueapphack = document.createElement('div');
+            mainContent.appendChild(vueapphack);
 
             let swCon = document.createElement('swiper-container');
 
@@ -208,7 +211,11 @@
             mainContent.appendChild(swCon)
 
             rooterRootEle.appendChild(nav)
-            rooterRootEle.appendChild(mainContent)
+            rooterRootEle.appendChild(mainContent);
+
+            setTimeout(() => {
+                vueapp.mount(vueapphack)
+            }, 30)
             return {
                 tureRoot: mainContent
             }
