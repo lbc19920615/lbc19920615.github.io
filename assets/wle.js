@@ -454,6 +454,7 @@ function createModifier(ctx) {
 }
 let Modifier = {
   setCurEle(ele) {
+    _currentModifierEle = ele;
     return createModifier({
       resolveStyle(key, val, target, receiver) {
         ele.style[key] = val;
@@ -644,16 +645,21 @@ function ForEach(option = {}, {
   };
 }
 customComponents.set('ForEach', ForEach);
-let currentConditionArr = [];
+let conditionMap = new Map();
+window.__conditionMap__ = conditionMap;
 let currentCondition = null;
-function If(conditions) {
-  currentConditionArr = [];
+function If(conditions, nid = '') {
+  let trueCond = conditions?.__v_isRef ? conditions.value : conditions;
   // console.log(conditions);
   currentCondition = conditions;
-  currentConditionArr.push(function () {
-    return conditions?.__v_isRef ? conditions.value : conditions;
-  });
-  let val = conditions?.__v_isRef ? conditions.value : conditions;
+  if (nid) {
+    if (!conditionMap.has(nid)) {
+      conditionMap.set(nid, [function () {
+        return trueCond;
+      }]);
+    }
+  }
+  let val = trueCond;
   let fragment = ForEach({
     max: Number(val)
   }, {
@@ -668,16 +674,13 @@ function If(conditions) {
   return fragment;
 }
 customComponents.set('If', If);
-function Else() {
+function Else(nid = '') {
   // console.log(conditions);
   if (!currentCondition) {
     return;
   }
   let conditions = currentCondition;
   let val = conditions?.__v_isRef ? conditions.value : conditions;
-  currentConditionArr.some(fun => {
-    return fun();
-  });
   // console.log('someIsTrue', val, currentConditionArr, someIsTrue);
   // console.log('currentCondition', currentCondition, val,  Number(!val));
   let fragment = ForEach({

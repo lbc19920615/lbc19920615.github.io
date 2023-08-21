@@ -458,7 +458,8 @@ export default function({Page}) {
                 ctx.done(ele)
             });
 
-            ; g.defc(If(vmDataMax).init(function (ele) {
+            let if_nid_1 = Nid();
+            ; g.defc(If(vmDataMax, if_nid_1).init(function (ele) {
                 g.defc(Text('if ok').init(function (ele) {
 
                 }), function (ctx) { ctx.done(ele) })
@@ -466,7 +467,7 @@ export default function({Page}) {
                 ctx.done(ele)
             });
 
-            ; g.defc(Else().init(function (ele) {
+            ; g.defc(Else(if_nid_1).init(function (ele) {
                 g.defc(Text('else ok').init(function (ele) {
 
                 }), function (ctx) { ctx.done(ele) })
