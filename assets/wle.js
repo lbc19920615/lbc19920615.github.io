@@ -681,8 +681,9 @@ function Else(nid = '') {
   }
   let conditions = currentCondition;
   let val = conditions?.__v_isRef ? conditions.value : conditions;
-  // console.log('someIsTrue', val, currentConditionArr, someIsTrue);
   // console.log('currentCondition', currentCondition, val,  Number(!val));
+  // let someIsTrue = getCondByNid(nid);
+  // console.log('someIsTrue', val, someIsTrue);
   let fragment = ForEach({
     max: Number(!val)
   }, {

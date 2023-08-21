@@ -421,6 +421,19 @@ customComponents.set('ForEach', ForEach)
 let conditionMap = new Map();
 window.__conditionMap__ = conditionMap;
 
+function getCondByNid(nid) {
+    let ret = false;
+    if (nid) {
+        if (conditionMap.has(nid)) {
+            let conds = conditionMap.get(nid);
+            if (Array.isArray(conds)) {
+                ret = conds.some(fun => fun())
+            }
+        }
+    }
+    return ret
+}
+
 let currentCondition = null;
 export function If(conditions, nid = '') {
     let trueCond = conditions?.__v_isRef  ? conditions.value : conditions
@@ -453,8 +466,9 @@ export function Else(nid = '') {
     
     let conditions = currentCondition;
     let val = conditions?.__v_isRef  ? conditions.value : conditions;
-    // console.log('someIsTrue', val, currentConditionArr, someIsTrue);
     // console.log('currentCondition', currentCondition, val,  Number(!val));
+    // let someIsTrue = getCondByNid(nid);
+     // console.log('someIsTrue', val, someIsTrue);
     let fragment = ForEach({ max: Number(!val) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
         // console.log('if', newVal, fragment);
