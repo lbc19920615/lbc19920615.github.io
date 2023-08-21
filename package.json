@@ -25,6 +25,7 @@
     "fibers": "^5.0.0",
     "html-loader": "^2.1.2",
     "loader-utils": "^2.0.0",
+    "quickjs-emscripten": "^0.23.0",
     "rollup-plugin-scss": "^4.0.0",
     "sass": "^1.65.1",
     "sass-loader": "^11.0.1",
