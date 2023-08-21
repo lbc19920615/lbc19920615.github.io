@@ -643,6 +643,8 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
     Button({text: 'change text',  action: vm.action})
 }
 
+Column({space: 5, modifier: vmmodifierFactory2}) {
+}
 
     `;
 
