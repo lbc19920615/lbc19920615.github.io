@@ -4,10 +4,6 @@ import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
 const { reactive, computed  } = globalThis.VueDemi;
 
-// import pinia from "pinia"
-
-// console.log(pinia);
-
 
 globalThis.Modifier = Modifier;
 
@@ -366,7 +362,7 @@ export default function({Page}) {
             },
             submitForm() {
                 let formName = 'form1'
-                console.log(formName, document.querySelector(`.form[name=a{formName}]`)?.$formCtx.getModel())
+                console.log(formName, document.querySelector(`.form[name=${formName}]`)?.$formCtx.getModel())
                 // alert('console.log查看')
             },
             getFun() {
@@ -586,7 +582,7 @@ export default function({Page}) {
             ctx.done(ele)
         });
         
-        ; g.defc(If(vmDataDialog).init(function (ele) {
+        ; g.defc(If(vmDataDialog, 'dialog').init(function (ele) {
             ; g.defc(Dialog1({onClose: vm.onDialogClose}).init(function (ele) {
                 
                 ; g.defc(FormItem('input text').init(function (ele) {
@@ -644,43 +640,11 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
         Text('else is true')
     }
 
-    Button({text: 'change text', s: vm.getFun(),  action: vm.action})
+    Button({text: 'change text',  action: vm.action})
 }
 
-Column({a: 1, modifier: vmmodifierFactory}) {
-    Column() {
-    }
-}
+
     `;
-
-    function __get(object, path, defval = null) {
-        if (typeof path === "string") {
-            path = path.split(".");
-        }
-        return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : defval), object);
-    }
-
-    function __evalArgs(args = []) {
-        return args.map(v => {
-            try {
-                // let o = eval(`let a = ${v}; a;`);
-                let o = interpreter.evaluate(`var a = ${v}; a;`);
-                // console.log(v, o);
-                return o
-            } catch(e) {
-                if (typeof v === 'string') {
-                    let val = __get(glo, v?.trim().split('.'))
-                    // console.log(v, val);
-                    if (typeof val !== 'undefined' && val != null) {
-                        return val
-                    } 
-                }
-
-                console.log(v, e);
-                return v
-            }
-        })
-    }
 
     let ret = parseArkUI(code, {
         glo: globalThis,
@@ -743,7 +707,7 @@ Column({a: 1, modifier: vmmodifierFactory}) {
     window.getParsedRet = function(name = 'def') {
         return ret[name]
     }
-    console.log(ret?.def);
+    console.log(ret?.dom);
     // console.log(ret?.dom);
     
     hc2(Text, {args: ['动态string转换为component测试']}, ele);

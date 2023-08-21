@@ -223,7 +223,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                     } 
                 }
 
-                console.log(v, e);
+                // console.log(v, e);
                 return v
             }
         })
@@ -279,6 +279,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
 
          
                     let dom1 = document.createElement('div');
+                    // console.log(components);
                     if (components.has(arr[0])) {
                         // console.log(arr[0], argArr[1]);
                         let func_args =  []
@@ -415,7 +416,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                     }
                 }
             } catch (e) {
-                if (!e.message.includes('is not defined')) {
+                if (!e.message.includes('__')) {
                     console.log(e)
                 }
             }
@@ -424,7 +425,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
         // context.newfuncNames = context.newfuncNames.filter(v => !keys.includes(v))
     }
 
-    context.dom =  document.createElement('div')
+    context.dom =  document.createElement('div');
     findFun(code, context, {parent: context.root, dom: context.dom})
 
     // console.log(context.root);

@@ -1,9 +1,13 @@
 import "./webele.scss"
 import nid from "./nid.browser"
 
-const {reactive, ref, watch} = globalThis.VueDemi;
+
 
 let glo = globalThis;
+
+const {reactive, ref, watch} = glo.VueDemi;
+console.log('glo', VueDemi);
+
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
 
@@ -237,7 +241,8 @@ function createModifier(ctx) {
     return proxy
 }
 
-let _Modifier_eles = {};
+// let _Modifier_eles = {};
+let _currentModifierEle  = {};
 export let Modifier =  {
     setCurEle(ele) {
         _currentModifierEle = ele;
@@ -468,7 +473,7 @@ export function Else(nid = '') {
     let val = conditions?.__v_isRef  ? conditions.value : conditions;
     // console.log('currentCondition', currentCondition, val,  Number(!val));
     // let someIsTrue = getCondByNid(nid);
-     // console.log('someIsTrue', val, someIsTrue);
+    // console.log('someIsTrue', val, someIsTrue);
     let fragment = ForEach({ max: Number(!val) }, {label: ' else'})
     watch(conditions, (newVal, oldVal) => {
         // console.log('if', newVal, fragment);

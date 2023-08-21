@@ -12,7 +12,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         // rooterRootEle.innerHTML = ''
         let { tureRoot } = pageBeforeRender(rooterRootEle, firstBuild)
         tureRoot.innerHTML = '';
-        console.log('reloadFormCache', reloadStr);
+        // console.log('reloadFormCache', reloadStr);
         tureRoot.appendChild(rootEle);
     }
 

@@ -248,12 +248,13 @@ function useControl(cls) {
   return null;
 }
 
+let glo = globalThis;
 const {
   reactive,
   ref,
   watch
-} = globalThis.VueDemi;
-let glo = globalThis;
+} = glo.VueDemi;
+console.log('glo', VueDemi);
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
 function setGlobal(v) {
@@ -456,7 +457,6 @@ function createModifier(ctx) {
 }
 let Modifier = {
   setCurEle(ele) {
-    _currentModifierEle = ele;
     return createModifier({
       resolveStyle(key, val, target, receiver) {
         ele.style[key] = val;
