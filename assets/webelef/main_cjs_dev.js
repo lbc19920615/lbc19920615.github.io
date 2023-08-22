@@ -717,6 +717,7 @@ let g = {
 function hc2(ComponentConstruct, {
   args = [],
   init = function () {},
+  attrs = {},
   end = function () {},
   afterInit,
   ready
@@ -735,7 +736,13 @@ function hc2(ComponentConstruct, {
     }
   };
   let ret = ComponentConstruct.apply(null, args).init(init);
-  return defc(ret, readyFun);
+  let ctx = defc(ret, readyFun);
+  if (attrs) {
+    Object.keys(attrs).forEach(key => {
+      ctx.ele.setAttribute(key, attrs[key]);
+    });
+  }
+  return ctx;
 }
 function hc(ComponentConstruct, {
   args = [],
