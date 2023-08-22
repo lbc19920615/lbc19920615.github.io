@@ -9,6 +9,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     let unloadIds = [];
 
     function render(rootEle, reloadStr) {
+        console.log(rootEle);
         // rooterRootEle.innerHTML = ''
         let { tureRoot } = pageBeforeRender(rooterRootEle, firstBuild)
         tureRoot.innerHTML = '';
@@ -35,6 +36,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                     reRender(ele)
                 },
                 reloadFormCache() {
+                    console.log('reloadFormCache');
                     reRender(ele, 'reloadFormCache')
                 }
             }
@@ -144,6 +146,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
             // return [nid, cached]
         } else {
 
+            // console.log('ssssssssssssssssssssss');
             let Page = createPageFun(nid, params, {
                 routerName
             })
@@ -178,7 +181,8 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                 }
             }
             if (prevPage.nid === state?.stateID || state == null){
-                unLoadLastPage(lastPage)
+                unLoadLastPage(lastPage);
+                console.log(prevPage);
                 prevPage?.reloadFormCache();
             }
         }

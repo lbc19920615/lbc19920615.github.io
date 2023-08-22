@@ -425,10 +425,6 @@ export default function({Page}) {
             data
         }
     })();
-    globalThis.vm = vm;
-
-
-
     let vmData = vm.data;
 
     let vmDataList = vmData.list
@@ -487,14 +483,18 @@ export default function({Page}) {
 
         let swCon = document.createElement('swiper-container');
         swCon.id = 'swCon';
+        swCon.style.setProperty('--swiper-slide-h', '180px')
         ele.appendChild(swCon);
 
+
         hc2(ForEach, {
-            args: [{ max: 3 }], init: (ele, option) => {
+            args: [{ max: 3 }], 
+            init: (ele, option) => {
                 // console.log('ele', ele)
                 let swSlide = document.createElement('swiper-slide')
                 swSlide.innerHTML = 'slide' + option.index;
-                swSlide.style.height = '180px';
+                swSlide.classList.add('swiper_slide')
+                // swSlide.setAttribute('style', 'height: 180px;')
                 option.appendChild(swSlide);
             },
             ready() {

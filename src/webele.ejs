@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
+    <link rel="stylesheet" href="/assets/app.css" />
     <script src="/assets/eval5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
     <script>
@@ -107,7 +108,7 @@
 
 
         let keepLives = [
-            '404'
+            // '404'
         ]
 
         class AppCotnrol extends BaseVmControl {
@@ -214,7 +215,7 @@
                     tureRoot: mainContent
                 }
             } else {
-                console.log('load from cache');
+                console.log('load from cache', cachedRootDom);
                 return {
                     tureRoot: cachedRootDom
                 }
