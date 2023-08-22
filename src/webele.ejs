@@ -11,6 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
     <script>
+        if (location.hash === '') {
+            history.replaceState({path: '', nid: 'main'},'',location.href + '#/')
+        }
+
         window.jssStyleMan = jss.default.setup(jssPresetDefault.default);
         let vueapp = window.Vue.createApp({});
         vueapp.config.devtools = true;
