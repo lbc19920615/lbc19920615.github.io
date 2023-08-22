@@ -8,6 +8,10 @@ function getFunBody(Func) {
 
 export function parseArkUI(code = '', {glo = globalThis, interpreter, components = new Map(), hc2 = function() {}, handleXmlBuild } = {}) {
 
+    let meta = {
+        currentIfNid: ''
+    }
+
     let evalFun =  interpreter?.evaluate ? function(...args) {
         return  interpreter?.evaluate(...args)
     } : eval;
@@ -293,6 +297,22 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                         if (['ForEach', 'If', 'Else'].includes(arr[0])) {
                             
                             // console.log(arr[0], func_args);
+                            if (!Array.isArray(func_args)) {
+                                func_args = []
+                            }
+                            
+
+                            if (['If', 'Else'].includes(arr[0])) {
+                              if (arr[0] === 'If') {
+                                meta.currentIfNid = Nid();
+                                func_args.push(meta.currentIfNid);
+                              }
+                              if (arr[0] === 'Else') {
+                                func_args[func_args.length - 1] = meta.currentIfNid
+                              }
+                  
+                              console.log(func_args);
+                            }
                             let __index = 0;
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {
                                 dom1 = initEle;

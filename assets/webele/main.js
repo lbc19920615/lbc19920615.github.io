@@ -337,6 +337,7 @@ export default function({Page}) {
         let data = reactive({
             some: "initStr",
             max: 1,
+            max2: 1,
             list: [1, 2, 3],
             dialog: false
         })
@@ -389,6 +390,7 @@ export default function({Page}) {
     })
     let vmDataDialog = computed(() => vmData.dialog)
     let vmDataMax = computed(() => vmData.max > 1)
+    let vmDataMax2 = computed(() => vmData.max2 > 1)
     let vmStrSome = computed(() => vmData.some)
 
 
@@ -401,12 +403,14 @@ export default function({Page}) {
     setTimeout(() => {
         vmData.list[0] = 3;
         vmData.max = 2;
+        vmData.max2 = 2;
     }, 3000)
 
     globalThis.$vmData = vmData;
 
     const interpreter = new eval5.Interpreter({
         vmDataMax,
+        vmDataMax2,
         vm,
         vmmodifierFactory,
         vmmodifierFactory2
@@ -455,7 +459,7 @@ export default function({Page}) {
             });
 
             let if_nid_1 = Nid();
-            ; g.defc(If(vmDataMax, if_nid_1).init(function (ele) {
+            ; g.defc(If(vmDataMax2, if_nid_1).init(function (ele) {
                 g.defc(Text('if ok').init(function (ele) {
 
                 }), function (ctx) { ctx.done(ele) })
@@ -582,7 +586,7 @@ export default function({Page}) {
             ctx.done(ele)
         });
         
-        ; g.defc(If(vmDataDialog, 'dialog').init(function (ele) {
+        ; g.defc(If(vmDataDialog, 'if_dialog_nid').init(function (ele) {
             ; g.defc(Dialog1({onClose: vm.onDialogClose}).init(function (ele) {
                 
                 ; g.defc(FormItem('input text').init(function (ele) {
