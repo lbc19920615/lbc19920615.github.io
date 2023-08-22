@@ -7,9 +7,11 @@
     <title>基于vue reactivity的 webcomponent框架</title>
     <link rel="stylesheet" href="/assets/app.css" />
     <script src="/assets/eval5.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jss/10.10.0/jss.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jss/10.9.2/jss.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
     <script>
+        window.jssStyleMan = jss.default.setup(jssPresetDefault.default);
         let vueapp = window.Vue.createApp({});
         vueapp.config.devtools = true;
         let VueDemi = (function () {
