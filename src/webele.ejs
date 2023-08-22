@@ -104,6 +104,9 @@
             404: (params) => {
                 return import(BaseDir + 'webele/404.js?v=' + Date.now())
             },
+            my: (params) => {
+                return import(BaseDir + 'webele/my.js?v=' + Date.now())
+            },
             detail: (params) => {
                 return import(BaseDir + 'webele/detail.js?v=' + Date.now())
             },
@@ -114,30 +117,6 @@
             // '404'
         ]
 
-        class AppCotnrol extends BaseVmControl {
-            title = ''
-            get TextDetail() {
-                return 'detail 页面 ' + this.title
-            }
-            get navs() {
-                return [
-                    ['', {
-                        label: 'main'
-                    }],
-                    ['detail', {
-                        label: 'detail'
-                    }]
-                ]
-            }
-            setTitle(v) {
-                this.title = v
-            }
-            action(e) {
-                globalThis.wRoute.back()
-            }
-        }
-
-        injectControl('app')(AppCotnrol);
         let app = useControl('app');
 
         let isLoaded = false;
@@ -165,16 +144,17 @@
         function pageBeforeRender(rooterRootEle, firstBuild) {
             if (firstBuild) {
                 rooterRootEle.classList.add('dis-flex');
-                rooterRootEle.style.setProperty('--app-nav-w', '90px');
+                // rooterRootEle.style.setProperty('--app-nav-w', '90px');
 
                 let nav = document.createElement('div')
                 nav.id = 'nav'
                 let dom = document.createElement('div')
+                dom.classList.add('a-hide-in-mobile')
                 dom.innerHTML = '切换主题'
                 dom.onclick = function () {
                     document.documentElement.classList.toggle('theme-dark')
                 }
-                nav.style.width = 'var(--app-nav-w)'
+                // nav.style.width = 'var(--app-nav-w)'
                 nav.appendChild(dom);
 
                 hc2(ForEach, {
@@ -184,6 +164,11 @@
                         let label = option.item[1]?.label;
                         let ctx = hc2(Text, { args: [label] }, ele);
                         ctx.ele.onclick = function () {
+                            let currentName = location.hash.replace('#/', '')
+                            // console.log(name,currentName );
+                            if (currentName === name) {
+                                return
+                            }
                             globalThis.wRoute.push(name, {
                                 paramA: 'from nav'
                             })

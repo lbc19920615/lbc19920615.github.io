@@ -1,5 +1,31 @@
 import { Provider, Subscriber } from "wlepre"
+import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
+
+class AppCotnrol extends BaseVmControl {
+    title = ''
+    get TextDetail() {
+        return 'detail 页面 ' + this.title
+    }
+    get navs() {
+        return [
+            ['', {
+                label: '首页'
+            }],
+            ['my', {
+                label: '我的'
+            }],
+        ]
+    }
+    setTitle(v) {
+        this.title = v
+    }
+    action(e) {
+        globalThis.wRoute.back()
+    }
+}
+
+injectControl('app')(AppCotnrol);
 
 export function runApp(Pinia, rooterRootEle) {
     const { defineStore } = Pinia;
@@ -32,13 +58,6 @@ export function runApp(Pinia, rooterRootEle) {
               `
         }
     })
-
-    
-    // swCon.onclick = function() {
-    //     countStore.increment()
-    //     // console.log('swCon',countStore);
-    // }
-    
 
     globalThis.appConfig = {
         useCounterStore

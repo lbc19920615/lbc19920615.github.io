@@ -206,7 +206,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
 
     window.wRoute = {
         push: pushRoute,
-        back: backRoute
+        back: backRoute,
     };
 
     handleLocation({

@@ -483,6 +483,9 @@ export default function({Page}) {
 
         let swCon = document.createElement('swiper-container');
         swCon.id = 'swCon';
+        swCon.setAttribute('autoplay',true )
+        swCon.setAttribute('speed', 1000)
+        swCon.setAttribute('autoplay-delay', 6000)
         swCon.style.setProperty('--swiper-slide-h', '180px')
         ele.appendChild(swCon);
 
