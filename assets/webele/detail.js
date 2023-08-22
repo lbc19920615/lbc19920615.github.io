@@ -54,6 +54,41 @@ let Text2 = defComponent({
     }
 })
 
+let SwiperNav1 = defComponent({
+    setup({getCompCtx, startWatch, args}) {         
+        let ele = document.createElement('div')
+        ele.classList.add('swiper-nav1');
+
+        hc2(Column, {
+            init(ele)  {
+                hc2(Text, {args: ['swiper com 1']}, ele)
+                hc2(Text, {args: ['swiper com 2']}, ele)
+                hc2(Text, {args: ['swiper com 3']}, ele)
+            },
+            end(ctx) {
+                ctx.ele.classList.add('dis-flex');
+                ele.style.width = 'max-content';
+                ele.style.transform = 'translateX(0)'
+            }
+        }, ele)
+
+    
+        function render(ele) {
+            // console.log(args[0]);
+            // let text = args[0]
+            // ele.textContent = text.__v_isRef ? text.value : text
+        }
+    
+        render(ele)
+    
+        startWatch(() => {
+            render(ele)
+        })
+
+        return ele
+    }
+})
+
 function genItems(num = 1000) {
     return new Array(num).fill(0).map((item,index) => 'item' + (index + 1))
 }
@@ -98,6 +133,10 @@ export default function({Page}) {
     g.defc(Column().init(function (ele) {
 
         
+        let SwiperNav1Ctx = hc2(SwiperNav1, {args: []}, ele);
+        let SwiperNav1Ele = SwiperNav1Ctx.ele;
+        console.log(SwiperNav1Ele);
+
         let swCon = document.createElement('swiper-container');
         swCon.id = 'swCon';
         ele.appendChild(swCon);
@@ -108,7 +147,19 @@ export default function({Page}) {
                 let swSlide = document.createElement('swiper-slide')
                 swSlide.innerHTML = 'slide' + option.index;
                 swSlide.style.height = '180px';
-                option.appendChild(swSlide)
+                option.appendChild(swSlide);
+           
+            },
+            ready() {
+                
+                setTimeout(() => {
+                    console.log(swCon.swiper);
+                swCon.swiper.on('setTranslate', (swiper, translate) =>{
+                    // virtualSize
+                    console.log('translate', swiper.virtualSize, translate);
+                    SwiperNav1Ele.style.transform = `translateX(${translate / (swiper.virtualSize) * 100}%)`
+                })
+                }, 30)
             }
         }, swCon);
 

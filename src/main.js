@@ -504,9 +504,15 @@ export function hc2(ComponentConstruct, {args = [], init = function() {}, end = 
     let readyFun = ready ? function(ctx) {
         ready(ctx);
         // console.log('ready', ctx);
-        ctx.done(ele)
+        ctx.done(ele);
+        if (end) {
+            end(ctx)
+        }
     } : function(ctx) {  
-        ctx.done(ele)
+        ctx.done(ele);
+        if (end) {
+            end(ctx)
+        }
     }
 
     let ret = ComponentConstruct.apply(null, args).init(init)
