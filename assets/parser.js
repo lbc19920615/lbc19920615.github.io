@@ -311,7 +311,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
                                 func_args[func_args.length - 1] = meta.currentIfNid
                               }
                   
-                              console.log(func_args);
+                            //   console.log(func_args);
                             }
                             let __index = 0;
                             let ctx = hc2(components.get(arr[0]), {args: func_args, init(initEle) {

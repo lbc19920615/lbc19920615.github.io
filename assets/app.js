@@ -6,9 +6,13 @@ const APP_TABS = [
     ['', {
         label: '首页'
     }],
+    ['shop', {
+        label: '店铺'
+    }],
     ['my', {
         label: '我的'
     }],
+    
 ]
 
 class AppCotnrol extends BaseVmControl {

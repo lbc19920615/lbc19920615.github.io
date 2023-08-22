@@ -25,10 +25,17 @@
     }
     
     #nav {
-        height: 80px;
+        height: 70px;
         order: 1;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        &:has(.nav__link:nth-child(2)) {
+            grid-template-columns: 1fr 1fr;
+        }
+        &:has(.nav__link:nth-child(3)) {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+        grid-template-columns: 1fr;
         > * {
             display: flex;
             justify-content: center;

@@ -79,7 +79,7 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_79c2fdfd.js?v=1692704751093"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_79c2fdfd.js?v=1692706484419"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -150,6 +150,7 @@
                     let name = option.item[0];
                     let label = option.item[1]?.label;
                     let ctx = hc2(Text, { args: [label], attrs: {} }, ele);
+                    ctx.ele.classList.add('nav__link')
                     if (option.index === currentIndex) {
                         ctx.ele.classList.add(NAV_SELECTED_CLS)
                     }
@@ -172,11 +173,10 @@
         document.addEventListener('route-change', function(e) {
             let pages = window.getCurrentPages();
             if (pages && pages.length > 0) {
-                let index = app.getNavIndex(pages.at(-1)?.routerName);
-                currentTabIndex = index;
+                currentTabIndex = app.getNavIndex(pages.at(-1)?.routerName);
                 let nav  = document.querySelector('#nav');
                 resetNav(app, nav)
-            console.log('ssssssssssssssss', index);
+            console.log('ssssssssssssssss', currentTabIndex);
             }
         })
         
@@ -200,6 +200,9 @@
                 // nav.style.width = 'var(--app-nav-w)'
                 nav.appendChild(dom);
 
+                let routeName = window.wRoute.routeName();
+                currentTabIndex = app.getNavIndex(routeName);
+                console.log(routeName);
 
                 resetNav(app, nav)
 
@@ -229,7 +232,7 @@
                     tureRoot: mainContent
                 }
             } else {
-                console.log('load from cache', cachedRootDom);
+                // console.log('load from cache', cachedRootDom);
                 let nav  = document.querySelector('#nav');
                 resetNav(app, nav)
                 return {

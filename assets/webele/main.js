@@ -821,7 +821,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
             },
             onReady({appConfig} = {}) {
                 let countStore = appConfig?.useCounterStore()
-                console.log(countStore);
+                // console.log(countStore);
             }
         }
     })
