@@ -2,20 +2,27 @@ import { Provider, Subscriber } from "wlepre"
 import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
 
+const APP_TABS = [
+    ['', {
+        label: '首页'
+    }],
+    ['my', {
+        label: '我的'
+    }],
+]
+
 class AppCotnrol extends BaseVmControl {
     title = ''
     get TextDetail() {
         return 'detail 页面 ' + this.title
     }
     get navs() {
-        return [
-            ['', {
-                label: '首页'
-            }],
-            ['my', {
-                label: '我的'
-            }],
-        ]
+        return APP_TABS
+    }
+    getNavIndex(name) {
+        if (typeof name !== 'undefined') {
+            return APP_TABS.findIndex(v => v[0] === name)
+        }
     }
     setTitle(v) {
         this.title = v

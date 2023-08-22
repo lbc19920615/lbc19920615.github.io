@@ -2,6 +2,10 @@
     height: var(--swiper-slide-h);
 }
 
+.nav--seleted {
+    color: var(--text-primary-blue);
+}
+
 #routerroot {
     --app-nav-w: 90px;
 }
@@ -21,7 +25,7 @@
     }
     
     #nav {
-        height: 90px;
+        height: 80px;
         order: 1;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;

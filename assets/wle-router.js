@@ -9,7 +9,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     let unloadIds = [];
 
     function render(rootEle, reloadStr) {
-        console.log(rootEle);
+        // console.log(rootEle);
         // rooterRootEle.innerHTML = ''
         let { tureRoot } = pageBeforeRender(rooterRootEle, firstBuild)
         tureRoot.innerHTML = '';
@@ -17,7 +17,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         tureRoot.appendChild(rootEle);
     }
 
-    function createPageFun(nid = '', params, {routerName} = {}) {
+    function createPageFun(nid = '', params, {routerName, onEnd} = {}) {
         return function Page(option) {
             let { ele, lifeTimes = {} } = option
 
@@ -36,7 +36,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                     reRender(ele)
                 },
                 reloadFormCache() {
-                    console.log('reloadFormCache');
+                    // console.log('reloadFormCache');
                     reRender(ele, 'reloadFormCache')
                 }
             }
@@ -65,7 +65,10 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
 
 
             pageMap.set(nid, pageCtx);
-            pagesCache.push([nid, pageCtx])
+
+            if (onEnd) {
+                onEnd(pageCtx)
+            }
         }
     }
 
@@ -73,6 +76,11 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
     function getCurrentPages() {
         return [...pagesCache.map(item => item[1])]
     }
+
+    function setCurrentPage(index, v) {
+        return pagesCache[index] = v
+    }
+
 
     function removeLastPage() {
         // let keys = [...pageMap.keys()]
@@ -89,7 +97,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
 
     window.getCurrentPages = getCurrentPages;
 
-    const pushRoute = (path = '', params = {}) => {
+    const pushRoute = (path = '', params = {}, isPush = true, {onEnd} = {}) => {
         // event = event || window.event;
         // event.preventDefault();
         let keys = [...pagesCache.map(v => v[0])];
@@ -109,7 +117,39 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
                 if (Array.isArray(ret) && ret.length == 2) {
                     pagesCache.push(ret)
                 }
+            },
+            isPush,
+            onEnd
+        })
+    };
+
+    const switchTab = (path = '', params = {}) => {
+        pushRoute(path, params, false, {
+            onEnd(pageCtx, nid) {
+                console.log('onEnd', pageCtx);
+                let pages = window.getCurrentPages()
+                setCurrentPage(pages.length - 1, [nid, pageCtx])
             }
+        })
+    }
+
+    const replaceRoute = (path = '', params = {}) => {
+        // event = event || window.event;
+        // event.preventDefault();
+        // let keys = [...pagesCache.map(v => v[0])];
+        // console.log(keys.at(-1));
+        let stateID = Nid()
+        window.history.replaceState({
+            path,
+            stateID
+        }, "", "#/" + path);
+        handleLocation( {
+            params,
+            stateID,
+            onLoadCache(ret) {        
+                pagesCache[index] = ret
+            },
+            isPush: false
         })
     };
 
@@ -117,7 +157,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
         history.back()
     }
 
-    const handleLocation = async ({params = {}, stateID, onLoadCache} = {}) => {
+    const handleLocation = async ({params = {}, stateID, onLoadCache, onEnd, isPush = true} = {}) => {
         const path = window.location.hash;
 
         let baseLen = '#/'
@@ -131,7 +171,7 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
             routerName = '404'
         }
 
-        // console.log(routerName, route);
+        console.log(routerName, route);
 
         const m = await route(params);
 
@@ -148,11 +188,21 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
 
             // console.log('ssssssssssssssssssssss');
             let Page = createPageFun(nid, params, {
-                routerName
-            })
+                routerName,
+                onEnd(pageCtx) {
+                    if (isPush) {
+                        pagesCache.push([nid, pageCtx])
+                    }
+                    if (onEnd) {
+                        onEnd(pageCtx, nid)
+                    }
+                }
+            });
             if (m.default) {
                 m.default({ Page })
             }
+            
+
         }
 
         
@@ -182,12 +232,23 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
             }
             if (prevPage.nid === state?.stateID || state == null){
                 unLoadLastPage(lastPage);
-                console.log(prevPage);
+                // console.log(prevPage);
                 prevPage?.reloadFormCache();
             }
         }
         else if (pages.length > 0) {
+            // console.log(state);
+            let prevPage = pages.at(-1);
+            if (prevPage.nid) {
+                prevPage?.reloadFormCache();
+            }
         }
+
+        document.dispatchEvent(new CustomEvent('route-change', {
+            detail: {
+                pages
+            }
+        }))
     }
 
     window.onpopstate = async function (e) {
@@ -206,7 +267,9 @@ export let routerModule = (function ({routes, rooterRootEle, pageBeforeRender, k
 
     window.wRoute = {
         push: pushRoute,
+        switchTab: switchTab,
         back: backRoute,
+        replace: replaceRoute,
     };
 
     handleLocation({

@@ -790,7 +790,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
                 }
 
                 if (Array.isArray(strArg) && tag === 'Button') {
-                    console.log(tag, argArr, originStrArg);
+                    // console.log(tag, argArr, originStrArg);
                     item.innerHTML = strArg[0]?.text ?? ''
                 }
             }
