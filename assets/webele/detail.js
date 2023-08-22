@@ -151,14 +151,12 @@ export default function({Page}) {
            
             },
             ready() {
-                
                 setTimeout(() => {
-                    console.log(swCon.swiper);
-                swCon.swiper.on('setTranslate', (swiper, translate) =>{
-                    // virtualSize
-                    console.log('translate', swiper.virtualSize, translate);
-                    SwiperNav1Ele.style.transform = `translateX(${translate / (swiper.virtualSize) * 100}%)`
-                })
+                    swCon.swiper.on('setTranslate', (swiper, translate) =>{
+                        // virtualSize
+                        // console.log('translate', swiper.virtualSize, translate);
+                        SwiperNav1Ele.style.transform = `translateX(${translate / (swiper.virtualSize) * 100}%)`
+                    })
                 }, 30)
             }
         }, swCon);
