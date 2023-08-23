@@ -53,6 +53,7 @@ let FormItem = defComponent({
         ele.classList.add('form-item');
 
         let name = args[0];
+        let label = args[1] ?? name;
         ele.$formItemCtx = {
             form: null,
             name: name,
@@ -76,7 +77,7 @@ let FormItem = defComponent({
 
         hc(Column, {
             init(ele)  {
-                hc(Text, {args: [args[0]]}, ele)
+                hc(Text, {args: [label]}, ele)
                 // console.log('init');
             },
             ready(ctx) {
@@ -233,14 +234,14 @@ let Select1 = defComponent({
 let CheckboxGroup = defComponent({
     name: 'CheckboxGroup',
     setup({setCreated, startWatch, args}) {    
-        let option = args[0] ?? {}
+        let argOpt = args[0] ?? {}
         let ele = document.createElement('xy-checkbox-group')
         ele.classList.add('checkbox-group')
 
         hc(ForEach, {args: [{max: 6}], 
             init(ele, option)  {
                 let checkbox = document.createElement('xy-checkbox')
-                checkbox.setAttribute('name', 'lang')
+                checkbox.setAttribute('name', argOpt.name)
                 checkbox.innerHTML = Nid()
                 option.appendChild(checkbox)
             }
@@ -259,14 +260,16 @@ let CheckboxGroup = defComponent({
 let RadioboxGroup = defComponent({
     name: 'RadioboxGroup',
     setup({setCreated, startWatch, args}) {    
-        let option = args[0] ?? {}
-        let ele = document.createElement('xy-radio-group')
+        let argOpt = args[0] ?? {}
+        let ele = document.createElement('my-radio-group')
         ele.classList.add('radio-group')
 
         hc(ForEach, {args: [{max: 6}], 
             init(ele, option)  {
-                let radio = document.createElement('xy-radio')
-                radio.setAttribute('name', 'lang')
+                let radio = document.createElement('my-radio');
+                radio.classList.add('a-radio1')
+                radio.classList.add('mr-10')
+                radio.setAttribute('name', argOpt.name)
                 radio.innerHTML = Nid()
                 option.appendChild(radio)
             }
@@ -597,7 +600,7 @@ export default function({Page}) {
 
             ; g.defc(Form1({name: 'form1'}).init(function (ele) {
     
-                ; g.defc(FormItem('select').init(function (ele) {
+                ; g.defc(FormItem('select','下拉').init(function (ele) {
                     ; g.defc(Select1().init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
@@ -607,7 +610,7 @@ export default function({Page}) {
                 });
     
                 
-                ; g.defc(FormItem('textarea').init(function (ele) {
+                ; g.defc(FormItem('textarea', '多行').init(function (ele) {
                     ; g.defc(TextArea1().init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
@@ -617,7 +620,7 @@ export default function({Page}) {
                 });
     
     
-                ; g.defc(FormItem('input text').init(function (ele) {
+                ; g.defc(FormItem('input text', '文本').init(function (ele) {
                     ; g.defc(Input1().init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
@@ -626,7 +629,7 @@ export default function({Page}) {
                     ctx.done(ele)
                 });
     
-                ; g.defc(FormItem('input number').init(function (ele) {
+                ; g.defc(FormItem('input number', '数字').init(function (ele) {
                     ; g.defc(Input1({type: "number"}).init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
@@ -635,7 +638,7 @@ export default function({Page}) {
                     ctx.done(ele)
                 });
     
-                ; g.defc(FormItem('datepicker').init(function (ele) {
+                ; g.defc(FormItem('datepicker', '日期').init(function (ele) {
                     ; g.defc(DatePicker1().init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
@@ -645,8 +648,8 @@ export default function({Page}) {
                 });
 
     
-                ; g.defc(FormItem('checkbox').init(function (ele) {
-                    ; g.defc(CheckboxGroup().init(function (ele) {
+                ; g.defc(FormItem('checkbox', '多选').init(function (ele) {
+                    ; g.defc(CheckboxGroup({name: 'checkbox'}).init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
                     });
@@ -654,10 +657,20 @@ export default function({Page}) {
                     ctx.done(ele)
                 });
     
-                ; g.defc(FormItem('radio').init(function (ele) {
-                    ; g.defc(RadioboxGroup().init(function (ele) {
+                ; g.defc(FormItem('radio1', '常见单选').init(function (ele) {
+                    ; g.defc(RadioboxGroup({name: 'radio1'}).init(function (ele) {
                     }), function (ctx) {
-                        ctx.done(ele)
+                        ctx.done(ele);
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+                ; g.defc(FormItem('radio2',  '单选样式').init(function (ele) {
+                    ; g.defc(RadioboxGroup({name: 'radio2'}).init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele);
+                        ctx.ele.classList.add('a-btn-radio-group')
                     });
                 }), function (ctx) {
                     ctx.done(ele)

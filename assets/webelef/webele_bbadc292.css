@@ -7,6 +7,18 @@
   color: var(--text-primary-blue);
 }
 
+.a-btn-radio-group .a-radio1 {
+  border: 1px solid var(--a-btn-radio-bgc, var(--borderColor));
+}
+.a-btn-radio-group .a-radio1::part(checked) {
+  opacity: 0;
+  margin: 0;
+  width: 1px;
+}
+.a-btn-radio-group .a-radio1[checked] {
+  border-color: var(--a-btn-radio-checked-bgc, var(--borderColor-active));
+}
+
 .a-page-frame {
   position: fixed;
   left: 0;
@@ -87,7 +99,7 @@ my-date-picker.date-picker {
   --text-link: #0069c2;
   --text-invert: #fff;
   --background-primary: #fff;
-  --background-secondary: #f9f9fb;
+  --background-secondary: #f9f9fb3f;
   --background-tertiary: #fff;
   --background-toc-active: #ebeaea;
   --background-mark-yellow: rgba(199,183,0,.4);
@@ -199,12 +211,12 @@ my-date-picker.date-picker {
   --form-invalid-focus-effect-color: rgba(255,42,81,.2);
   --baseline-supported-bg: #e6f4ea;
   --baseline-supported-engine-bg: #ceead6;
-  --baseline-supported-img: url(/static/media/check.8cb62e6….svg);
   --baseline-unsupported-bg: #f1f3f4;
   --baseline-unsupported-engine-bg: #e3e6e8;
-  --baseline-unsupported-img: url(/static/media/cross.7dc7a25….svg);
   --baseline-browser-supported-bg: #1e8e3e;
   --baseline-browser-unsupported-bg: #666;
+  --borderColor: #d1d1d1;
+  --borderColor-active: #333;
   color-scheme: light;
 }
 

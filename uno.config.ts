@@ -1,7 +1,7 @@
 
 import { defineConfig, presetAttributify, presetUno } from 'unocss';
 
-// import presetRemToRpx from './preset-rem-to-rpx';
+import presetRemToRpx from './preset-rem-to-rpx';
 // import { transformerClass } from './uno.webapp';
 
 const sizeMapping = {
@@ -105,9 +105,9 @@ export default defineConfig({
   presets: [
     presetAttributify(),
     presetUno(),
-    // presetRemToRpx({
-    //   baseFontSize: 4
-    // })
+    presetRemToRpx({
+      baseFontSize: 4
+    })
   ],
   theme: {
     preflightRoot: ['page,::before,::after']

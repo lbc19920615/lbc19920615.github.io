@@ -6,6 +6,18 @@
   color: var(--text-primary-blue);
 }
 
+.a-btn-radio-group .a-radio1 {
+  border: 1px solid var(--a-btn-radio-bgc, var(--borderColor));
+}
+.a-btn-radio-group .a-radio1::part(checked) {
+  opacity: 0;
+  margin: 0;
+  width: 1px;
+}
+.a-btn-radio-group .a-radio1[checked] {
+  border-color: var(--a-btn-radio-checked-bgc, var(--borderColor-active));
+}
+
 .a-page-frame {
   position: fixed;
   left: 0;
