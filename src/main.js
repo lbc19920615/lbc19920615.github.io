@@ -5,6 +5,11 @@ import nid from "./nid.browser"
 
 let glo = globalThis;
 
+import EventEmitter from "./event";
+
+console.log(EventEmitter);
+
+export let events = EventEmitter;
 
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
@@ -15,6 +20,8 @@ export function setGlobal(v) {
     isSsrMode = Boolean(glo.__ssrMode__);
     // console.log('isSsrMode', isSsrMode);
 }
+
+
 
 export function Nid(...args) {
     if (glo.__Nid__) {

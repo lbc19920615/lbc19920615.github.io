@@ -24,43 +24,61 @@
             top: 0;
         }
     </style>
-        <%- links %>
-    <script type="importmap">
+    <%- links %>
+        <script type="importmap">
         {
           "imports": <%- importmap %>
         }
     </script>
-    <script type="module">
+        <script type="module">
 
 
-        let name = location.hash.slice(2);
-        window.self = window.parent;
-        globalThis.VueDemi = self.VueDemi;
-        // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
+            let name = location.hash.slice(2);
+            window.self = window.parent;
+            globalThis.VueDemi = self.VueDemi;
+            // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
 
 
-        import('/assets/wle-router.js?v=0.1.0').then(m => {
-            m.createStyleSheet(name);
+            let curPageCtx = null;
+            let curParams = null;
 
-            self.wRoute.loadSubPage({
-                nid: 'sub', routerName: name, 
-                reRender(innerEle) {
-                    document.getElementById('routerroot').appendChild(innerEle)
-                },
-                onEnd() {
-                    console.log(self.__conditionMap__);
-                    console.log('routerName load end', name);
+            window.addEventListener("message",function (e) {
+                if (e.origin === location.origin) {
+                    let data = e.data;
+                    if (data.type === "__page-params") {
+                        curParams = data.data;
+                        // console.log('curPageCtx', curPageCtx);
+                    }
                 }
+            })
+
+
+            import('/assets/wle-router.js?v=0.1.0').then(m => {
+                m.createStyleSheet(name);
+
+                self.wRoute.loadSubPage({
+                    nid: 'sub', routerName: name,
+                    reRender(innerEle) {
+                        document.getElementById('routerroot').appendChild(innerEle)
+                    },
+                    onEnd(pageCtx) {
+                        curPageCtx =  pageCtx;
+                        if (curPageCtx?.lifeTimes?.onReady) {
+                            curPageCtx.lifeTimes.onReady()
+                        }
+                        // console.log(self.__conditionMap__);
+                        // console.log('routerName load end', curPageCtx, curParams);
+                    }
+                });
             });
-        })
 
 
 
 
 
-        console.log(globalThis, window, self);
+        // console.log(globalThis, window, self);
 
-    </script>
+        </script>
 </head>
 
 <body>

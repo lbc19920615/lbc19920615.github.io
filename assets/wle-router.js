@@ -38,6 +38,12 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         let iframe = document.createElement('iframe');
         iframe.src = src;
         iframe.onload = function() {
+            iframe.contentWindow.postMessage({
+                type: '__page-params',
+                data: {
+                    s: 1
+                }
+            }, src)
             let stateID = src;
             pagesCache.push([stateID, {
                 nid: stateID,
@@ -45,9 +51,12 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                 //     console.log('1111111111111111');
                 // },
                 unloadIframe() {
-                    console.log('1111111111111111');
+                    // console.log('1111111111111111');
                     iframe.style.display = 'none';
                     iframe.remove()
+                },
+                pageReShow() {
+                    console.log('pageReShow', path);
                 }
             }]);
             window.history.pushState({
@@ -55,8 +64,8 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                 stateID
             }, "", "#/" + path);
         }
-        iframe.classList.add('a-page-frame')
-        document.body.appendChild(iframe)
+        iframe.classList.add('a-page-frame');
+        document.body.appendChild(iframe);
     }
 
 
@@ -98,13 +107,6 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
 
             if (lifeTimes?.onCreated) {
                 lifeTimes.onCreated(pageVm, { app })
-            }
-
-            // console.log(app);
-            if (app.isLoaded) {
-                if (lifeTimes?.onReady) {
-                    lifeTimes.onReady({ appConfig: app.globalConfig })
-                }
             }
 
 
@@ -328,12 +330,17 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
             if (state?.stateID) {
                 // let cachedIndex = pages.findIndex(page => page.nid === state?.stateID);
                 if (unloadIds.includes(state.stateID)) {
-                    console.log('page is unload', unloadIds, state);
+                    // console.log('page is unload', unloadIds, state);
                     return
                 }
             }
             if (prevPage.nid === state?.stateID || state == null) {
-                prevPage?.reloadFormCache();
+                if (prevPage?.reloadFormCache) {
+                    prevPage.reloadFormCache();
+                }
+                if (prevPage?.pageReShow) {
+                    prevPage.pageReShow();
+                }
             }
             unLoadLastPage(lastPage);
             // console.log('sssssssssssssssssssss');
@@ -344,11 +351,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
             }))
         }
         else if (pages.length > 0) {
-            // console.log(state);
-            // let prevPage = pages.at(-1);
-            // if (prevPage.nid) {
-            //     prevPage?.reloadFormCache();
-            // }
+
             if (!state) {
 
             }

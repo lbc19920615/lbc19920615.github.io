@@ -410,7 +410,9 @@ export default function({Page}) {
                 // globalThis.wRoute.push('detail', {
                 //     paramA: Nid()
                 // })
-                window.testSubApp()
+                window.openSubApp('detail', {
+                    paramA: Nid()
+                })
             },
             action3() {
                 data.dialog = true
@@ -834,10 +836,6 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
             onCreated() {
                 console.log("main 加载完成");
             },
-            onReady({appConfig} = {}) {
-                let countStore = appConfig?.useCounterStore()
-                // console.log(countStore);
-            }
         }
     })
 }

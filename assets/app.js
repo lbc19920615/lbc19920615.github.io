@@ -1,9 +1,11 @@
 import { Provider, Subscriber } from "wlepre"
 import { Nid, g, hc2, ForEach, Utils, defComponent, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
+
 let PageWrapper = defComponent({
     name: 'PageWrapper',
     setup({getCompCtx, startWatch, args}) {     
+        let wRoute = window.wRoute;
         let { title = '' } = Utils.getObjectParam(args)
         let ele = document.createElement('div')
         ele.classList.add('page-wrapper');
@@ -13,10 +15,12 @@ let PageWrapper = defComponent({
         let PageNav1Ctx = hc2(Column, {
             init(ele)  {
                 let backCtx = hc2(Text, {args: ['back']}, ele);
-                backCtx.ele.onclick = function() {
-                    console.log('sssssssss');
-                    window?.wRoute?.back()
-                }
+                setTimeout(function() {
+                    backCtx.ele.onclick = function() {
+                        // console.log('sssssssss');
+                        wRoute?.back()
+                    }
+                }, 30)
                 hc2(Text, {args: [title], attrs: {class: 'text text-center'}}, ele);
                 hc2(Text, {args: ['&nbsp;']}, ele);
             },
@@ -53,8 +57,8 @@ let PageWrapper = defComponent({
 })
 
 
-window.testSubApp = function() {
-    window.createNewPageFrame('detail', location.origin + '/assets/sub.html#/detail')
+window.openSubApp = function(routeName, params = {}) {
+    window.createNewPageFrame(routeName, location.origin + '/assets/sub.html#/' + routeName)
 }
 
 let BaseDir = '/assets/'
@@ -73,6 +77,9 @@ export const routes = {
     },
     detail: (params) => {
         return import(BaseDir + 'webele/detail.js?v=' + Date.now())
+    },
+    detail2: (params) => {
+        return import(BaseDir + 'webele/detail2.js?v=' + Date.now())
     },
 };
 

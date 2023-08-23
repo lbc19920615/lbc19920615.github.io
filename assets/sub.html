@@ -24,45 +24,63 @@
             top: 0;
         }
     </style>
-        <link rel="stylesheet" href="/assets/uno.css" />
+    <link rel="stylesheet" href="/assets/uno.css" />
 <link rel="stylesheet" href="/assets/webelef/webele_a3f74339.css" />
 <link rel="stylesheet" href="/assets/webelef/app_d788b51b.css" />
-    <script type="importmap">
+        <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_7dba9a58.js?v=1692793866878"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_9c2a6ba8.js?v=1692832856525"}
         }
     </script>
-    <script type="module">
+        <script type="module">
 
 
-        let name = location.hash.slice(2);
-        window.self = window.parent;
-        globalThis.VueDemi = self.VueDemi;
-        // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
+            let name = location.hash.slice(2);
+            window.self = window.parent;
+            globalThis.VueDemi = self.VueDemi;
+            // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
 
 
-        import('/assets/wle-router.js?v=0.1.0').then(m => {
-            m.createStyleSheet(name);
+            let curPageCtx = null;
+            let curParams = null;
 
-            self.wRoute.loadSubPage({
-                nid: 'sub', routerName: name, 
-                reRender(innerEle) {
-                    document.getElementById('routerroot').appendChild(innerEle)
-                },
-                onEnd() {
-                    console.log(self.__conditionMap__);
-                    console.log('routerName load end', name);
+            window.addEventListener("message",function (e) {
+                if (e.origin === location.origin) {
+                    let data = e.data;
+                    if (data.type === "__page-params") {
+                        curParams = data.data;
+                        // console.log('curPageCtx', curPageCtx);
+                    }
                 }
+            })
+
+
+            import('/assets/wle-router.js?v=0.1.0').then(m => {
+                m.createStyleSheet(name);
+
+                self.wRoute.loadSubPage({
+                    nid: 'sub', routerName: name,
+                    reRender(innerEle) {
+                        document.getElementById('routerroot').appendChild(innerEle)
+                    },
+                    onEnd(pageCtx) {
+                        curPageCtx =  pageCtx;
+                        if (curPageCtx?.lifeTimes?.onReady) {
+                            curPageCtx.lifeTimes.onReady()
+                        }
+                        // console.log(self.__conditionMap__);
+                        // console.log('routerName load end', curPageCtx, curParams);
+                    }
+                });
             });
-        })
 
 
 
 
 
-        console.log(globalThis, window, self);
+        // console.log(globalThis, window, self);
 
-    </script>
+        </script>
 </head>
 
 <body>
