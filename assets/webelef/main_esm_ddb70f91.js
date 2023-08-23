@@ -646,7 +646,10 @@ function ForEach(option = {}, {
 }
 customComponents.set('ForEach', ForEach);
 let conditionMap = new Map();
-window.__conditionMap__ = conditionMap;
+glo.__conditionMap__ = conditionMap;
+function getConditionMap() {
+  return conditionMap;
+}
 let currentCondition = null;
 function If(conditions, nid = '') {
   const {
@@ -967,4 +970,4 @@ let Text = defComponent({
   }
 });
 
-export { BaseVmControl, Button, Column, Else, ForEach, If, Modifier, Nid, Text, Utils, createCommonCtx, defComponent, g, getAllComments, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, Button, Column, Else, ForEach, If, Modifier, Nid, Text, Utils, createCommonCtx, defComponent, g, getAllComments, getConditionMap, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };

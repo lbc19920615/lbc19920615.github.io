@@ -404,9 +404,10 @@ export default function({Page}) {
                 console.log('onDialogClose');
             },
             action2() {
-                globalThis.wRoute.push('detail', {
-                    paramA: Nid()
-                })
+                // globalThis.wRoute.push('detail', {
+                //     paramA: Nid()
+                // })
+                window.testSubApp()
             },
             action3() {
                 data.dialog = true

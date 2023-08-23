@@ -427,7 +427,11 @@ customComponents.set('ForEach', ForEach)
 
 
 let conditionMap = new Map();
-window.__conditionMap__ = conditionMap;
+glo.__conditionMap__ = conditionMap;
+
+export function getConditionMap() {
+    return conditionMap
+}
 
 function getCondByNid(nid) {
     let ret = false;

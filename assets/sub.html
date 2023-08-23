@@ -26,7 +26,7 @@
     </style>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_cfcd3481.js?v=1692766192531"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_ddb70f91.js?v=1692767742351"}
         }
     </script>
     <script type="module">
@@ -47,9 +47,10 @@
                     document.getElementById('routerroot').appendChild(innerEle)
                 },
                 onEnd() {
+                    console.log(self.__conditionMap__);
                     console.log('routerName load end', name);
                 }
-            })
+            });
         })
 
 

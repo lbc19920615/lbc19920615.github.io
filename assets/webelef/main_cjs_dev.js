@@ -648,7 +648,10 @@ function ForEach(option = {}, {
 }
 customComponents.set('ForEach', ForEach);
 let conditionMap = new Map();
-window.__conditionMap__ = conditionMap;
+glo.__conditionMap__ = conditionMap;
+function getConditionMap() {
+  return conditionMap;
+}
 let currentCondition = null;
 function If(conditions, nid = '') {
   const {
@@ -983,6 +986,7 @@ exports.createCommonCtx = createCommonCtx;
 exports.defComponent = defComponent;
 exports.g = g;
 exports.getAllComments = getAllComments;
+exports.getConditionMap = getConditionMap;
 exports.getcustomComponents = getcustomComponents;
 exports.getscripts = getscripts;
 exports.h3 = h3;

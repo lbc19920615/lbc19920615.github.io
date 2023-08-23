@@ -1,11 +1,5 @@
-import { Nid } from "wle";
+import Nid from "./nid.browser.js";
 
-window.createNewPageFrame = function (src = location.href) {
-    let iframe = document.createElement('iframe')
-    iframe.src = src;
-    iframe.classList.add('a-page-frame')
-    document.body.appendChild(iframe)
-}
 
 export function createStyleSheet(name) {
     let style = document.createElement('style');
@@ -20,6 +14,7 @@ export function createStyleSheet(name) {
 export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, keepLives = [] } = {}) {
     let pageMap = new Map();
 
+
     let firstBuild = true;
     let pagesCache = [];
 
@@ -32,6 +27,36 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         tureRoot.innerHTML = '';
         // console.log('reloadFormCache', reloadStr);
         tureRoot.appendChild(rootEle);
+    }
+
+    /**
+     * 
+     * @param {string} path 
+     * @param {string} src 
+     */
+    window.createNewPageFrame = function (path, src) {
+        let iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.onload = function() {
+            let stateID = src;
+            pagesCache.push([stateID, {
+                nid: stateID,
+                // reloadFormCache() {
+                //     console.log('1111111111111111');
+                // },
+                unloadIframe() {
+                    console.log('1111111111111111');
+                    iframe.style.display = 'none';
+                    iframe.remove()
+                }
+            }]);
+            window.history.pushState({
+                path,
+                stateID
+            }, "", "#/" + path);
+        }
+        iframe.classList.add('a-page-frame')
+        document.body.appendChild(iframe)
     }
 
 
@@ -288,6 +313,9 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         if (lastPage?.lifeTimes?.onUnload) {
             lastPage.lifeTimes.onUnload()
         }
+        if (lastPage?.unloadIframe) {
+            lastPage.unloadIframe()
+        }
         removeLastPage();
     }
 
@@ -305,10 +333,10 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                 }
             }
             if (prevPage.nid === state?.stateID || state == null) {
-                unLoadLastPage(lastPage);
-                // console.log(prevPage);
                 prevPage?.reloadFormCache();
             }
+            unLoadLastPage(lastPage);
+            // console.log('sssssssssssssssssssss');
             document.dispatchEvent(new CustomEvent('route-change', {
                 detail: {
 
