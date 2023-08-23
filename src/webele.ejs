@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
-    <link rel="stylesheet" href="/assets/app.css" />
+    <!-- <link rel="stylesheet" href="/assets/app.css?v=0.0.3" /> -->
     <script src="/assets/eval5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jss/10.9.2/jss.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script>
@@ -90,7 +90,7 @@
 
 
         import '/assets/ele/index.js?v=0.0.10';
-        import { routerModule } from '/assets/wle-router.js?v=0.0.3'
+        import { routerModule } from '/assets/wle-router.js?v=0.1.0'
 
         const { reactive, onMounted, computed, watchEffect, ref, watch } = globalThis.VueDemi;
         import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";

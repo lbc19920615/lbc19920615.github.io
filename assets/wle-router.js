@@ -16,12 +16,23 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         // console.log('reloadFormCache', reloadStr);
         tureRoot.appendChild(rootEle);
     }
+    
+    function createStyleSheet(name) {
+        let style =document.createElement('style');
+        style.id = 'style-' + name;
+        fetch(`/assets/webele/${name}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
+            style.innerHTML = cssStr;
+            document.head.appendChild(style)
+        })
+    }
 
     function createPageFun(nid = '', params, { routerName, onEnd } = {}) {
         return function Page(option) {
             let { ele, lifeTimes = {} } = option
 
             function reRender(innerEle, reloadFormCache) {
+      
+                // console.log(routerName);
                 render(innerEle, reloadFormCache)
             }
 
@@ -157,8 +168,6 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         history.back()
     }
 
-
-
     function routeName(str = location.hash) {
         let baseLen = '#/'
         const pathName = str.slice(baseLen.length);
@@ -180,6 +189,10 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         }
 
         // console.log(routerName, route);
+
+        if (!document.querySelector('#style-' + routerName)) {
+            createStyleSheet(routerName)
+        }
 
         const m = await route(params);
 

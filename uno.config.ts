@@ -95,7 +95,7 @@ export default defineConfig({
       /**
        * Glob patterns to match files
        */
-      patterns: './src/*.ejs',
+      patterns: ['./src/*.ejs'],
       /**
        * The output filename for the generated UnoCSS file
        */

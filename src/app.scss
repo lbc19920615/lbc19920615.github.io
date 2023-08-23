@@ -12,6 +12,11 @@
 
 #nav {
     width: var(--app-nav-w);
+    .nav__link {
+        padding: 10px 0;
+        display: flex;
+        justify-content: center;
+    }
 }
 
 @media screen and (max-width: 768px) {

@@ -39,9 +39,6 @@ let Text2 = defComponent({
 
     
         function render(ele) {
-            // console.log(args[0]);
-            // let text = args[0]
-            // ele.textContent = text.__v_isRef ? text.value : text
         }
     
         render(ele)

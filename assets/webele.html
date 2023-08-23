@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
-    <link rel="stylesheet" href="/assets/app.css" />
+    <!-- <link rel="stylesheet" href="/assets/app.css?v=0.0.3" /> -->
     <script src="/assets/eval5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jss/10.9.2/jss.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script>
@@ -75,15 +75,16 @@
             top: 0;
         }
     </style>
-    <link rel="stylesheet" href="/assets/webelef/webele_cf8d4a78.css" />
-<link rel="stylesheet" href="/assets/uno.css" />
+    <link rel="stylesheet" href="/assets/uno.css" />
+<link rel="stylesheet" href="/assets/webelef/webele_a0fc2532.css" />
+<link rel="stylesheet" href="/assets/webelef/app_bdc4436e.css" />
 </head>
 
 <body>
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_79c2fdfd.js?v=1692758925199"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_79c2fdfd.js?v=1692762930310"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -91,7 +92,7 @@
 
 
         import '/assets/ele/index.js?v=0.0.10';
-        import { routerModule } from '/assets/wle-router.js?v=0.0.3'
+        import { routerModule } from '/assets/wle-router.js?v=0.1.0'
 
         const { reactive, onMounted, computed, watchEffect, ref, watch } = globalThis.VueDemi;
         import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
