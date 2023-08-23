@@ -1,8 +1,9 @@
 
 
-import { Button, Text, setGlobal,  hc2, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+import { Button, Text, setGlobal,  hc2, defComponent, getcustomComponents, Column, BaseVmControl, injectControl, useControl, g } from "wle";
 
 setGlobal(window.self);
+
 
 
 class DomCotnrol extends BaseVmControl {
@@ -26,7 +27,9 @@ injectControl('vm')(DomCotnrol)
 
 
 let Text2 = defComponent({
-    setup({getCompCtx, startWatch, args}) {         
+    setup({getCompCtx, startWatch, args}) {      
+
+        
         let ele = document.createElement('div')
         ele.classList.add('text2')
 
@@ -93,11 +96,14 @@ let LazyList1 = defComponent({
 
 export default function({Page}) {
     let ele =  document.createElement('div');
-    ele.classList.add('detail-page')
+    ele.classList.add('detail-page');
+    ele.classList.add('h-full')
     let vm = useControl('vm')
 
 
-    g.defc(Column().init(function (ele) {
+    let customComponents = getcustomComponents()
+    console.log(customComponents.get('PageWrapper'));
+    g.defc(customComponents.get('PageWrapper')({title: 'detail页'}).init(function (ele) {
 
         
         ; g.defc(Text2(vm.TextDetail).init(function (ele) {

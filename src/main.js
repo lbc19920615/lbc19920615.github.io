@@ -60,7 +60,7 @@ export function getcustomComponents() {
  * @param {Document} domRuntime 
  * @returns {void}
  */
-export let getscripts = function(domRuntime = globalThis.document) {
+export let getscripts = function (domRuntime = globalThis.document) {
     return {
         run(jsonMap, dataMap) {
             // console.log(scripts.toString());
@@ -72,12 +72,12 @@ export let getscripts = function(domRuntime = globalThis.document) {
                 let ComponentFunName = value.ssrRender[0]
                 if (ssrComponents.has(ComponentFunName)) {
                     // console.log(ssrComponents.get(ComponentFunName));
-                    let fun =  ssrComponents.get(ComponentFunName)
+                    let fun = ssrComponents.get(ComponentFunName)
                     if (fun) {
                         let ele = domRuntime.querySelector(`[ssr-id="${key}"]`)
                         if (ele) {
                             // console.log(ele, key);
-                                                    fun(ele, dataMap[key] ?? [])
+                            fun(ele, dataMap[key] ?? [])
                         }
                     }
                 }
@@ -107,6 +107,11 @@ function _utils_getAnyParam(args = [], defaultVal, index = 0) {
 function _directive_text(ele, text = '') {
     ele.textContent = text?.__v_isRef ? text.value : text
 }
+
+function _directive_html(ele, text = '') {
+    ele.innerHTML = text?.__v_isRef ? text.value : text
+}
+
 
 function _directive_action(ele, name, fun) {
     if (name) {
@@ -171,9 +176,9 @@ function createModifier(ctx) {
 
     let colorNames = ['backgroundColor']
     let borderNames = ['border', 'fontColor']
-    let sizeNames = ['width', 'height', 'size', 
-    'marginBottom', 'marginTop', 'marginLeft', 'marginRight',  
-    'paddingBottom', 'paddingTop', 'paddingLeft', 'paddingRight', 'fontSize']
+    let sizeNames = ['width', 'height', 'size',
+        'marginBottom', 'marginTop', 'marginLeft', 'marginRight',
+        'paddingBottom', 'paddingTop', 'paddingLeft', 'paddingRight', 'fontSize']
     let cssFunNames = [...colorNames, ...borderNames, ...sizeNames]
 
     let eventNames = ['onLoad']
@@ -183,7 +188,7 @@ function createModifier(ctx) {
             if (ctx[key]) {
                 return ctx[key]
             }
-            
+
             else if (cssFunNames.includes(key)) {
                 return function (...args) {
                     // console.log('ele', args[0].toString(16));
@@ -240,12 +245,12 @@ function createModifier(ctx) {
 }
 
 // let _Modifier_eles = {};
-let _currentModifierEle  = {};
-export let Modifier =  {
+let _currentModifierEle = {};
+export let Modifier = {
     setCurEle(ele) {
         _currentModifierEle = ele;
         return createModifier({
-            resolveStyle(key, val,target,receiver) {
+            resolveStyle(key, val, target, receiver) {
                 ele.style[key] = val
                 // console.log(key, val,target,receiver, ele);
             }
@@ -253,7 +258,7 @@ export let Modifier =  {
     },
     create(handleFun) {
         let self = this;
-        return function(ele) {
+        return function (ele) {
             handleFun(self.setCurEle(ele))
         }
     }
@@ -268,7 +273,7 @@ export let Modifier =  {
  * @param {{ele: Element, id: string}} param1 
  * @returns 
  */
-export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
+export function createCommonCtx(callback, { ele, insertRoot = ele, id = Nid() } = {}) {
     let ctx = {
         id,
         curRoot: undefined,
@@ -281,7 +286,7 @@ export function createCommonCtx(callback, { ele, id = Nid() } = {}) {
             // ctx.parentCtx = this
             appendCommon(ctx, ele)
             ctx.ele = ele
-            callback(ele, {parent})
+            callback(insertRoot, { parent })
         },
         resolveStyle(key, val) {
             if (key === 'size') {
@@ -320,14 +325,14 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
         },
         reload({ max, list } = {}) {
             while (ele[0].nextSibling !== ele[1]) {
-                if ( ele[0].nextSibling?.remove) {
+                if (ele[0].nextSibling?.remove) {
                     ele[0].nextSibling.remove()
                 } else {
                     // console.dir(ele[0].nextSibling)
                     if (ele[0].nextSibling.parentElement) {
                         ele[0].nextSibling.parentElement.removeChild(ele[0].nextSibling)
                     } else {
-                      
+
                         throw new Error('not have remove')
                     }
                 }
@@ -336,7 +341,7 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
             ctx.build(max, list)
         },
         build(innerMax, innerList) {
-                
+
             function appendChild(childEle) {
                 appendCommon(ctx, childEle);
             }
@@ -358,8 +363,8 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
 }
 
 function __ForEach_action(option = {}, obj, ctx) {
-    const {ref, watch} = glo.VueDemi;
-    
+    const { ref, watch } = glo.VueDemi;
+
     let { max = ref(0), list = null } = option
 
     // console.log(list);
@@ -387,8 +392,8 @@ function __ForEach_action(option = {}, obj, ctx) {
  * @param {object} param1 
  * @returns 
  */
-export function ForEach(option = {}, {label = ''} = {}) {
-    const {reactive, ref} = glo.VueDemi;
+export function ForEach(option = {}, { label = '' } = {}) {
+    const { reactive, ref } = glo.VueDemi;
 
 
     let startFlg = createComment('start' + label)
@@ -406,7 +411,7 @@ export function ForEach(option = {}, {label = ''} = {}) {
     })
 
     let ctx;
-    
+
     return {
         getCtx() {
             return ctx
@@ -448,22 +453,22 @@ function getCondByNid(nid) {
 
 let currentCondition = null;
 export function If(conditions, nid = '') {
-    const {ref, watch} = glo.VueDemi;
+    const { ref, watch } = glo.VueDemi;
 
-    let trueCond = conditions?.__v_isRef  ? conditions.value : conditions
+    let trueCond = conditions?.__v_isRef ? conditions.value : conditions
     // console.log(conditions);
     currentCondition = conditions;
     if (nid) {
         if (!conditionMap.has(nid)) {
             conditionMap.set(nid, [
-                function() {
+                function () {
                     return trueCond
                 }
             ])
         }
     }
     let val = trueCond
-    let fragment = ForEach({ max: Number(val) }, {label: ' if'})
+    let fragment = ForEach({ max: Number(val) }, { label: ' if' })
     watch(conditions, (newVal, oldVal) => {
         // console.log('111', newVal, fragment);
         fragment.getCtx().reload({ max: Number(newVal) })
@@ -473,18 +478,18 @@ export function If(conditions, nid = '') {
 customComponents.set('If', If)
 
 export function Else(nid = '') {
-    const {ref, watch} = glo.VueDemi;
+    const { ref, watch } = glo.VueDemi;
     // console.log(conditions);
     if (!currentCondition) {
         return;
     }
-    
+
     let conditions = currentCondition;
-    let val = conditions?.__v_isRef  ? conditions.value : conditions;
+    let val = conditions?.__v_isRef ? conditions.value : conditions;
     // console.log('currentCondition', currentCondition, val,  Number(!val));
     // let someIsTrue = getCondByNid(nid);
     // console.log('someIsTrue', val, someIsTrue);
-    let fragment = ForEach({ max: Number(!val) }, {label: ' else'})
+    let fragment = ForEach({ max: Number(!val) }, { label: ' else' })
     watch(conditions, (newVal, oldVal) => {
         // console.log('if', newVal, fragment);
         fragment.getCtx().reload({ max: !Number(newVal) })
@@ -510,15 +515,15 @@ export let g = {
 }
 
 
-export function hc2(ComponentConstruct, {args = [], init = function() {}, attrs = {}, end = function() {}, afterInit, ready} = {}, ele) {
-    let readyFun = ready ? function(ctx) {
+export function hc2(ComponentConstruct, { args = [], init = function () { }, attrs = {}, end = function () { }, afterInit, ready } = {}, ele) {
+    let readyFun = ready ? function (ctx) {
         ready(ctx);
         // console.log('ready', ctx);
         ctx.done(ele);
         if (end) {
             end(ctx)
         }
-    } : function(ctx) {  
+    } : function (ctx) {
         ctx.done(ele);
         if (end) {
             end(ctx)
@@ -528,22 +533,22 @@ export function hc2(ComponentConstruct, {args = [], init = function() {}, attrs 
     let ret = ComponentConstruct.apply(null, args).init(init);
 
 
-    let ctx =  defc(ret, readyFun);
+    let ctx = defc(ret, readyFun);
 
     if (attrs) {
         Object.keys(attrs).forEach(key => {
-            ctx.ele.setAttribute(key,attrs[key])
+            ctx.ele.setAttribute(key, attrs[key])
         })
     }
 
     return ctx;
 }
 
-export function hc(ComponentConstruct, {args = [], init = function() {}, end = function() {}, afterInit, ready} = {}, ele) {
-    let readyFun = ready ? function(ctx) {
+export function hc(ComponentConstruct, { args = [], init = function () { }, end = function () { }, afterInit, ready } = {}, ele) {
+    let readyFun = ready ? function (ctx) {
         ready(ctx)
         ctx.done(ele)
-    } : function(ctx) {  
+    } : function (ctx) {
         ctx.done(ele)
     }
 
@@ -556,10 +561,10 @@ export function hc(ComponentConstruct, {args = [], init = function() {}, end = f
 export let h3 = new Proxy(customComponents, {
     get(target, key) {
         if (target.has(key)) {
-            return function(ele, ...args) {
+            return function (ele, ...args) {
                 // console.dir(ele)
-                return function(init) {
-                   return hc(target.get(key), {args: args.slice(0, args.length), init}, ele)
+                return function (init) {
+                    return hc(target.get(key), { args: args.slice(0, args.length), init }, ele)
                 }
             }
         }
@@ -573,17 +578,17 @@ export let h3 = new Proxy(customComponents, {
  * @returns 
  */
 export function defComponent(option = {}) {
-    const {ref, watch} = glo.VueDemi;
-    let {setup, ssrRender} = option
+    const { ref, watch } = glo.VueDemi;
+    let { setup, ssrRender } = option
     let ctx = null;
-    
+
     function getCompCtx() {
         return ctx
     }
 
     let stopWatch
 
-    let fun = function(...args) {
+    let fun = function (...args) {
         // console.log(args);
 
         function startWatch(onChange) {
@@ -605,31 +610,33 @@ export function defComponent(option = {}) {
                         _setCreatedCallback = v
                     }
 
-                    let ele = setup({getCompCtx, setCreated, startWatch, args, isSsrMode})
+                    let ret = setup({ getCompCtx, setCreated, startWatch, args, isSsrMode });
+
+                    let ele = ret;
+                    let insertRoot = ele;
+                    if (Array.isArray(ret)) {
+                        ele = ret[0];
+                        insertRoot = ret[1]
+                    }
                     let id = Nid()
                     if (isSsrMode) {
                         ele.setAttribute('ssr-id', id)
                     }
-                    
-                    ctx = createCommonCtx(function(childEle, option) {
-                        // console.log(option);
-                        // console.dir(ele.parentElement);
-                        
-                    if (_setCreatedCallback) {
-                        _setCreatedCallback(ctx)
-                    }
+
+                    ctx = createCommonCtx(function (childEle, option) {
+                        if (_setCreatedCallback) {
+                            _setCreatedCallback(ctx)
+                        }
                         callback(childEle)
                         // currentRoot = childEle
                         if (option.afterRender) {
                             option.afterRender(childEle, option)
                         }
-                    }, { ele });
-
-                    // console.log(ctx)
+                    }, { ele, insertRoot });
 
 
                     if (isSsrMode) {
-                        __ssr_setup(ele, args, {id, option, ctx, ssrRender, funcStr: callback?.toString() ?? ''})
+                        __ssr_setup(ele, args, { id, option, ctx, ssrRender, funcStr: callback?.toString() ?? '' })
                     }
                     // console.log(ctx);
                     return ctx
@@ -659,7 +666,7 @@ function _button__action(ele, args) {
 
 export let Button = defComponent({
     name: 'Button',
-    setup({getCtx, startWatch, args, isSsrMode}) {
+    setup({ getCtx, startWatch, args, isSsrMode }) {
         let { text } = _utils_getObjectParam(args)
         let ele = createElement('button')
         ele.classList.add('button')
@@ -676,7 +683,7 @@ export let Button = defComponent({
 
 export let Column = defComponent({
     name: 'Column',
-    setup({getCtx, startWatch, args, isSsrMode}) {
+    setup({ getCtx, startWatch, args, isSsrMode }) {
         let firstArg = _utils_getObjectParam(args);
         let ele = createElement('div');
         // console.log('firstArg', firstArg);
@@ -695,12 +702,12 @@ function __ssr_setup(...args) {
 }
 
 function _text__render(ele, text) {
-    _directive_text(ele, text)
+    _directive_html(ele, text)
 }
 
 function _text__action(ele, args) {
-    const {ref, watch} = glo.VueDemi;
-    let text =_utils_getAnyParam(args, '');
+    const { ref, watch } = glo.VueDemi;
+    let text = _utils_getAnyParam(args, '');
     if (text.__v_isRef) {
         watch(text, () => {
             _text__render(ele, text)
@@ -710,8 +717,8 @@ function _text__action(ele, args) {
 
 export let Text = defComponent({
     name: 'Text',
-    setup({getCtx, startWatch, args, isSsrMode}) {
-        let text =_utils_getAnyParam(args, '')
+    setup({ getCtx, startWatch, args, isSsrMode }) {
+        let text = _utils_getAnyParam(args, '')
         let ele = createElement('div')
         ele.classList.add('text');
         _text__render(ele, text)

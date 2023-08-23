@@ -333,6 +333,9 @@ function _utils_getAnyParam(args = [], defaultVal, index = 0) {
 function _directive_text(ele, text = '') {
   ele.textContent = text?.__v_isRef ? text.value : text;
 }
+function _directive_html(ele, text = '') {
+  ele.innerHTML = text?.__v_isRef ? text.value : text;
+}
 function _directive_action(ele, name, fun) {
   if (name) {
     ele['on' + name] = function (e) {
@@ -473,6 +476,7 @@ let Modifier = {
  */
 function createCommonCtx(callback, {
   ele,
+  insertRoot = ele,
   id = Nid()
 } = {}) {
   let ctx = {
@@ -487,7 +491,7 @@ function createCommonCtx(callback, {
       // ctx.parentCtx = this
       appendCommon(ctx, ele);
       ctx.ele = ele;
-      callback(ele, {
+      callback(insertRoot, {
         parent
       });
     },
@@ -828,21 +832,24 @@ function defComponent(option = {}) {
           function setCreated(v) {
             _setCreatedCallback = v;
           }
-          let ele = setup({
+          let ret = setup({
             getCompCtx,
             setCreated,
             startWatch,
             args,
             isSsrMode
           });
+          let ele = ret;
+          let insertRoot = ele;
+          if (Array.isArray(ret)) {
+            ele = ret[0];
+            insertRoot = ret[1];
+          }
           let id = Nid();
           if (isSsrMode) {
             ele.setAttribute('ssr-id', id);
           }
           ctx = createCommonCtx(function (childEle, option) {
-            // console.log(option);
-            // console.dir(ele.parentElement);
-
             if (_setCreatedCallback) {
               _setCreatedCallback(ctx);
             }
@@ -852,11 +859,9 @@ function defComponent(option = {}) {
               option.afterRender(childEle, option);
             }
           }, {
-            ele
+            ele,
+            insertRoot
           });
-
-          // console.log(ctx)
-
           if (isSsrMode) {
             __ssr_setup(ele, args, {
               id,
@@ -936,7 +941,7 @@ function __ssr_setup(...args) {
   }
 }
 function _text__render(ele, text) {
-  _directive_text(ele, text);
+  _directive_html(ele, text);
 }
 function _text__action(ele, args) {
   const {

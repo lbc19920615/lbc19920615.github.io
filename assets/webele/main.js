@@ -336,6 +336,7 @@ let SwiperNav1 = defComponent({
     setup({getCompCtx, startWatch, args}) {         
         let ele = document.createElement('div')
         ele.classList.add('swiper-nav1');
+        ele.classList.add('a-swiper')
 
         let childrens = []
         hc2(Column, {

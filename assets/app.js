@@ -1,5 +1,57 @@
 import { Provider, Subscriber } from "wlepre"
-import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
+import { Nid, g, hc2, ForEach, Utils, defComponent, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
+
+let PageWrapper = defComponent({
+    name: 'PageWrapper',
+    setup({getCompCtx, startWatch, args}) {     
+        let { title = '' } = Utils.getObjectParam(args)
+        let ele = document.createElement('div')
+        ele.classList.add('page-wrapper');
+        ele.classList.add('a-page-wrapper');
+
+
+        let PageNav1Ctx = hc2(Column, {
+            init(ele)  {
+                let backCtx = hc2(Text, {args: ['back']}, ele);
+                backCtx.ele.onclick = function() {
+                    console.log('sssssssss');
+                    window?.wRoute?.back()
+                }
+                hc2(Text, {args: [title], attrs: {class: 'text text-center'}}, ele);
+                hc2(Text, {args: ['&nbsp;']}, ele);
+            },
+            attrs: {
+                class: 'dis-grid page-wrapper__nav',
+                style: 'grid-template-columns: var(--page-wrapper-nav-tpl)'
+            }
+        }, ele);
+        PageNav1Ctx.ele.style.height = 'var(--page-wrapper-nav-h)'
+
+        let Column1Ctx = hc2(Column, {
+            init(ele)  {
+      
+            },
+            attrs: {
+                class: 'page-wrapper__content'
+            }
+        }, ele);
+
+        Column1Ctx.ele.style.height = 'var(--page-wrapper-content-h)'
+
+    
+        function render(ele) {
+        }
+    
+        render(ele)
+    
+        startWatch(() => {
+            render(ele)
+        })
+
+        return [ele, Column1Ctx.ele]
+    }
+})
+
 
 window.testSubApp = function() {
     window.createNewPageFrame('detail', location.origin + '/assets/sub.html#/detail')
