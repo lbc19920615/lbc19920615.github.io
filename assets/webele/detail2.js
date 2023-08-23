@@ -65,7 +65,7 @@ export default function({Page}) {
 
     let customComponents = getcustomComponents()
     console.log(customComponents.get('PageWrapper'));
-    g.defc(customComponents.get('PageWrapper')({title: 'detail页'}).init(function (ele) {
+    g.defc(customComponents.get('PageWrapper')({title: 'detail2页'}).init(function (ele) {
 
         
         ; g.defc(Text2(vm.TextDetail).init(function (ele) {
