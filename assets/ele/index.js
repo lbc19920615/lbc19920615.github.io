@@ -27,6 +27,7 @@ import 'https://unpkg.com/xy-ui/components/xy-message.js';
 window.XyDialog = XyDialog;
 // window.XyMessage = XyMessage;
 
+
 let messageContent = document.getElementById('message-content');
 window.XyMessage = new Proxy({}, {
     get(target, key) {
@@ -273,9 +274,21 @@ if (!customElements.get('my-date-picker')) {
 
 export class MyDialog extends customElements.get('xy-dialog') {
     constructor(option = {}) {
-        let {type, title}= option
+        let {type, title, attrs = {}}= option
         super(option)
-        this.setAttribute('title', title)
+        this.setAttribute('title', title);
+
+        let classStr = ''
+        let attrStr = ''
+        Object.keys(attrs).forEach(key => {
+            if (key === 'class') {
+                classStr = attrs[key]
+            }
+            else {
+                attrStr = attrStr + `${key}="${attrs[key]}"`
+            }
+        });
+        console.log('attrStr', attrs, attrStr);
         this.shadowRoot.innerHTML = /*html*/`
         <style>
         :host{
@@ -311,6 +324,9 @@ export class MyDialog extends customElements.get('xy-dialog') {
             opacity:0;
             transform:scale(0.5);
             transition:.3s cubic-bezier(.645, .045, .355, 1);
+        }
+        .dialog--bottom {
+            margin: auto auto 0 auto;
         }
         .dialog-content{
             box-sizing: border-box;
@@ -387,7 +403,7 @@ export class MyDialog extends customElements.get('xy-dialog') {
             display: none;
         }
         </style>
-        <div class="dialog">
+        <div class="dialog ${classStr}" part="dialog" ${attrStr}>
             <xy-icon id="dialog-type" class="dialog-type"></xy-icon>
             <div class="dialog-content">
                 <div class="dialog-title" id="title">${this.title}</div>

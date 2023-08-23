@@ -327,7 +327,7 @@ let Dialog1 = defComponent({
         ele.setAttribute('open',true);
         return ele
     }
-})
+});
 
 let SwiperNav1 = defComponent({
     setup({getCompCtx, startWatch, args}) {         

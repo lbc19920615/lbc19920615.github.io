@@ -353,7 +353,7 @@ function appendCommon(ctx, ele) {
     // console.dir(curParent);
   }
 
-  if (curParent.nodeType === 8) {
+  if (curParent && curParent.nodeType === 8) {
     curParent.before(ele);
   } else {
     if (Array.isArray(ele)) {
@@ -971,8 +971,20 @@ let Text = defComponent({
     _text__action(ele, args);
   }
 });
+class BaseWleElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  _fireEvent(name, detail) {
+    let event = new CustomEvent(name, {
+      detail
+    });
+    this.dispatchEvent(event);
+  }
+}
 
 exports.BaseVmControl = BaseVmControl;
+exports.BaseWleElement = BaseWleElement;
 exports.Button = Button;
 exports.Column = Column;
 exports.Else = Else;

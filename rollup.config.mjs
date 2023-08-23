@@ -4,7 +4,8 @@ import ejs from "ejs"
 import fse from "fs-extra"
 import fs from "node:fs"
 
-let mainFileStr = fs.readFileSync('./src/webele.ejs').toString()
+let mainFileStr = fs.readFileSync('./src/webele.ejs').toString();
+let subFileStr = fs.readFileSync('./src/sub.ejs').toString()
 
 let imports = {
   // "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
@@ -54,6 +55,9 @@ function demoWatcherPlugin() {
           imports['wle'] =  '/' + baseFolder + '/webelef/' + newFileName + '?v='+ Date.now();
           let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
+
+          let html2 = ejs.render(subFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
+          fs.writeFileSync(`./${baseFolder}/sub.html`, html2)
           setTimeout(() => {
 
           fse.copySync(`./${baseFolder}/webelef/${newFileName}`, `./${baseFolder}/wle.js`)

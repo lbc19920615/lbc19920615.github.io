@@ -8,3 +8,7 @@
 .shop-good__item {
     height: var(--shop-good__item_h);
 }
+
+.shop-dialog-1::part(dialog) {
+    width: 80vw;
+}

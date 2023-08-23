@@ -127,7 +127,7 @@ function appendCommon(ctx, ele) {
         curParent = ctx.parent[1]
         // console.dir(curParent);
     }
-    if (curParent.nodeType === 8) {
+    if (curParent && curParent.nodeType === 8) {
         curParent.before(ele)
     }
     else {
@@ -726,4 +726,16 @@ export let Text = defComponent({
 })
 
 
-export * from "./control"
+export * from "./control";
+
+export class BaseWleElement extends HTMLElement {
+    constructor() {
+        super()
+    }
+    _fireEvent(name, detail) {
+        let event = new CustomEvent(name, {
+            detail
+        });
+        this.dispatchEvent(event)
+    }
+}
