@@ -107,7 +107,7 @@ export default function({Page}) {
 
 
     let customComponents = getcustomComponents()
-    console.log(customComponents.get('PageWrapper'));
+    // console.log(customComponents.get('PageWrapper'));
     g.defc(customComponents.get('PageWrapper')({title: 'detail页'}).init(function (ele) {
 
         

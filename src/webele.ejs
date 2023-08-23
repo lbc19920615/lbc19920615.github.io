@@ -161,7 +161,7 @@
             }, nav);
             // console.log('currentIndex', currentIndex);
             if (currentIndex > -1) {
-              
+                nav.style.display = null
             } else {
                 nav.style.display = 'none'
             }
@@ -170,9 +170,11 @@
 
         document.addEventListener('route-change', function(e) {
             let pages = window.getCurrentPages();
+
             if (pages && pages.length > 0) {
                 currentTabIndex = app.getNavIndex(pages.at(-1)?.routerName);
                 let nav  = document.querySelector('#nav');
+                console.log('route-change', pages, currentTabIndex);
                 resetNav(app, nav)
             }
         })

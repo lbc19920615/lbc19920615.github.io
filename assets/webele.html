@@ -84,7 +84,7 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_9c2a6ba8.js?v=1692832856525"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_9c2a6ba8.js?v=1692834234073"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -163,7 +163,7 @@
             }, nav);
             // console.log('currentIndex', currentIndex);
             if (currentIndex > -1) {
-              
+                nav.style.display = null
             } else {
                 nav.style.display = 'none'
             }
@@ -172,9 +172,11 @@
 
         document.addEventListener('route-change', function(e) {
             let pages = window.getCurrentPages();
+
             if (pages && pages.length > 0) {
                 currentTabIndex = app.getNavIndex(pages.at(-1)?.routerName);
                 let nav  = document.querySelector('#nav');
+                console.log('route-change', pages, currentTabIndex);
                 resetNav(app, nav)
             }
         })
