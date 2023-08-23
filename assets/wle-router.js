@@ -1,5 +1,12 @@
 import { Nid } from "wle";
 
+window.createNewPageFrame = function(src = location.href) {
+    let iframe = document.createElement('iframe')
+    iframe.src = src;
+    iframe.classList.add('a-page-frame')
+    document.body.appendChild(iframe)
+}
+
 export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, keepLives = [] } = {}) {
     let pageMap = new Map();
 
@@ -20,7 +27,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
     function createStyleSheet(name) {
         let style =document.createElement('style');
         style.id = 'style-' + name;
-        fetch(`/assets/webele/${name}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
+        fetch(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
             style.innerHTML = cssStr;
             document.head.appendChild(style)
         })

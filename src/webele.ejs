@@ -132,6 +132,9 @@
 
         let currentTabIndex = 0;
 
+        /**
+         * @param nav {Element} 
+         */
         function resetNav(app, nav, {currentIndex = currentTabIndex} = {}) {
             nav.innerHTML = ''
             hc2(ForEach, {
@@ -156,6 +159,10 @@
                     }
                 }
             }, nav);
+            console.log('currentIndex', currentIndex);
+            if (currentIndex > -1) {
+                nav.style.display = 'block'
+            }
         }
 
 
@@ -185,7 +192,6 @@
                 dom.onclick = function () {
                     document.documentElement.classList.toggle('theme-dark')
                 }
-                // nav.style.width = 'var(--app-nav-w)'
                 nav.appendChild(dom);
 
                 let routeName = window.wRoute.routeName();

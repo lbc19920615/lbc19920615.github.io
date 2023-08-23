@@ -6,12 +6,24 @@
   color: var(--text-primary-blue);
 }
 
+.a-page-frame {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
 #routerroot {
   --app-nav-w: 90px;
 }
 
 #nav {
   width: var(--app-nav-w);
+  display: none;
 }
 #nav .nav__link {
   padding: 10px 0;
