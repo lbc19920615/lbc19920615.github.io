@@ -2,6 +2,26 @@ import { Provider, Subscriber } from "wlepre"
 import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
 
+
+let BaseDir = '/assets/'
+export const routes = {
+    ['']: (params) => {
+        return import(BaseDir + 'webele/main.js?v=' + Date.now())
+    },
+    404: (params) => {
+        return import(BaseDir + 'webele/404.js?v=' + Date.now())
+    },
+    shop: (params) => {
+        return import(BaseDir + 'webele/shop.js?v=' + Date.now())
+    },
+    my: (params) => {
+        return import(BaseDir + 'webele/my.js?v=' + Date.now())
+    },
+    detail: (params) => {
+        return import(BaseDir + 'webele/detail.js?v=' + Date.now())
+    },
+};
+
 const APP_TABS = [
     ['', {
         label: '首页'

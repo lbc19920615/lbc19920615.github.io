@@ -87,7 +87,7 @@
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-        import { runApp } from "/assets/app.js"
+
 
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.0.3'
@@ -97,24 +97,10 @@
 
         window.getAllComments = getAllComments;
 
+        import { runApp, routes } from "/assets/app.js"
 
         let rooterRootEle = document.getElementById("routerroot")
 
-        let BaseDir = '/assets/'
-        const routes = {
-            ['']: (params) => {
-                return import(BaseDir + 'webele/main.js?v=' + Date.now())
-            },
-            404: (params) => {
-                return import(BaseDir + 'webele/404.js?v=' + Date.now())
-            },
-            my: (params) => {
-                return import(BaseDir + 'webele/my.js?v=' + Date.now())
-            },
-            detail: (params) => {
-                return import(BaseDir + 'webele/detail.js?v=' + Date.now())
-            },
-        };
 
 
         let keepLives = [
