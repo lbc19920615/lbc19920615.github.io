@@ -336,7 +336,6 @@ let SwiperNav1 = defComponent({
     setup({getCompCtx, startWatch, args}) {         
         let ele = document.createElement('div')
         ele.classList.add('swiper-nav1');
-        ele.classList.add('a-swiper')
 
         let childrens = []
         hc2(Column, {
@@ -499,7 +498,8 @@ export default function({Page}) {
             args: [{ max: 3 }], 
             init: (ele, option) => {
                 // console.log('ele', ele)
-                let swSlide = document.createElement('swiper-slide')
+                let swSlide = document.createElement('swiper-slide');
+                swSlide.classList.add('a-swiper')
                 swSlide.innerHTML = 'slide' + option.index;
                 swSlide.classList.add('swiper_slide')
                 // swSlide.setAttribute('style', 'height: 180px;')
