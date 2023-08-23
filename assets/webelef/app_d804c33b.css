@@ -23,7 +23,6 @@
 
 #nav {
   width: var(--app-nav-w);
-  display: none;
 }
 #nav .nav__link {
   padding: 10px 0;
