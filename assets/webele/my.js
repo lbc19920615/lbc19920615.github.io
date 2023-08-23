@@ -4,7 +4,7 @@ import { Nid, Button, Text, ForEach, If,  hc2, defComponent, Column, BaseVmContr
 class DomCotnrol extends BaseVmControl {
     title = ''
     get TextDetail() {
-        return 'detail 页面 ' + this.title
+        return 'my 页面 ' + this.title
     }
     setTitle(v) {
         this.title = v
