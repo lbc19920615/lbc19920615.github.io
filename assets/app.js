@@ -1,7 +1,9 @@
 import { Provider, Subscriber } from "wlepre"
 import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
-
+window.testSubApp = function() {
+    window.createNewPageFrame(location.origin + '/assets/sub.html#/detail')
+}
 
 let BaseDir = '/assets/'
 export const routes = {

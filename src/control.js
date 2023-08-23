@@ -1,8 +1,3 @@
-// import { reactive, ref , watch, computed  } from "vue"
-
-
-const { reactive, computed  } = globalThis.VueDemi;
-
 let symbol = Symbol('BaseControl')
 
 export class BaseVmControl {
@@ -118,6 +113,7 @@ export function injectControl(name = '') {
  * @returns 
  */
 export function useControl(cls) {
+    const { reactive, computed  } = globalThis.VueDemi;
     let clsDef = null
     if (typeof cls === 'string') {
         clsDef = cachedDefs[cls]

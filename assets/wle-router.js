@@ -1,11 +1,21 @@
 import { Nid } from "wle";
 
-window.createNewPageFrame = function(src = location.href) {
+window.createNewPageFrame = function (src = location.href) {
     let iframe = document.createElement('iframe')
     iframe.src = src;
     iframe.classList.add('a-page-frame')
     document.body.appendChild(iframe)
 }
+
+export function createStyleSheet(name) {
+    let style = document.createElement('style');
+    style.id = 'style-' + name;
+    fetch(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
+        style.innerHTML = cssStr;
+        document.head.appendChild(style)
+    })
+}
+
 
 export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, keepLives = [] } = {}) {
     let pageMap = new Map();
@@ -23,25 +33,16 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         // console.log('reloadFormCache', reloadStr);
         tureRoot.appendChild(rootEle);
     }
-    
-    function createStyleSheet(name) {
-        let style =document.createElement('style');
-        style.id = 'style-' + name;
-        fetch(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
-            style.innerHTML = cssStr;
-            document.head.appendChild(style)
-        })
-    }
 
-    function createPageFun(nid = '', params, { routerName, onEnd } = {}) {
+
+    function createPageFun(nid = '', params, {
+        reRender = function (innerEle, reloadFormCache) {
+            render(innerEle, reloadFormCache)
+        }, 
+        routerName, 
+        onEnd } = {}) {
         return function Page(option) {
-            let { ele, lifeTimes = {} } = option
-
-            function reRender(innerEle, reloadFormCache) {
-      
-                // console.log(routerName);
-                render(innerEle, reloadFormCache)
-            }
+            let { ele, lifeTimes = {} } = option;
 
             let pageCtx = {
                 nid,
@@ -181,6 +182,50 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         return pathName
     }
 
+
+    async function loadPage({ nid, routerName, params = {}, onEnd } = {}) {
+        let route = routes[routerName];
+        if (!route) {
+            route = routes['404'];
+        }
+
+        const m = await route(params);
+
+        let Page = createPageFun(nid, params, {
+            routerName,
+            onEnd(pageCtx) {
+                if (onEnd) {
+                    onEnd(pageCtx, nid)
+                }
+            }
+        });
+        if (m.default) {
+            m.default({ Page })
+        }
+    }
+
+    async function loadSubPage({ nid, routerName, reRender, params = {}, onEnd } = {}) {
+        let route = routes[routerName];
+        if (!route) {
+            route = routes['404'];
+        }
+
+        const m = await route(params);
+
+        let Page = createPageFun(nid, params, {
+            routerName,
+            reRender,
+            onEnd(pageCtx) {
+                if (onEnd) {
+                    onEnd(pageCtx, nid)
+                }
+            }
+        });
+        if (m.default) {
+            m.default({ Page })
+        }
+    }
+
     const handleLocation = async ({ params = {}, stateID, onLoadCache, onEnd, isPush = true } = {}) => {
         const path = window.location.hash;
 
@@ -239,27 +284,6 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
     };
 
 
-    async function loadPage({ nid, routerName, params = {}, onEnd } = {}) {
-        let route = routes[routerName];
-        if (!route) {
-            route = routes['404'];
-        }
-
-        const m = await route(params);
-
-        let Page = createPageFun(nid, params, {
-            routerName,
-            onEnd(pageCtx) {
-                if (onEnd) {
-                    onEnd(pageCtx, nid)
-                }
-            }
-        });
-        if (m.default) {
-            m.default({ Page })
-        }
-    }
-
     function unLoadLastPage(lastPage) {
         if (lastPage?.lifeTimes?.onUnload) {
             lastPage.lifeTimes.onUnload()
@@ -287,7 +311,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
             }
             document.dispatchEvent(new CustomEvent('route-change', {
                 detail: {
-    
+
                 }
             }))
         }
@@ -309,7 +333,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                         pagesCache[0] = [nid, pageCtx];
                         document.dispatchEvent(new CustomEvent('route-change', {
                             detail: {
-                
+
                             }
                         }))
                     }
@@ -339,7 +363,8 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         switchTab: switchTab,
         back: backRoute,
         replace: replaceRoute,
-        routeName: routeName
+        loadSubPage: loadSubPage,
+        routeName: routeName,
     };
 
     handleLocation({

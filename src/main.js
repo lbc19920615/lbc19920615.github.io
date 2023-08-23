@@ -5,8 +5,6 @@ import nid from "./nid.browser"
 
 let glo = globalThis;
 
-const {reactive, ref, watch} = glo.VueDemi;
-console.log('glo', VueDemi);
 
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
@@ -360,6 +358,8 @@ function createForeachCtx(callback, { ele, max = 0, list, id = Nid() } = {}) {
 }
 
 function __ForEach_action(option = {}, obj, ctx) {
+    const {ref, watch} = glo.VueDemi;
+    
     let { max = ref(0), list = null } = option
 
     // console.log(list);
@@ -388,6 +388,9 @@ function __ForEach_action(option = {}, obj, ctx) {
  * @returns 
  */
 export function ForEach(option = {}, {label = ''} = {}) {
+    const {reactive, ref} = glo.VueDemi;
+
+
     let startFlg = createComment('start' + label)
     let endFlg = createComment('end' + label)
     let ele = [
@@ -441,6 +444,8 @@ function getCondByNid(nid) {
 
 let currentCondition = null;
 export function If(conditions, nid = '') {
+    const {ref, watch} = glo.VueDemi;
+
     let trueCond = conditions?.__v_isRef  ? conditions.value : conditions
     // console.log(conditions);
     currentCondition = conditions;
@@ -464,6 +469,7 @@ export function If(conditions, nid = '') {
 customComponents.set('If', If)
 
 export function Else(nid = '') {
+    const {ref, watch} = glo.VueDemi;
     // console.log(conditions);
     if (!currentCondition) {
         return;
@@ -563,6 +569,7 @@ export let h3 = new Proxy(customComponents, {
  * @returns 
  */
 export function defComponent(option = {}) {
+    const {ref, watch} = glo.VueDemi;
     let {setup, ssrRender} = option
     let ctx = null;
     
@@ -688,7 +695,8 @@ function _text__render(ele, text) {
 }
 
 function _text__action(ele, args) {
-    let text =_utils_getAnyParam(args, '')
+    const {ref, watch} = glo.VueDemi;
+    let text =_utils_getAnyParam(args, '');
     if (text.__v_isRef) {
         watch(text, () => {
             _text__render(ele, text)

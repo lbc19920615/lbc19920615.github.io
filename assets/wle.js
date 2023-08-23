@@ -94,12 +94,6 @@ Nid$1.curses = () => default_cursed_list;
 Nid$1.len = defaults.len;
 Nid$1.alphabet = defaults.alphabet;
 
-// import { reactive, ref , watch, computed  } from "vue"
-
-const {
-  reactive: reactive$1,
-  computed
-} = globalThis.VueDemi;
 let symbol = Symbol('BaseControl');
 class BaseVmControl {
   static [symbol] = 1;
@@ -210,6 +204,10 @@ function injectControl(name = '') {
  * @returns 
  */
 function useControl(cls) {
+  const {
+    reactive,
+    computed
+  } = globalThis.VueDemi;
   let clsDef = null;
   if (typeof cls === 'string') {
     clsDef = cachedDefs[cls];
@@ -219,7 +217,7 @@ function useControl(cls) {
   // console.log(clsDef);
   if (clsDef) {
     let def = clsDef;
-    let obj = reactive$1(def.state);
+    let obj = reactive(def.state);
     let getterKeys = [];
     Object.keys(def.getters).forEach(key => {
       // console.log(def.getters[key].bind(obj));
@@ -247,12 +245,6 @@ function useControl(cls) {
 }
 
 let glo = globalThis;
-const {
-  reactive,
-  ref,
-  watch
-} = glo.VueDemi;
-console.log('glo', VueDemi);
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
 function setGlobal(v) {
@@ -581,6 +573,10 @@ function createForeachCtx(callback, {
   return ctx;
 }
 function __ForEach_action(option = {}, obj, ctx) {
+  const {
+    ref,
+    watch
+  } = glo.VueDemi;
   let {
     max = ref(0),
     list = null
@@ -612,6 +608,10 @@ function __ForEach_action(option = {}, obj, ctx) {
 function ForEach(option = {}, {
   label = ''
 } = {}) {
+  const {
+    reactive,
+    ref
+  } = glo.VueDemi;
   let startFlg = createComment('start' + label);
   let endFlg = createComment('end' + label);
   let ele = [startFlg, endFlg];
@@ -649,6 +649,10 @@ let conditionMap = new Map();
 window.__conditionMap__ = conditionMap;
 let currentCondition = null;
 function If(conditions, nid = '') {
+  const {
+    ref,
+    watch
+  } = glo.VueDemi;
   let trueCond = conditions?.__v_isRef ? conditions.value : conditions;
   // console.log(conditions);
   currentCondition = conditions;
@@ -675,6 +679,10 @@ function If(conditions, nid = '') {
 }
 customComponents.set('If', If);
 function Else(nid = '') {
+  const {
+    ref,
+    watch
+  } = glo.VueDemi;
   // console.log(conditions);
   if (!currentCondition) {
     return;
@@ -783,6 +791,10 @@ let h3 = new Proxy(customComponents, {
  * @returns 
  */
 function defComponent(option = {}) {
+  const {
+    ref,
+    watch
+  } = glo.VueDemi;
   let {
     setup,
     ssrRender
@@ -922,6 +934,10 @@ function _text__render(ele, text) {
   _directive_text(ele, text);
 }
 function _text__action(ele, args) {
+  const {
+    ref,
+    watch
+  } = glo.VueDemi;
   let text = _utils_getAnyParam(args, '');
   if (text.__v_isRef) {
     watch(text, () => {

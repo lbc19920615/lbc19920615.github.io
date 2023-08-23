@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #routerroot {
+            overflow: auto;
+        }
+
+        #nav {
+            position: sticky;
+            top: 0;
+        }
+    </style>
+    <script type="importmap">
+        {
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_cfcd3481.js?v=1692766192531"}
+        }
+    </script>
+    <script type="module">
+
+
+        let name = location.hash.slice(2);
+        window.self = window.parent;
+        globalThis.VueDemi = self.VueDemi;
+        // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
+
+
+        import('/assets/wle-router.js?v=0.1.0').then(m => {
+            m.createStyleSheet(name);
+
+            self.wRoute.loadSubPage({
+                nid: 'sub', routerName: name, 
+                reRender(innerEle) {
+                    document.getElementById('routerroot').appendChild(innerEle)
+                },
+                onEnd() {
+                    console.log('routerName load end', name);
+                }
+            })
+        })
+
+
+
+
+
+        console.log(globalThis, window, self);
+
+    </script>
+</head>
+
+<body>
+    <div id="routerroot" class="h-full"></div>
+</body>
+
+</html>

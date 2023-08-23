@@ -1,4 +1,8 @@
-import { Button, Text, ForEach, If,  hc2, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+
+
+import { Button, Text, setGlobal,  hc2, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+
+setGlobal(window.self);
 
 
 class DomCotnrol extends BaseVmControl {
@@ -10,7 +14,7 @@ class DomCotnrol extends BaseVmControl {
         this.title = v
     }
     action(e) {
-        globalThis.wRoute.back()
+        self.wRoute.back()
     }
     action2() {
         let countStore = getApp()?.globalConfig?.useCounterStore();
