@@ -1,5 +1,8 @@
 @charset "UTF-8";
-::view-transition-old(root),
+::view-transition-old(root) {
+  animation-duration: 0.25s;
+}
+
 ::view-transition-new(root) {
   animation-duration: 0.5s;
 }
