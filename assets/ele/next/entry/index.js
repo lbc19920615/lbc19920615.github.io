@@ -40,6 +40,10 @@ export default class Radio extends Base {
 		return this.getAttribute("required") !== null;
 	}
 
+	getInput() {
+		return this.#num.input
+	}
+
 	set item_val(value) {
 		this.#num.value = value
 	}

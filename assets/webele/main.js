@@ -117,15 +117,17 @@ function __getParentFormItemCtx(ctx) {
     return formItem?.$formItemCtx
 }
 
-function __forItem_action({ele, ctx}) {
+function __forItem_action({ele, ctx, onChange}) {
     // console.log('sssssssssssssss', ctx?.parent);
     
     let formCtx = __getParentFormItemCtx(ctx);
     ele.onchange = function(e) {
         // console.log(e);
         let val = e?.detail ? e.detail?.value : e.target?.value 
-        formCtx.callOnChange(val, ele)
-        // console.log('ele', e, ctx);
+        formCtx.callOnChange(val, ele);
+        if (onChange) {
+            onChange(val, e)
+        }
     }
 }
 
@@ -291,6 +293,8 @@ let EntryboxGroup = defComponent({
         let ele = document.createElement('zy-entry-group')
         ele.classList.add('entry-group')
 
+        let numinputs = []
+        let totalMax = 10;
         hc(ForEach, {args: [{max: 6}], 
             init(ele, option)  {
                 let entry = document.createElement('zy-entry');
@@ -298,16 +302,32 @@ let EntryboxGroup = defComponent({
                 entry.setAttribute('name', argOpt.name)
                 entry.setAttribute('key', Nid())
                 entry.setAttribute('item_val', 0);
-                entry.setAttribute('item_min', 0);
-                entry.setAttribute('item_max', 2);
-                // entry.setAttribute('value', 0)
-                entry.innerHTML = 'entry' + option.index
+                let numinput = entry.getInput()
+                numinput.setAttribute('min', 0);
+                numinput.setAttribute('max', totalMax)
+                entry.innerHTML = 'entry' + option.index;
+
+                numinputs.push(numinput)
                 option.appendChild(entry)
             }
         }, ele);
 
         setCreated(function(ctx) {
-            __forItem_action({ele,  ctx})
+            __forItem_action({
+                ele,  
+                ctx, 
+                onChange(val) {
+                    let newTotal = 0;
+                    val.forEach(item => {
+                        newTotal = newTotal + item[1]
+                    });
+
+                    console.log('val', newTotal);
+                    numinputs.forEach(numinput => {
+                        numinput.setAttribute('max',  totalMax - newTotal + parseFloat( numinput.value))
+                    })
+                }
+            })
         });
 
         return ele
