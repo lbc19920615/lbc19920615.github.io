@@ -35,13 +35,12 @@ let Form1 = defComponent({
             getModel() {
                 return innerModel
             },
-            validate() {
+            validate({force} = {}) {
                 let validator = buildValidate(config?.rules);
-
         
                 validator.validate(innerModel, (errors, fields) => {
                     let fieldKeys = Object.keys(innerModel);
-                    // console.log(fieldKeys, errors);
+                    console.log(fieldKeys, errors);
                     if (!errors) {
                         errors = []
                     }
@@ -50,14 +49,14 @@ let Form1 = defComponent({
                         if (!errorKeys.includes(fieldKey)) {
                    
                             let formItem = ele.querySelector(`[form-name=${fieldKey}]`);
-                            formItem?.$formItemCtx?.setValid(true, '')
+                            formItem?.$formItemCtx?.setValid(true, '', {force})
                         }
                     })
                     // console.log(errors, fields);
                     errors.forEach(error => {
                         let formItem = ele.querySelector(`[form-name=${error.field}]`);
                         if (formItem) {
-                            formItem?.$formItemCtx?.setValid(false, error.message)
+                            formItem?.$formItemCtx?.setValid(false, error.message, {force})
                         }
                     })
                     
@@ -94,8 +93,8 @@ let FormItem = defComponent({
         ele.$formItemCtx = {
             form: null,
             name: name,
-            setValid(isValid = true, message = '') {
-                if (!isChanged) {
+            setValid(isValid = true, message = '', {force = false} = {}) {
+                if (!isChanged && !force) {
                     return;
                 }
                 // console.log('setValid', isValid);
@@ -505,8 +504,11 @@ export default function({Page}) {
                 data.dialog = true
             },
             submitForm() {
-                let formName = 'form1'
-                console.log(formName, document.querySelector(`.form[name=${formName}]`)?.$formCtx.getModel())
+                let formName = 'form1';
+                let formEle = document.querySelector(`.form[name=${formName}]`);
+
+                formEle?.$formCtx?.validate({force: true})
+                console.log(formName, formEle?.$formCtx.getModel())
                 // alert('console.log查看')
             },
             getFun() {
