@@ -24,22 +24,21 @@ let ShopDialog1 = defComponent({
     name: 'ShopDialog1',
     setup({ setCreated, startWatch, args }) {
         let option = args[0] ?? {}
-        let MyDialog = customElements.get('my-dialog');
+        let MyDialog = customElements.get('zy-dialog');
         let ele = new MyDialog({ title: 'dialog1', attrs: { class: 'dialog--bottom' } })
         ele.classList.add('shop-dialog-1')
 
         // console.dir(ele);
         setTimeout(() => {
-            ele.btnClose.addEventListener('click', function () {
-                // console.log('onClose');
+            ele.addEventListener('cancel',function(e){
+                //
                 if (option?.onClose) {
                     option.onClose()
                 }
             })
-        }, 300)
-        // ele.setAttribute('portal','body')
-
-        ele.setAttribute('open', true);
+            ele.setAttribute('open', true);         
+        }, 0)
+        
         return ele
     }
 })

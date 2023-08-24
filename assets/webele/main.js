@@ -306,28 +306,19 @@ let Dialog1 = defComponent({
     name: 'Dialog1',
     setup({setCreated, startWatch, args}) {    
         let option = args[0] ?? {}
-        let MyDialog = customElements.get('my-dialog')
+        let MyDialog = customElements.get('zy-dialog')
         let ele = new MyDialog({title: 'dialog1'})
 
         // console.dir(option);
         setTimeout(() => {
-            ele.btnClose.addEventListener('click', function() {
-                // console.log('onClose');
-                if (option?.onClose) {
-                    option.onClose()
-                }
-            })
-            ele.addEventListener('submit',function(e){
+            ele.addEventListener('cancel',function(e){
                 //
                 if (option?.onClose) {
                     option.onClose()
                 }
             })
-   
+            ele.setAttribute('open',true);
         }, 0)
-        // ele.setAttribute('portal','body')
-
-        ele.setAttribute('open',true);
         return ele
     }
 });
