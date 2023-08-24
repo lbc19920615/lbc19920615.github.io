@@ -88,6 +88,8 @@ let FormItem = defComponent({
         let name = args[0];
         let label = args[1] ?? name;
 
+        label = label + ` (${name})`
+
         let isChanged = false;
         ele.setAttribute('form-name', name);
         ele.$formItemCtx = {
@@ -540,6 +542,15 @@ export default function({Page}) {
     globalThis.vmmodifierFactory2 = vmmodifierFactory2;
     globalThis.vm = vm;
 
+    let formRules = {
+        input_text: [
+            {
+                type: 'string',
+                required: true,
+            }
+        ]
+    }
+
 
     setTimeout(() => {
         vmData.list[0] = 3;
@@ -690,111 +701,116 @@ export default function({Page}) {
                 ctx.done(ele)
             });
 
-            ; g.defc(Form1({
-                name: 'form1',
-                rules: {
-                    input_text: [
-                        {
-                            type: 'string',
-                            required: true,
-                        }
-                    ]
-                }
-            }).init(function (ele) {
-    
-                ; g.defc(FormItem('select','下拉').init(function (ele) {
-                    ; g.defc(Select1().init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele)
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-    
-                
-                ; g.defc(FormItem('textarea', '多行').init(function (ele) {
-                    ; g.defc(TextArea1().init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele)
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-    
-    
-                ; g.defc(FormItem('input_text', '文本').init(function (ele) {
-                    ; g.defc(Input1().init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele)
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-    
-                ; g.defc(FormItem('input_number', '数字').init(function (ele) {
-                    ; g.defc(Input1({type: "number"}).init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele)
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-    
-                ; g.defc(FormItem('datepicker', '日期').init(function (ele) {
-                    ; g.defc(DatePicker1().init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele)
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
 
-    
-                ; g.defc(FormItem('checkbox', '多选').init(function (ele) {
-                    ; g.defc(CheckboxGroup({name: 'checkbox'}).init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele)
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-    
-                ; g.defc(FormItem('radio1', '常见单选').init(function (ele) {
-                    ; g.defc(RadioboxGroup({name: 'radio1'}).init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele);
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-
-                ; g.defc(FormItem('radio2',  '单选样式').init(function (ele) {
-                    ; g.defc(RadioboxGroup({name: 'radio2'}).init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele);
-                        ctx.ele.classList.add('a-btn-radio-group')
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-
-                ; g.defc(FormItem('entry1',  'entry').init(function (ele) {
-                    ; g.defc(EntryboxGroup({name: 'entry1'}).init(function (ele) {
-                    }), function (ctx) {
-                        ctx.done(ele);
-                        ctx.ele.classList.add('a-btn-radio-group')
-                    });
-                }), function (ctx) {
-                    ctx.done(ele)
-                });
-
-
-                hc2(Button, {args: [{text: '获取当前model值 console查看', action: vm.submitForm}]}, ele);
-
-            }), function (ctx) {
-                ctx.done(ele)
-            });
             
+
+            hc2(Column, {
+                attrs: {
+                    class: 'main-show-column'
+                },     
+                init(ele){
+                    hc2(TextArea1, {args: [JSON.stringify(formRules, null, 2)]}, ele);
+
+                    ; g.defc(Form1({
+                        name: 'form1',
+                        rules: formRules
+                    }).init(function (ele) {
+            
+                        ; g.defc(FormItem('select','下拉').init(function (ele) {
+                            ; g.defc(Select1().init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele)
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+            
+                        
+                        ; g.defc(FormItem('textarea', '多行').init(function (ele) {
+                            ; g.defc(TextArea1().init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele)
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+            
+            
+                        ; g.defc(FormItem('input_text', '文本').init(function (ele) {
+                            ; g.defc(Input1().init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele)
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+            
+                        ; g.defc(FormItem('input_number', '数字').init(function (ele) {
+                            ; g.defc(Input1({type: "number"}).init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele)
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+            
+                        ; g.defc(FormItem('datepicker', '日期').init(function (ele) {
+                            ; g.defc(DatePicker1().init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele)
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+        
+            
+                        ; g.defc(FormItem('checkbox', '多选').init(function (ele) {
+                            ; g.defc(CheckboxGroup({name: 'checkbox'}).init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele)
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+            
+                        ; g.defc(FormItem('radio1', '常见单选').init(function (ele) {
+                            ; g.defc(RadioboxGroup({name: 'radio1'}).init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele);
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+        
+                        ; g.defc(FormItem('radio2',  '单选样式').init(function (ele) {
+                            ; g.defc(RadioboxGroup({name: 'radio2'}).init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele);
+                                ctx.ele.classList.add('a-btn-radio-group')
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+        
+                        ; g.defc(FormItem('entry1',  'entry').init(function (ele) {
+                            ; g.defc(EntryboxGroup({name: 'entry1'}).init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele);
+                                ctx.ele.classList.add('a-btn-radio-group')
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+        
+        
+                        hc2(Button, {args: [{text: '获取当前model值 console查看', action: vm.submitForm}]}, ele);
+        
+                    }), function (ctx) {
+                        ctx.done(ele)
+                    });
+
+                }
+            }, ele)
 
 
             

@@ -1,6 +1,10 @@
-@container a_page (min-width: 720px) {
+@container a_page (min-width: 750px) {
     .main-show-column {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 2fr;
     }
+}
+
+.a-form-item {
+    margin-bottom: 10px;
 }
