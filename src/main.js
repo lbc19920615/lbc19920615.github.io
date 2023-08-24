@@ -7,7 +7,7 @@ let glo = globalThis;
 
 import EventEmitter from "./event";
 
-console.log(EventEmitter);
+// console.log(EventEmitter);
 
 export let events = EventEmitter;
 

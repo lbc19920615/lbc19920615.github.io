@@ -550,7 +550,9 @@ function useControl(cls) {
 }
 
 let glo = globalThis;
-console.log(EventEmitter);
+
+// console.log(EventEmitter);
+
 let events = EventEmitter;
 let dom = glo.document || glo.customDoucment;
 let isSsrMode = Boolean(glo.__ssrMode__);
