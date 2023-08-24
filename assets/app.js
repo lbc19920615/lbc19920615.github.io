@@ -87,7 +87,9 @@ let PageWrapper = defComponent({
 
 
 window.openSubApp = function(routeName, params = {}) {
-    window.createNewPageFrame(routeName, location.origin + '/assets/sub.html?v='+Date.now()+'#/' + routeName)
+    document.startViewTransition(() => {
+        window.createNewPageFrame(routeName, location.origin + '/assets/sub.html?v='+Date.now()+'#/' + routeName)
+    })
 }
 
 let BaseDir = '/assets/'

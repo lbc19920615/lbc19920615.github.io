@@ -36,6 +36,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
      */
     window.createNewPageFrame = function (path, src) {
         let iframe = document.createElement('iframe');
+        iframe.setAttribute('style', 'z-index:' + pagesCache.length )
         iframe.src = src;
         iframe.onload = function() {
             iframe.contentWindow.postMessage({
