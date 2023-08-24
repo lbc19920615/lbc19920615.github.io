@@ -1,0 +1,5 @@
+:host {
+  display: inline-flex;
+  gap: 15px;
+  font-size: 14px;
+}

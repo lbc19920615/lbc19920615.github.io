@@ -58,7 +58,7 @@ let FormItem = defComponent({
             form: null,
             name: name,
             setValid(isValid = true) {
-                console.log('setValid', isValid);
+                // console.log('setValid', isValid);
                 // let cls = isValid ? 'form-item__sucess' : 'form-item__error'
                 if (isValid) {
                     ele.classList.remove(error_cls)
@@ -279,6 +279,36 @@ let RadioboxGroup = defComponent({
             __forItem_action({ele,  ctx})
         });
 
+
+        return ele
+    }
+});
+
+let EntryboxGroup = defComponent({
+    name: 'RadioboxGroup',
+    setup({setCreated, startWatch, args}) {    
+        let argOpt = args[0] ?? {}
+        let ele = document.createElement('zy-entry-group')
+        ele.classList.add('entry-group')
+
+        hc(ForEach, {args: [{max: 6}], 
+            init(ele, option)  {
+                let entry = document.createElement('zy-entry');
+                entry.classList.add('a-entry1')
+                entry.setAttribute('name', argOpt.name)
+                entry.setAttribute('key', Nid())
+                entry.setAttribute('item_val', 0);
+                entry.setAttribute('item_min', 0);
+                entry.setAttribute('item_max', 2);
+                // entry.setAttribute('value', 0)
+                entry.innerHTML = 'entry' + option.index
+                option.appendChild(entry)
+            }
+        }, ele);
+
+        setCreated(function(ctx) {
+            __forItem_action({ele,  ctx})
+        });
 
         return ele
     }
@@ -664,6 +694,16 @@ export default function({Page}) {
 
                 ; g.defc(FormItem('radio2',  '单选样式').init(function (ele) {
                     ; g.defc(RadioboxGroup({name: 'radio2'}).init(function (ele) {
+                    }), function (ctx) {
+                        ctx.done(ele);
+                        ctx.ele.classList.add('a-btn-radio-group')
+                    });
+                }), function (ctx) {
+                    ctx.done(ele)
+                });
+
+                ; g.defc(FormItem('entry1',  'entry').init(function (ele) {
+                    ; g.defc(EntryboxGroup({name: 'entry1'}).init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele);
                         ctx.ele.classList.add('a-btn-radio-group')

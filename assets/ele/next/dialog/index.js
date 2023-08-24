@@ -1,7 +1,7 @@
-import Base from "../xy-base.js";
+import Base from "../zy-base.js";
 // import "../icon/index.js";
 // import "../loading/index.js";
-import style from "./index.css?inline" assert { type: "css" };
+import style from "./index.css" assert { type: "css" };
 
 export default class Dialog extends Base {
     #dialog;

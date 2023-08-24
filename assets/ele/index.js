@@ -27,6 +27,7 @@ import 'https://unpkg.com/xy-ui/components/xy-message.js';
 window.XyDialog = XyDialog;
 // window.XyMessage = XyMessage;
 import "./next/dialog/index.js";
+import "./next/entry-group/index.js";
 
 
 let messageContent = document.getElementById('message-content');
