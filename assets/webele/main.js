@@ -386,6 +386,8 @@ let SwiperNav1 = defComponent({
 export default function({Page}) {
   
     let ele =  document.createElement('div');
+    ele.classList.add('a-page');
+    ele.classList.add('main-page');
     let vm = (function () {
         let data = reactive({
             some: "initStr",

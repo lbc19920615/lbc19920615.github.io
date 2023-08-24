@@ -3,8 +3,7 @@ import { Nid, g, hc2, Modifier, Utils, getcustomComponents, Button, Text, ForEac
 export default function({Page}) {
   
     let ele =  document.createElement('div');
-
-
+    ele.classList.add('a-page');
 
     g.defc(Column().init(function (ele) {
         ; g.defc(Text('404').init(function (ele) {

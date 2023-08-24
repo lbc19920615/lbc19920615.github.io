@@ -5,7 +5,6 @@ import { Nid, Button, Text, setGlobal,  hc2, defComponent, getcustomComponents, 
 setGlobal(window.self);
 
 
-
 class DomCotnrol extends BaseVmControl {
     title = ''
     get TextDetail() {
@@ -101,6 +100,7 @@ let LazyList1 = defComponent({
 
 export default function({Page}) {
     let ele =  document.createElement('div');
+    ele.classList.add('a-page');
     ele.classList.add('detail-page');
     ele.classList.add('h-full')
     let vm = useControl('vm')

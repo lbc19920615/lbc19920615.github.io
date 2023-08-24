@@ -153,8 +153,8 @@ let ShopGood1 = defComponent({
 });
 
 
-
 export default function ({ Page }) {
+    
     const sheet = window.jssStyleMan.createStyleSheet({
         'shop-page': {
             'height': '100%',
@@ -164,9 +164,8 @@ export default function ({ Page }) {
 
     sheet.attach();
 
-
-
     let ele = document.createElement('div');
+    ele.classList.add('a-page');
     ele.classList.add('shop-page');
     ele.classList.add(sheet.classes['shop-page'])
 
@@ -223,6 +222,12 @@ export default function ({ Page }) {
 
 
     Page({
-        ele
+        ele,
+        lifeTimes: {
+            onUnload() {
+                console.log('unload shop');
+                sheet.detach()
+            }
+        }
     })
 }

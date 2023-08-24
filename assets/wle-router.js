@@ -173,8 +173,11 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
     const switchTab = (path = '', params = {}) => {
         pushRoute(path, params, false, {
             onEnd(pageCtx, nid) {
-                console.log('onEnd', pageCtx);
-                let pages = window.getCurrentPages()
+                // console.log('onEnd', pageCtx);
+                let pages = window.getCurrentPages();
+                if (pages[0]) {
+                    unBindPage(pages[0])
+                }
                 setCurrentPage(pages.length - 1, [nid, pageCtx])
             }
         })
@@ -311,14 +314,19 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
 
     };
 
-
-    function unLoadLastPage(lastPage) {
+    function unBindPage(lastPage) {
+        // console.log('lastPage', lastPage);
         if (lastPage?.lifeTimes?.onUnload) {
             lastPage.lifeTimes.onUnload()
         }
         if (lastPage?.unloadIframe) {
             lastPage.unloadIframe()
         }
+    }
+
+
+    function unLoadLastPage(lastPage) {
+        unBindPage(lastPage)
         removeLastPage();
     }
 
@@ -358,6 +366,10 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
             }
             else {
                 let nid = state.stateID ?? Nid();
+                // console.log(pagesCache[0]);
+                if (pagesCache[0]) {
+                    unBindPage(pagesCache[0][1])
+                }
                 loadPage({
                     nid: nid,
                     routerName: state.path,

@@ -55,9 +55,9 @@ let Text2 = defComponent({
 })
 
 
-
 export default function({Page}) {
     let ele =  document.createElement('div');
+    ele.classList.add('a-page');
     ele.classList.add('detail2-page');
     ele.classList.add('h-full')
     let vm = useControl('vm')
