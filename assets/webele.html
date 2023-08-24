@@ -84,20 +84,37 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_a63b6b22.js?v=1692851279371"}
+          "imports": {"vue":"https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_a63b6b22.js?v=1692853233376"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
 
+        async function importCss(url) {
+            const cssFile = await fetch(url);
+            const css = await cssFile.text();
+
+            const myStyleSheet = new CSSStyleSheet();
+            myStyleSheet.replace(css);
+            return myStyleSheet;
+        }
+
         let cssFileName = '/assets/webelef/app_a9780da3.css';
         if (window.innerWidth === 360) {
             cssFileName = cssFileName.replace('.css', '_360.css')
         }
-        const cssModule = await import(cssFileName, {
-            assert: { type: 'css' }
-        });
-        document.adoptedStyleSheets = [cssModule.default];
+
+        let myStyleSheet = await importCss(cssFileName);
+        document.adoptedStyleSheets.push(myStyleSheet);
+
+
+        // const cssModule = await import(cssFileName, {
+        //     assert: { type: 'css' }
+        // });
+        // document.adoptedStyleSheets = [cssModule.default];
+
+
+
 
         // console.log(cssModule);
 

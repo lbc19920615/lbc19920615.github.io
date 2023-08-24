@@ -88,14 +88,28 @@
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
 
+        async function importCss(url) {
+            const cssFile = await fetch(url);
+            const css = await cssFile.text();
+
+            const myStyleSheet = new CSSStyleSheet();
+            myStyleSheet.replace(css);
+            return myStyleSheet;
+        }
+
         let cssFileName = '<%= APP_CSS_PATH %>';
         if (window.innerWidth === 360) {
             cssFileName = cssFileName.replace('.css', '_360.css')
         }
-        const cssModule = await import(cssFileName, {
-            assert: { type: 'css' }
-        });
-        document.adoptedStyleSheets = [cssModule.default];
+
+        let myStyleSheet = await importCss(cssFileName);
+        document.adoptedStyleSheets.push(myStyleSheet);
+
+        // const cssModule = await import(cssFileName, {
+        //     assert: { type: 'css' }
+        // });
+        // document.adoptedStyleSheets = [cssModule.default];
+
 
         // console.log(cssModule);
 
