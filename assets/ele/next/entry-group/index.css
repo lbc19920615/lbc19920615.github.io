@@ -1,5 +1,6 @@
 :host {
   display: inline-flex;
-  gap: 15px;
+  --def-entry-group-gap: 15px;
+  gap: var(--entry-group-gap, var(--def-entry-group-gap));;
   font-size: 14px;
 }

@@ -1,6 +1,8 @@
 :host {
   display: inline-flex;
   /* gap: 8px; */
+  --def-entry-input-width: 3em;
+  --def-entry-input-ml: .5em;
   align-items: center;
   --primary-color-opacity-600: color-mix(in srgb, var(--primary-color) 60%, transparent);
 }
@@ -8,6 +10,15 @@
 :host([checked]) {
   /* background-color: var(--entry-checked-bgc, #eee); */
 }
+
+xy-input {
+  margin-left: var(--entry-input-ml, var(--def-entry-input-ml));
+}
+
+xy-input::part(tips) {
+  width: var(--entry-input-width, var(--def-entry-input-width));
+}
+
 
 .radio {
   position: relative;
@@ -38,9 +49,9 @@
 }
 
 .radio::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
+  /* content: '';
+  position: absolute; */
+  /* inset: -8px; */
 }
 
 .radio:disabled {

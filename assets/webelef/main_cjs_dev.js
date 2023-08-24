@@ -1,5 +1,7 @@
 'use strict';
 
+var Schema = require('async-validator');
+
 const dc = y => y.map(x => x.map(n => String.fromCharCode(n)).join(''));
 const cl = [[0x66, 0x75, 0x63, 0x6b], [0x73, 0x68, 0x69, 0x74], [0x63, 0x75, 0x6e, 0x74], [0x6e, 0x69, 0x67, 0x67], [0x63, 0x6f, 0x63, 0x6b], [0x73, 0x75, 0x63, 0x6b], [0x62, 0x69, 0x74, 0x63, 0x68], [0x61, 0x73, 0x73], [0x68, 0x6f, 0x6c, 0x65], [0x77, 0x68, 0x6f, 0x72, 0x65], [0x77, 0x61, 0x6e, 0x6b], [0x73, 0x6c, 0x75, 0x74], [0x70, 0x75, 0x73, 0x73], [0x65, 0x72, 0x72, 0x6F, 0x72]];
 const defaults = {
@@ -549,6 +551,14 @@ function useControl(cls) {
   return null;
 }
 
+/**
+ * 
+ * @param {object} descriptor 
+ * @returns 
+ */
+function buildValidate(descriptor) {
+  return new Schema(descriptor);
+}
 let glo = globalThis;
 
 // console.log(EventEmitter);
@@ -1113,7 +1123,8 @@ function defComponent(option = {}) {
   } = glo.VueDemi;
   let {
     setup,
-    ssrRender
+    ssrRender,
+    afterRender
   } = option;
   let ctx = null;
   function getCompCtx() {
@@ -1162,8 +1173,8 @@ function defComponent(option = {}) {
             }
             callback(childEle);
             // currentRoot = childEle
-            if (option.afterRender) {
-              option.afterRender(childEle, option);
+            if (afterRender) {
+              afterRender(childEle, option);
             }
           }, {
             ele,
@@ -1306,6 +1317,7 @@ exports.Modifier = Modifier;
 exports.Nid = Nid;
 exports.Text = Text;
 exports.Utils = Utils;
+exports.buildValidate = buildValidate;
 exports.createCommonCtx = createCommonCtx;
 exports.defComponent = defComponent;
 exports.events = events;

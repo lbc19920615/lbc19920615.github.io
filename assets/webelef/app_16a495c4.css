@@ -77,6 +77,13 @@
   background: #fff;
 }
 
+.a-form-item .form-item__notice {
+  color: var(--form-invalid-color);
+}
+.a-form-item xy-input::part(tips) {
+  padding: 0;
+}
+
 #routerroot {
   --app-nav-w: 90rpx;
 }

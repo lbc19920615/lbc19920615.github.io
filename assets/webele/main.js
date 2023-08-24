@@ -1,5 +1,5 @@
 
-import { Nid, g, hc2, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
+import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
 import {parseArkUI} from "/assets/parser.js?v=0.0.3";
 
 const { reactive, computed  } = globalThis.VueDemi;
@@ -18,12 +18,14 @@ function getParentComp(parent, {cls = ''} = {}) {
 let Form1 = defComponent({
     name: "Form1",
     setup({setCreated, startWatch, args}) {  
-        let config = Utils.getObjectParam(args, 0)
+        let config = Utils.getObjectParam(args, 0);
         let innerModel = {}
 
         let ele = document.createElement('div');
         ele.classList.add('form');
-        ele.setAttribute('name', config?.name)
+        ele.setAttribute('name', config?.name);
+
+          
         
         ele.$formCtx = {
             setModel(name, val) {
@@ -32,6 +34,35 @@ let Form1 = defComponent({
             },
             getModel() {
                 return innerModel
+            },
+            validate() {
+                let validator = buildValidate(config?.rules);
+
+        
+                validator.validate(innerModel, (errors, fields) => {
+                    let fieldKeys = Object.keys(innerModel);
+                    // console.log(fieldKeys, errors);
+                    if (!errors) {
+                        errors = []
+                    }
+                    let errorKeys = errors.map(v => v.field);
+                    fieldKeys.forEach(fieldKey => {
+                        if (!errorKeys.includes(fieldKey)) {
+                   
+                            let formItem = ele.querySelector(`[form-name=${fieldKey}]`);
+                            formItem?.$formItemCtx?.setValid(true, '')
+                        }
+                    })
+                    // console.log(errors, fields);
+                    errors.forEach(error => {
+                        let formItem = ele.querySelector(`[form-name=${error.field}]`);
+                        if (formItem) {
+                            formItem?.$formItemCtx?.setValid(false, error.message)
+                        }
+                    })
+                    
+                    // validation passed
+                });
             }
         }
 
@@ -42,8 +73,10 @@ let Form1 = defComponent({
 let FormItem = defComponent({
     name: 'FormItem',
     afterRender(ele) {
-        let div = document.createElement('div')
-        // div.innerHTML = 'end form item'
+        // console.log('sssssssssssssssssss');
+        let div = document.createElement('div');
+        div.classList.add('form-item__notice')
+        // div.innerHTML = ''
         ele.appendChild(div)
     },
     setup({setCreated, startWatch, args}) {         
@@ -51,13 +84,20 @@ let FormItem = defComponent({
 
         let ele = document.createElement('div')
         ele.classList.add('form-item');
+        ele.classList.add('a-form-item');
 
         let name = args[0];
         let label = args[1] ?? name;
+
+        let isChanged = false;
+        ele.setAttribute('form-name', name);
         ele.$formItemCtx = {
             form: null,
             name: name,
-            setValid(isValid = true) {
+            setValid(isValid = true, message = '') {
+                if (!isChanged) {
+                    return;
+                }
                 // console.log('setValid', isValid);
                 // let cls = isValid ? 'form-item__sucess' : 'form-item__error'
                 if (isValid) {
@@ -65,14 +105,17 @@ let FormItem = defComponent({
                 } else {
                     ele.classList.add(error_cls)
                 }
+                ele.children[2].innerHTML = message
             },
             callOnChange(newVal, target) {
                 // console.log('e', e, target);
-                ele.$formItemCtx.setModel(name, newVal)
+                isChanged = true;
+                ele.$formItemCtx.setModel(name, newVal);
+                ele.$formItemCtx.form?.$formCtx.validate();
             },
             setModel(name, val) {
                 ele.$formItemCtx.form?.$formCtx?.setModel(name, val)
-            }
+            },
         }
 
         hc(Column, {
@@ -122,7 +165,7 @@ function __forItem_action({ele, ctx, onChange}) {
     
     let formCtx = __getParentFormItemCtx(ctx);
     ele.onchange = function(e) {
-        // console.log(e);
+        // console.log('onChange', e);
         let val = e?.detail ? e.detail?.value : e.target?.value 
         formCtx.callOnChange(val, ele);
         if (onChange) {
@@ -188,7 +231,8 @@ let Input1 = defComponent({
         close.style.setProperty("width", '0');
         close.onclick = function() {
             input.value = ''
-            detectChange(input)
+            detectChange(input);
+            input.dispatchEvent(new InputEvent('change'))
         }
 
         ele.appendChild(close)
@@ -644,7 +688,17 @@ export default function({Page}) {
                 ctx.done(ele)
             });
 
-            ; g.defc(Form1({name: 'form1'}).init(function (ele) {
+            ; g.defc(Form1({
+                name: 'form1',
+                rules: {
+                    input_text: [
+                        {
+                            type: 'string',
+                            required: true,
+                        }
+                    ]
+                }
+            }).init(function (ele) {
     
                 ; g.defc(FormItem('select','下拉').init(function (ele) {
                     ; g.defc(Select1().init(function (ele) {
@@ -666,7 +720,7 @@ export default function({Page}) {
                 });
     
     
-                ; g.defc(FormItem('input text', '文本').init(function (ele) {
+                ; g.defc(FormItem('input_text', '文本').init(function (ele) {
                     ; g.defc(Input1().init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)
@@ -675,7 +729,7 @@ export default function({Page}) {
                     ctx.done(ele)
                 });
     
-                ; g.defc(FormItem('input number', '数字').init(function (ele) {
+                ; g.defc(FormItem('input_number', '数字').init(function (ele) {
                     ; g.defc(Input1({type: "number"}).init(function (ele) {
                     }), function (ctx) {
                         ctx.done(ele)

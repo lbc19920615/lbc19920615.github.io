@@ -10,14 +10,16 @@ import 'https://unpkg.com/xy-ui/components/xy-radio.js';
 import 'https://unpkg.com/xy-ui/components/xy-tips.js';
 import 'https://unpkg.com/xy-ui/components/xy-icon.js';
 // import 'https://unpkg.com/xy-ui/components/xy-layout.js';
-import 'https://unpkg.com/xy-ui/components/xy-input.js';
+// import 'https://unpkg.com/xy-ui/components/xy-input.js';
+import "./input.js"
 import 'https://unpkg.com/xy-ui/components/xy-img.js';
 import 'https://unpkg.com/xy-ui/components/xy-rate.js';
 import 'https://unpkg.com/xy-ui/components/xy-popover.js';
 import 'https://unpkg.com/xy-ui/components/xy-color-picker.js';
 // import 'https://unpkg.com/xy-ui/components/xy-form.js';
 import 'https://unpkg.com/xy-ui/components/xy-pagination.js';
-import 'https://unpkg.com/xy-ui/components/xy-date-picker.js';
+// import 'https://unpkg.com/xy-ui/components/xy-date-picker.js';
+import "./datepicker.js"
 // import 'https://unpkg.com/xy-ui/components/xy-table.js';
 import 'https://unpkg.com/xy-ui/components/xy-text.js';
 // import 'https://unpkg.com/xy-ui/components/xy-view.js';
@@ -441,6 +443,7 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
         #clear {
             display: none;
             padding: 0 .8em;
+            margin-right: 0.5em;
         }
         .${DATE_PICKER_HAS_STATE} #clear {
             display: block;
@@ -487,6 +490,7 @@ export class MyDatePicker extends customElements.get('xy-date-picker') {
             return ''
         }
         setTimeout(() => {
+            console.log('date', date);
             super.render(date);
         }, 0)
     }

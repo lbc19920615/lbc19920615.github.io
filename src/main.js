@@ -1,7 +1,16 @@
 import "./webele.scss"
 import nid from "./nid.browser"
 
+import Schema from 'async-validator';
 
+/**
+ * 
+ * @param {object} descriptor 
+ * @returns 
+ */
+export function buildValidate(descriptor) {
+    return new Schema(descriptor);
+}
 
 let glo = globalThis;
 
@@ -586,7 +595,7 @@ export let h3 = new Proxy(customComponents, {
  */
 export function defComponent(option = {}) {
     const { ref, watch } = glo.VueDemi;
-    let { setup, ssrRender } = option
+    let { setup, ssrRender, afterRender } = option
     let ctx = null;
 
     function getCompCtx() {
@@ -629,15 +638,17 @@ export function defComponent(option = {}) {
                     if (isSsrMode) {
                         ele.setAttribute('ssr-id', id)
                     }
+;
 
                     ctx = createCommonCtx(function (childEle, option) {
                         if (_setCreatedCallback) {
                             _setCreatedCallback(ctx)
                         }
+
                         callback(childEle)
                         // currentRoot = childEle
-                        if (option.afterRender) {
-                            option.afterRender(childEle, option)
+                        if (afterRender) {
+                            afterRender(childEle, option)
                         }
                     }, { ele, insertRoot });
 

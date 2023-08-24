@@ -1,4 +1,5 @@
 import { babel } from '@rollup/plugin-babel';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
 import ejs from "ejs"
 import fse from "fs-extra"
@@ -9,7 +10,8 @@ let subFileStr = fs.readFileSync('./src/sub.ejs').toString()
 
 let imports = {
   // "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
-  "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.esm-browser.min.js",
+  "async-validator": "https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm",
+  "vue": "https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm",
   "wlepre": "/assets/wle-provider/index.js?v=0.0.3",
   // "pinia": "https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.esm-browser.js",
 }
@@ -92,7 +94,7 @@ function demoWatcherPlugin() {
                 return pxs.replace('rpx', 'px').replace(val, val / 750 * 360)
               })
               // fs.writeFileSync('.' + APP_CSS_PATH, pcCss)
-              fs.writeFileSync('.' + APP_CSS_PATH.replace('.css', '_360.css'), mbCss)
+              // fs.writeFileSync('.' + APP_CSS_PATH.replace('.css', '_360.css'), mbCss)
               return ''
             });
             fs.writeFileSync('.' + mainCssFileName, trueCssFile)
@@ -149,7 +151,8 @@ const config = [
       entryFileNames: 'main_esm_[hash].js',
       assetFileNames: 'webele_[hash][extname]'
     },
-    plugins: [...commonPlugins, demoWatcherPlugin()]
+    plugins: [nodeResolve(), ...commonPlugins, demoWatcherPlugin()],
+    external: ['async-validator']
   },
   {
     input: 'src/main.js',

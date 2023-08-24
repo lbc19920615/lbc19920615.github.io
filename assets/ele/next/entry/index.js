@@ -18,9 +18,9 @@ export default class Radio extends Base {
 		this.adoptedStyle(style);
 		shadowRoot.innerHTML = `
       <input class="radio" part="radio" type="radio" id="radio">
-      <label class="label" for="radio">
+      <label class="label" for="radio" part="label">
           <slot></slot>
-		  <xy-input id="num" type="number" step="1" ></xy-input>
+		  <xy-input part="entry_input" id="num" type="number" step="1" ></xy-input>
       </label>
 	  
       `;
