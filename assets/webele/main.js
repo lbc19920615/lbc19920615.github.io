@@ -1,13 +1,16 @@
 
-import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If,  Else, Column, defComponent, hc } from "wle";
-import {parseArkUI} from "/assets/parser.js?v=0.0.3";
+import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+import { parseArkUI } from "/assets/parser.js?v=0.0.3";
 
-const { reactive, computed  } = globalThis.VueDemi;
+const { reactive, computed } = globalThis.VueDemi;
+
+
+
 
 
 globalThis.Modifier = Modifier;
 
-function getParentComp(parent, {cls = ''} = {}) {
+function getParentComp(parent, { cls = '' } = {}) {
     let ret = parent;
     if (!ret.classList.contains(cls)) {
         ret = ret?.closest('.' + cls)
@@ -17,7 +20,7 @@ function getParentComp(parent, {cls = ''} = {}) {
 
 let Form1 = defComponent({
     name: "Form1",
-    setup({setCreated, startWatch, args}) {  
+    setup({ setCreated, startWatch, args }) {
         let config = Utils.getObjectParam(args, 0);
         let innerModel = {}
 
@@ -25,8 +28,8 @@ let Form1 = defComponent({
         ele.classList.add('form');
         ele.setAttribute('name', config?.name);
 
-          
-        
+
+
         ele.$formCtx = {
             setModel(name, val) {
                 // console.log('name', val);
@@ -35,9 +38,9 @@ let Form1 = defComponent({
             getModel() {
                 return innerModel
             },
-            validate({force} = {}) {
+            validate({ force } = {}) {
                 let validator = buildValidate(config?.rules);
-        
+
                 validator.validate(innerModel, (errors, fields) => {
                     let fieldKeys = Object.keys(innerModel);
                     console.log(fieldKeys, errors);
@@ -47,19 +50,19 @@ let Form1 = defComponent({
                     let errorKeys = errors.map(v => v.field);
                     fieldKeys.forEach(fieldKey => {
                         if (!errorKeys.includes(fieldKey)) {
-                   
+
                             let formItem = ele.querySelector(`[form-name=${fieldKey}]`);
-                            formItem?.$formItemCtx?.setValid(true, '', {force})
+                            formItem?.$formItemCtx?.setValid(true, '', { force })
                         }
                     })
                     // console.log(errors, fields);
                     errors.forEach(error => {
                         let formItem = ele.querySelector(`[form-name=${error.field}]`);
                         if (formItem) {
-                            formItem?.$formItemCtx?.setValid(false, error.message, {force})
+                            formItem?.$formItemCtx?.setValid(false, error.message, { force })
                         }
                     })
-                    
+
                     // validation passed
                 });
             }
@@ -78,7 +81,7 @@ let FormItem = defComponent({
         // div.innerHTML = ''
         ele.appendChild(div)
     },
-    setup({setCreated, startWatch, args}) {         
+    setup({ setCreated, startWatch, args }) {
         let error_cls = 'form-item__error'
 
         let ele = document.createElement('div')
@@ -95,7 +98,7 @@ let FormItem = defComponent({
         ele.$formItemCtx = {
             form: null,
             name: name,
-            setValid(isValid = true, message = '', {force = false} = {}) {
+            setValid(isValid = true, message = '', { force = false } = {}) {
                 if (!isChanged && !force) {
                     return;
                 }
@@ -120,8 +123,8 @@ let FormItem = defComponent({
         }
 
         hc(Column, {
-            init(ele)  {
-                hc(Text, {args: [label]}, ele)
+            init(ele) {
+                hc(Text, { args: [label] }, ele)
                 // console.log('init');
             },
             ready(ctx) {
@@ -133,15 +136,15 @@ let FormItem = defComponent({
 
         function render(ele) {
         }
-    
+
         render(ele)
 
-        setCreated(function(ctx) {
+        setCreated(function (ctx) {
             let parent = ctx?.parent;
-            let form = getParentComp(parent, {cls: 'form'})
+            let form = getParentComp(parent, { cls: 'form' })
             ele.$formItemCtx.form = form
         })
-    
+
         startWatch(() => {
             render(ele)
         })
@@ -156,18 +159,18 @@ const defaultFormSetting = {
 }
 
 function __getParentFormItemCtx(ctx) {
-    let formItem = getParentComp(ctx?.parent, {cls: 'form-item'})
+    let formItem = getParentComp(ctx?.parent, { cls: 'form-item' })
     // console.log(formItem);
     return formItem?.$formItemCtx
 }
 
-function __forItem_action({ele, ctx, onChange}) {
+function __forItem_action({ ele, ctx, onChange }) {
     // console.log('sssssssssssssss', ctx?.parent);
-    
+
     let formCtx = __getParentFormItemCtx(ctx);
-    ele.onchange = function(e) {
+    ele.onchange = function (e) {
         // console.log('onChange', e);
-        let val = e?.detail ? e.detail?.value : e.target?.value 
+        let val = e?.detail ? e.detail?.value : e.target?.value
         formCtx.callOnChange(val, ele);
         if (onChange) {
             onChange(val, e)
@@ -177,7 +180,7 @@ function __forItem_action({ele, ctx, onChange}) {
 
 let TextArea1 = defComponent({
     name: 'TextArea1',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         let text = args[0] ?? ''
         let ele = document.createElement('elastic-textarea')
         ele.style.display = 'block'
@@ -187,9 +190,9 @@ let TextArea1 = defComponent({
         <textarea style="display: block; padding: 0; border: 0; width: 100%; outline: none; font-size: 14px" 
         name="textarea-1">${text}</textarea>
     </label>`
-    setCreated(function(ctx) {
-        __forItem_action({ele: ele.children[0].children[0],  ctx})
-    });
+        setCreated(function (ctx) {
+            __forItem_action({ ele: ele.children[0].children[0], ctx })
+        });
 
         return ele
     }
@@ -199,7 +202,7 @@ let TextArea1 = defComponent({
 
 let Input1 = defComponent({
     name: 'Input1',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         let option = args[0] ?? {}
         // console.log(option);
 
@@ -218,19 +221,19 @@ let Input1 = defComponent({
             input.setAttribute('type', option.type)
             input.input.type = option.type
         }
-        input.oninput = function(e) {
+        input.oninput = function (e) {
             // console.log('111', e);
             detectChange(input)
         }
 
         ele.appendChild(input)
-  
+
         let close = document.createElement('div')
         close.innerHTML = '&#x2715'
         close.style.setProperty("margin-left", 'calc(var(--input-addon-w) / 3)');
         close.style.overflow = 'hidden'
         close.style.setProperty("width", '0');
-        close.onclick = function() {
+        close.onclick = function () {
             input.value = ''
             detectChange(input);
             input.dispatchEvent(new InputEvent('change'))
@@ -247,8 +250,8 @@ let Input1 = defComponent({
             }
         }
 
-        setCreated(function(ctx) {
-            __forItem_action({ele: input,  ctx})
+        setCreated(function (ctx) {
+            __forItem_action({ ele: input, ctx })
         });
         return ele
     }
@@ -256,12 +259,13 @@ let Input1 = defComponent({
 
 let Select1 = defComponent({
     name: 'Select1',
-    setup({setCreated, startWatch, args}) {
+    setup({ setCreated, startWatch, args }) {
         let option = args[0] ?? {}
         let ele = document.createElement('xy-select')
 
-        hc(ForEach, {args: [{max: 6}], 
-            init(ele, option)  {
+        hc(ForEach, {
+            args: [{ max: 6 }],
+            init(ele, option) {
                 let optionEle = document.createElement('xy-option')
                 optionEle.setAttribute('value', option.index + 1)
                 optionEle.innerHTML = `option${option.index + 1}`
@@ -269,8 +273,8 @@ let Select1 = defComponent({
             }
         }, ele);
 
-        setCreated(function(ctx) {
-            __forItem_action({ele,  ctx})
+        setCreated(function (ctx) {
+            __forItem_action({ ele, ctx })
         });
 
         return ele
@@ -280,13 +284,14 @@ let Select1 = defComponent({
 
 let CheckboxGroup = defComponent({
     name: 'CheckboxGroup',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         let argOpt = args[0] ?? {}
         let ele = document.createElement('xy-checkbox-group')
         ele.classList.add('checkbox-group')
 
-        hc(ForEach, {args: [{max: 6}], 
-            init(ele, option)  {
+        hc(ForEach, {
+            args: [{ max: 6 }],
+            init(ele, option) {
                 let checkbox = document.createElement('xy-checkbox')
                 checkbox.setAttribute('name', argOpt.name)
                 checkbox.innerHTML = Nid()
@@ -294,8 +299,8 @@ let CheckboxGroup = defComponent({
             }
         }, ele);
 
-        setCreated(function(ctx) {
-            __forItem_action({ele,  ctx})
+        setCreated(function (ctx) {
+            __forItem_action({ ele, ctx })
         });
 
 
@@ -306,13 +311,14 @@ let CheckboxGroup = defComponent({
 
 let RadioboxGroup = defComponent({
     name: 'RadioboxGroup',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         let argOpt = args[0] ?? {}
         let ele = document.createElement('my-radio-group')
         ele.classList.add('radio-group')
 
-        hc(ForEach, {args: [{max: 6}], 
-            init(ele, option)  {
+        hc(ForEach, {
+            args: [{ max: 6 }],
+            init(ele, option) {
                 let radio = document.createElement('my-radio');
                 radio.classList.add('a-radio1')
                 radio.classList.add('mr-10')
@@ -322,8 +328,8 @@ let RadioboxGroup = defComponent({
             }
         }, ele);
 
-        setCreated(function(ctx) {
-            __forItem_action({ele,  ctx})
+        setCreated(function (ctx) {
+            __forItem_action({ ele, ctx })
         });
 
 
@@ -333,15 +339,16 @@ let RadioboxGroup = defComponent({
 
 let EntryboxGroup = defComponent({
     name: 'RadioboxGroup',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         let argOpt = args[0] ?? {}
         let ele = document.createElement('zy-entry-group')
         ele.classList.add('entry-group')
 
         let numinputs = []
         let totalMax = 10;
-        hc(ForEach, {args: [{max: 6}], 
-            init(ele, option)  {
+        hc(ForEach, {
+            args: [{ max: 6 }],
+            init(ele, option) {
                 let entry = document.createElement('zy-entry');
                 entry.classList.add('a-entry1')
                 entry.setAttribute('name', argOpt.name)
@@ -357,10 +364,10 @@ let EntryboxGroup = defComponent({
             }
         }, ele);
 
-        setCreated(function(ctx) {
+        setCreated(function (ctx) {
             __forItem_action({
-                ele,  
-                ctx, 
+                ele,
+                ctx,
                 onChange(val) {
                     let newTotal = 0;
                     val.forEach(item => {
@@ -369,7 +376,7 @@ let EntryboxGroup = defComponent({
 
                     console.log('val', newTotal);
                     numinputs.forEach(numinput => {
-                        numinput.setAttribute('max',  totalMax - newTotal + parseFloat( numinput.value))
+                        numinput.setAttribute('max', totalMax - newTotal + parseFloat(numinput.value))
                     })
                 }
             })
@@ -381,14 +388,14 @@ let EntryboxGroup = defComponent({
 
 let DatePicker1 = defComponent({
     name: 'DatePicker1',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         // let option = args[0] ?? {}
         let ele = document.createElement('my-date-picker')
         ele.setAttribute('defaultvalue', '')
         ele.classList.add('date-picker')
 
-        setCreated(function(ctx) {
-            __forItem_action({ele,  ctx})
+        setCreated(function (ctx) {
+            __forItem_action({ ele, ctx })
         });
 
         return ele
@@ -399,36 +406,36 @@ let DatePicker1 = defComponent({
 
 let Dialog1 = defComponent({
     name: 'Dialog1',
-    setup({setCreated, startWatch, args}) {    
+    setup({ setCreated, startWatch, args }) {
         let option = args[0] ?? {}
         let MyDialog = customElements.get('zy-dialog')
-        let ele = new MyDialog({title: 'dialog1'})
+        let ele = new MyDialog({ title: 'dialog1' })
 
         // console.dir(option);
         setTimeout(() => {
-            ele.addEventListener('cancel',function(e){
+            ele.addEventListener('cancel', function (e) {
                 //
                 if (option?.onClose) {
                     option.onClose()
                 }
             })
-            ele.setAttribute('open',true);
+            ele.setAttribute('open', true);
         }, 0)
         return ele
     }
 });
 
 let SwiperNav1 = defComponent({
-    setup({getCompCtx, startWatch, args}) {         
+    setup({ getCompCtx, startWatch, args }) {
         let ele = document.createElement('div')
         ele.classList.add('swiper-nav1');
 
         let childrens = []
         hc2(Column, {
-            init(ele)  {
-                hc2(Text, {args: ['swiper com 1'], attrs: {sindex: 0}}, ele)
-                hc2(Text, {args: ['swiper com 2'], attrs: {sindex: 1}}, ele)
-                hc2(Text, {args: ['swiper com 3'], attrs: {sindex: 2}}, ele)
+            init(ele) {
+                hc2(Text, { args: ['swiper com 1'], attrs: { sindex: 0 } }, ele)
+                hc2(Text, { args: ['swiper com 2'], attrs: { sindex: 1 } }, ele)
+                hc2(Text, { args: ['swiper com 3'], attrs: { sindex: 2 } }, ele)
             },
             end(ctx) {
                 ctx.ele.classList.add('dis-flex');
@@ -450,15 +457,15 @@ let SwiperNav1 = defComponent({
             }
         })
 
-    
+
         function render(ele) {
             // console.log(args[0]);
             // let text = args[0]
             // ele.textContent = text.__v_isRef ? text.value : text
         }
-    
+
         render(ele)
-    
+
         startWatch(() => {
             render(ele)
         })
@@ -469,9 +476,9 @@ let SwiperNav1 = defComponent({
 
 
 
-export default function({Page}) {
-  
-    let ele =  document.createElement('div');
+export default function ({ Page }) {
+
+    let ele = document.createElement('div');
     ele.classList.add('a-page');
     ele.classList.add('main-page');
     let vm = (function () {
@@ -509,12 +516,12 @@ export default function({Page}) {
                 let formName = 'form1';
                 let formEle = document.querySelector(`.form[name=${formName}]`);
 
-                formEle?.$formCtx?.validate({force: true})
+                formEle?.$formCtx?.validate({ force: true })
                 console.log(formName, formEle?.$formCtx.getModel())
                 // alert('console.log查看')
             },
             getFun() {
-                return function() {
+                return function () {
 
                 }
             },
@@ -573,10 +580,10 @@ export default function({Page}) {
 
 
     g.defc(Column().init(function (ele) {
-        let SwiperNav1Ctx = hc2(SwiperNav1, {args: []}, ele);
+        let SwiperNav1Ctx = hc2(SwiperNav1, { args: [] }, ele);
         let SwiperNav1Ele = SwiperNav1Ctx.ele;
         // console.log(SwiperNav1Ele);
-        SwiperNav1Ele.addEventListener('select-index', function(e) {
+        SwiperNav1Ele.addEventListener('select-index', function (e) {
             // console.dir( swCon.swiper)
             if (swCon.swiper) {
                 if (swCon.swiper.realIndex === e.detail) {
@@ -589,7 +596,7 @@ export default function({Page}) {
 
         let swCon = document.createElement('swiper-container');
         swCon.id = 'swCon';
-        swCon.setAttribute('autoplay',true )
+        swCon.setAttribute('autoplay', true)
         swCon.setAttribute('speed', 1000)
         swCon.setAttribute('autoplay-delay', 6000)
         swCon.style.setProperty('--swiper-slide-h', '180px')
@@ -597,7 +604,7 @@ export default function({Page}) {
 
 
         hc2(ForEach, {
-            args: [{ max: 3 }], 
+            args: [{ max: 3 }],
             init: (ele, option) => {
                 // console.log('ele', ele)
                 let swSlide = document.createElement('swiper-slide');
@@ -609,7 +616,7 @@ export default function({Page}) {
             },
             ready() {
                 setTimeout(() => {
-                    swCon.swiper.on('setTranslate', (swiper, translate) =>{
+                    swCon.swiper.on('setTranslate', (swiper, translate) => {
                         // virtualSize
                         // console.log('translate', swiper.virtualSize, translate);
                         SwiperNav1Ele.style.transform = `translateX(${translate / (swiper.virtualSize) * 100}%)`
@@ -627,10 +634,10 @@ export default function({Page}) {
         g.defc(Column({ space: 5 }).init(function (ele) {
 
             ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
-            , function (ctx) {
-                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-                ctx.done(ele)
-            });
+                , function (ctx) {
+                    ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                    ctx.done(ele)
+                });
 
             ; g.defc(Text('for测试').init(function (ele) {
             }), function (ctx) {
@@ -679,10 +686,10 @@ export default function({Page}) {
                 ctx.done(ele)
             });
             ; g.defc(Button({ text: 'detail', action: vm.action2 }).init(function (ele) { })
-            , function (ctx) {
-                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-                ctx.done(ele)
-            });
+                , function (ctx) {
+                    ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                    ctx.done(ele)
+                });
 
 
             ; g.defc(Text('dialog测试').init(function (ele) {
@@ -690,33 +697,33 @@ export default function({Page}) {
                 ctx.done(ele)
             });
             ; g.defc(Button({ text: 'dialog', action: vm.action3 }).init(function (ele) { })
-            , function (ctx) {
-                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-                ctx.done(ele)
-            });
+                , function (ctx) {
+                    ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                    ctx.done(ele)
+                });
 
-            
+
             ; g.defc(Text('form测试').init(function (ele) {
             }), function (ctx) {
                 ctx.done(ele)
             });
 
 
-            
+
 
             hc2(Column, {
                 attrs: {
                     class: 'main-show-column'
-                },     
-                init(ele){
-                    hc2(TextArea1, {args: [JSON.stringify(formRules, null, 2)]}, ele);
+                },
+                init(ele) {
+                    hc2(TextArea1, { args: [JSON.stringify(formRules, null, 2)] }, ele);
 
                     ; g.defc(Form1({
                         name: 'form1',
                         rules: formRules
                     }).init(function (ele) {
-            
-                        ; g.defc(FormItem('select','下拉').init(function (ele) {
+
+                        ; g.defc(FormItem('select', '下拉').init(function (ele) {
                             ; g.defc(Select1().init(function (ele) {
                             }), function (ctx) {
                                 ctx.done(ele)
@@ -724,8 +731,8 @@ export default function({Page}) {
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-            
-                        
+
+
                         ; g.defc(FormItem('textarea', '多行').init(function (ele) {
                             ; g.defc(TextArea1().init(function (ele) {
                             }), function (ctx) {
@@ -734,8 +741,8 @@ export default function({Page}) {
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-            
-            
+
+
                         ; g.defc(FormItem('input_text', '文本').init(function (ele) {
                             ; g.defc(Input1().init(function (ele) {
                             }), function (ctx) {
@@ -744,16 +751,16 @@ export default function({Page}) {
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-            
+
                         ; g.defc(FormItem('input_number', '数字').init(function (ele) {
-                            ; g.defc(Input1({type: "number"}).init(function (ele) {
+                            ; g.defc(Input1({ type: "number" }).init(function (ele) {
                             }), function (ctx) {
                                 ctx.done(ele)
                             });
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-            
+
                         ; g.defc(FormItem('datepicker', '日期').init(function (ele) {
                             ; g.defc(DatePicker1().init(function (ele) {
                             }), function (ctx) {
@@ -762,38 +769,28 @@ export default function({Page}) {
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-        
-            
+
+
                         ; g.defc(FormItem('checkbox', '多选').init(function (ele) {
-                            ; g.defc(CheckboxGroup({name: 'checkbox'}).init(function (ele) {
+                            ; g.defc(CheckboxGroup({ name: 'checkbox' }).init(function (ele) {
                             }), function (ctx) {
                                 ctx.done(ele)
                             });
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-            
+
                         ; g.defc(FormItem('radio1', '常见单选').init(function (ele) {
-                            ; g.defc(RadioboxGroup({name: 'radio1'}).init(function (ele) {
+                            ; g.defc(RadioboxGroup({ name: 'radio1' }).init(function (ele) {
                             }), function (ctx) {
                                 ctx.done(ele);
                             });
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-        
-                        ; g.defc(FormItem('radio2',  '单选样式').init(function (ele) {
-                            ; g.defc(RadioboxGroup({name: 'radio2'}).init(function (ele) {
-                            }), function (ctx) {
-                                ctx.done(ele);
-                                ctx.ele.classList.add('a-btn-radio-group')
-                            });
-                        }), function (ctx) {
-                            ctx.done(ele)
-                        });
-        
-                        ; g.defc(FormItem('entry1',  'entry').init(function (ele) {
-                            ; g.defc(EntryboxGroup({name: 'entry1'}).init(function (ele) {
+
+                        ; g.defc(FormItem('radio2', '单选样式').init(function (ele) {
+                            ; g.defc(RadioboxGroup({ name: 'radio2' }).init(function (ele) {
                             }), function (ctx) {
                                 ctx.done(ele);
                                 ctx.ele.classList.add('a-btn-radio-group')
@@ -801,10 +798,20 @@ export default function({Page}) {
                         }), function (ctx) {
                             ctx.done(ele)
                         });
-        
-        
-                        hc2(Button, {args: [{text: '获取当前model值 console查看', action: vm.submitForm}]}, ele);
-        
+
+                        ; g.defc(FormItem('entry1', 'entry').init(function (ele) {
+                            ; g.defc(EntryboxGroup({ name: 'entry1' }).init(function (ele) {
+                            }), function (ctx) {
+                                ctx.done(ele);
+                                ctx.ele.classList.add('a-btn-radio-group')
+                            });
+                        }), function (ctx) {
+                            ctx.done(ele)
+                        });
+
+
+                        hc2(Button, { args: [{ text: '获取当前model值 console查看', action: vm.submitForm }] }, ele);
+
                     }), function (ctx) {
                         ctx.done(ele)
                     });
@@ -813,15 +820,15 @@ export default function({Page}) {
             }, ele)
 
 
-            
+
         }), function (ctx) {
             ctx.onLoad((e) => { vm.onLoad(e) }).border({ width: 1 });
             ctx.done(ele)
         });
-        
+
         ; g.defc(If(vmDataDialog, 'if_dialog_nid').init(function (ele) {
-            ; g.defc(Dialog1({onClose: vm.onDialogClose}).init(function (ele) {
-                
+            ; g.defc(Dialog1({ onClose: vm.onDialogClose }).init(function (ele) {
+
                 ; g.defc(FormItem('input text').init(function (ele) {
                     ; g.defc(Input1().init(function (ele) {
                     }), function (ctx) {
@@ -842,7 +849,7 @@ export default function({Page}) {
     }), function (ctx) { ctx.done(ele) })
 
 
-    let code  = `
+    let code = `
 Column({space: 5, modifier: vmmodifierFactory2}) {
     Column({a: 1, modifier: vmmodifierFactory}) {
 
@@ -890,7 +897,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
         interpreter,
         components: getcustomComponents(),
         hc2,
-        handleXmlBuild(tag = '', argArr, {originStrArg} = {}) {
+        handleXmlBuild(tag = '', argArr, { originStrArg } = {}) {
             let strArg = argArr;
             let args = []
             if (Array.isArray(argArr) && argArr.input) {
@@ -911,11 +918,11 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
                 item.appendChild(tpl)
                 return [item, tpl]
             }
-            else if (tag === 'If') { 
+            else if (tag === 'If') {
                 item = document.createElement('template');
-                item.setAttribute('v-if', strArg);          
+                item.setAttribute('v-if', strArg);
             }
-            else if (tag === 'Else') { 
+            else if (tag === 'Else') {
                 item = document.createElement('template');
                 item.setAttribute('v-else', '')
             }
@@ -937,25 +944,25 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
                 }
             }
 
-            
+
 
             return [item]
         }
     });
 
-    window.getParsedRet = function(name = 'def') {
+    window.getParsedRet = function (name = 'def') {
         return ret[name]
     }
     console.log(ret?.dom);
     // console.log(ret?.dom);
-    
-    hc2(Text, {args: ['动态string转换为component测试']}, ele);
+
+    hc2(Text, { args: ['动态string转换为component测试'] }, ele);
     hc2(Column, {
         attrs: {
             class: 'main-show-column'
-        },     
-        init(ele){
-            hc2(TextArea1, {args: [code.trim()]}, ele);
+        },
+        init(ele) {
+            hc2(TextArea1, { args: [code.trim()] }, ele);
             ele.appendChild(ret.dom);
         }
     }, ele)
