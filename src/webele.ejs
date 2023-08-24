@@ -92,16 +92,28 @@
             const cssFile = await fetch(url);
             const css = await cssFile.text();
 
+            let parsedcss = css;
+            let winWidth = window.innerWidth;
+
+            if (winWidth > 768) {
+                parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
+                    return pxs.replace('rpx', 'px')
+                });
+            }
+            else {
+                parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
+                    let val = pxargs[0]
+                    return pxs.replace('rpx', 'px').replace(val, val / 750 * winWidth)
+                })
+            }
+
+            console.log(parsedcss);
             const myStyleSheet = new CSSStyleSheet();
-            myStyleSheet.replace(css);
+            myStyleSheet.replace(parsedcss);
             return myStyleSheet;
         }
 
         let cssFileName = '<%= APP_CSS_PATH %>';
-        if (window.innerWidth === 360) {
-            cssFileName = cssFileName.replace('.css', '_360.css')
-        }
-
         let myStyleSheet = await importCss(cssFileName);
         document.adoptedStyleSheets.push(myStyleSheet);
 

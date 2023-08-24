@@ -32,7 +32,7 @@
 }
 
 .test-750 {
-  width: 750px;
+  width: 750rpx;
 }
 
 .a-page {
@@ -59,8 +59,8 @@
 .a-page-wrapper {
   height: 100%;
   --page-wrapper-nav-tpl: 1fr 60vw 1fr;
-  --page-wrapper-nav-h: 80px;
-  --page-wrapper-content-h: calc(100% - 80px);
+  --page-wrapper-nav-h: 80rpx;
+  --page-wrapper-content-h: calc(100% - 80rpx);
 }
 .a-page-wrapper .page-wrapper__nav {
   align-items: center;
@@ -78,14 +78,14 @@
 }
 
 #routerroot {
-  --app-nav-w: 90px;
+  --app-nav-w: 90rpx;
 }
 
 #nav {
   width: var(--app-nav-w);
 }
 #nav .nav__link {
-  padding: 20px 0;
+  padding: 20rpx 0;
   display: flex;
   justify-content: center;
 }
@@ -108,7 +108,7 @@
     --app-nav-w: 100%;
   }
   #nav {
-    height: 140px;
+    height: 120rpx;
     order: 1;
     display: grid;
     grid-template-columns: 1fr;

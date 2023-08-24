@@ -91,7 +91,7 @@ function demoWatcherPlugin() {
                 let val = pxargs[0]
                 return pxs.replace('rpx', 'px').replace(val, val / 750 * 360)
               })
-              fs.writeFileSync('.' + APP_CSS_PATH, pcCss)
+              // fs.writeFileSync('.' + APP_CSS_PATH, pcCss)
               fs.writeFileSync('.' + APP_CSS_PATH.replace('.css', '_360.css'), mbCss)
               return ''
             });

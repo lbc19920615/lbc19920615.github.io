@@ -108,7 +108,7 @@
     --app-nav-w: 100%;
   }
   #nav {
-    height: 67.2px;
+    height: 57.6px;
     order: 1;
     display: grid;
     grid-template-columns: 1fr;
