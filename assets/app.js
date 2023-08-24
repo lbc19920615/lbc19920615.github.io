@@ -1,6 +1,35 @@
 import { Provider, Subscriber } from "wlepre"
-import { Nid, g, hc2, ForEach, Utils, defComponent, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
+import { Nid, g, hc2, ForEach, BaseWleElement, Utils, defComponent, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
+
+
+class ShopGoodItem extends BaseWleElement {
+    constructor(option = {}) {
+        super();
+        const shadowRoot = this.attachShadow({mode: 'open'});
+        shadowRoot.innerHTML = /*html*/`
+<style>
+:host {
+    display: block;
+}
+</style> 
+<div part="con">shop item ${option.index}
+    <button id="buy">buy</button>
+</div>
+`
+    }
+    connectedCallback() {
+        let self = this;
+        this.buyBtn = this.shadowRoot.getElementById('buy');
+        this.buyBtn.addEventListener('click', function() {
+            // console.log('sssssssssss');
+            self._fireEvent('show-buy-item', {})
+        })
+    }
+}
+if (!customElements.get('shop-good-item')) {
+    customElements.define('shop-good-item', ShopGoodItem);
+}
 
 let PageWrapper = defComponent({
     name: 'PageWrapper',

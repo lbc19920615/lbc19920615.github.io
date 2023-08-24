@@ -1,4 +1,5 @@
-import { Nid, g, hc2, BaseWleElement, BaseVmControl, injectControl, useControl, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+import { Nid, g, hc2, BaseVmControl, injectControl, useControl, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+
 
 class DomCotnrol extends BaseVmControl {
     title = ''
@@ -95,34 +96,6 @@ let ShopNav1 = defComponent({
 
 
 
-class ShopGoodItem extends BaseWleElement {
-    constructor(option = {}) {
-        super();
-        const shadowRoot = this.attachShadow({mode: 'open'});
-        shadowRoot.innerHTML = /*html*/`
-<style>
-:host {
-    display: block;
-}
-</style> 
-<div part="con">shop item ${option.index}
-    <button id="buy">buy</button>
-</div>
-`
-    }
-    connectedCallback() {
-        let self = this;
-        this.buyBtn = this.shadowRoot.getElementById('buy');
-        this.buyBtn.addEventListener('click', function() {
-            // console.log('sssssssssss');
-            self._fireEvent('show-buy-item', {})
-        })
-    }
-}
-if (!customElements.get('shop-good-item')) {
-    customElements.define('shop-good-item', ShopGoodItem);
-}
-
 
 
 let ShopGood1 = defComponent({
@@ -147,7 +120,8 @@ let ShopGood1 = defComponent({
         
                         
                         for (let i = 0; i < 5; i++) {
-                            let item = new ShopGoodItem({index: i});
+                            let cls = customElements.get('shop-good-item')
+                            let item = new cls({index: i});
                             item.classList.add('shop-good__item');
                             item.addEventListener('show-buy-item', function() {
                                 vm.shopDialog = true
