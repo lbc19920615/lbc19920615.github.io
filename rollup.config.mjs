@@ -20,6 +20,9 @@ let resources = {
   cssFiles: []
 }
 
+let mainCssFileName = '';
+let appStyleEgg = /\/\*#start app\*\/[^]*\/\*#end app\*\//;
+
 /**
  * 移动旧的文件
  * @param {*} newName 
@@ -48,20 +51,57 @@ function demoWatcherPlugin() {
           let newFileName = keys[0];
           let cssFiles =  keys.filter(v => v.endsWith('.css'));
           cssFiles =   cssFiles.concat(resources.cssFiles);
+          let APP_CSS_PATH = ''
           let links = cssFiles.map(cssFile => {
+            if (cssFile.startsWith('app')) {
+              APP_CSS_PATH  = '/assets/webelef/' + cssFile
+              return
+            }
+            if (cssFile.startsWith('web')) {
+              mainCssFileName = '/assets/webelef/' + cssFile;
+              
+            }
             return `<link rel="stylesheet" href="/assets/webelef/${cssFile}" />`
           })
           links.unshift('<link rel="stylesheet" href="/assets/uno.css" />')
           imports['wle'] =  '/' + baseFolder + '/webelef/' + newFileName + '?v='+ Date.now();
-          let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
+          let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), APP_CSS_PATH, links: links.join('\n')});
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
 
-          let html2 = ejs.render(subFileStr, {importmap: JSON.stringify(imports), links: links.join('\n')});
+          let html2 = ejs.render(subFileStr, {importmap: JSON.stringify(imports), APP_CSS_PATH, links: links.join('\n')});
           fs.writeFileSync(`./${baseFolder}/sub.html`, html2)
           setTimeout(() => {
 
-          fse.copySync(`./${baseFolder}/webelef/${newFileName}`, `./${baseFolder}/wle.js`)
+          fse.copySync(`./${baseFolder}/webelef/${newFileName}`, `./${baseFolder}/wle.js`);
+
+
+          if (mainCssFileName) {
+            let webelecssFile = fs.readFileSync('.' + mainCssFileName).toString();
+            let trueCssFile = webelecssFile.replace(appStyleEgg, function(s, ...args) {
+              // console.log('appStyle', s);
+
+              // 120 / 750 * 360
+
+              let pcCss = s.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
+                return pxs.replace('rpx', 'px')
+              });
+
+              
+              let mbCss = s.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
+                let val = pxargs[0]
+                return pxs.replace('rpx', 'px').replace(val, val / 750 * 360)
+              })
+              fs.writeFileSync('.' + APP_CSS_PATH, pcCss)
+              fs.writeFileSync('.' + APP_CSS_PATH.replace('.css', '_360.css'), mbCss)
+              return ''
+            });
+            fs.writeFileSync('.' + mainCssFileName, trueCssFile)
+              // console.log(trueCssFile);
+          }
+
+                        
           console.log('compile done');
+
           }, 300)
         }
       }
@@ -74,7 +114,7 @@ function demoAppPlugin() {
       if (!imports.wle) {
         this.addWatchFile('src/webele.ejs')
         this.addWatchFile('src/webele.scss')
-        this.addWatchFile('src/app.scss')
+        // this.addWatchFile('src/app.scss')
         movePrevMainFile()
       }
     },
@@ -95,6 +135,7 @@ const config = [
     input: 'src/app.js',
     output: {
       dir: 'assets/webelef',
+      format: 'es',
       entryFileNames: 'app_[hash].js',
       assetFileNames: 'app_[hash][extname]'
     },
@@ -106,7 +147,6 @@ const config = [
       dir: 'assets/webelef',
       format: 'es',
       entryFileNames: 'main_esm_[hash].js',
-          // Removes the hash from the asset filename
       assetFileNames: 'webele_[hash][extname]'
     },
     plugins: [...commonPlugins, demoWatcherPlugin()]

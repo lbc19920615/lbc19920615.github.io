@@ -1,9 +1,4 @@
-// ::view-transition-old(root) {
-//     animation-duration: 0.25s;
-// }
-// ::view-transition-new(root) {
-//   animation-duration: 0.5s;
-// }
+/*#start app*/
 
 @keyframes grow-x {
     from {
@@ -39,6 +34,10 @@
     animation: 0.3s 0.2s ease both grow-x;
 }
 
+.test-750 {
+    width: 750rpx;
+}
+
 .a-page {
     container-type: inline-size;
     container-name: a_page;
@@ -65,8 +64,8 @@
 .a-page-wrapper {
     height: 100%;
     --page-wrapper-nav-tpl: 1fr 60vw 1fr;
-    --page-wrapper-nav-h: 40px;
-    --page-wrapper-content-h: calc(100% - 40px);
+    --page-wrapper-nav-h: 80rpx;
+    --page-wrapper-content-h: calc(100% - 80rpx);
     .page-wrapper__nav {
         align-items: center;
     }
@@ -85,14 +84,14 @@
 }
 
 #routerroot {
-    --app-nav-w: 90px;
+    --app-nav-w: 90rpx;
 }
 
 #nav {
     width: var(--app-nav-w);
     // display: none;
     .nav__link {
-        padding: 10px 0;
+        padding: 20rpx 0;
         display: flex;
         justify-content: center;
     }
@@ -103,8 +102,6 @@
 
 @media screen and (min-width: 769px) {
     .a-page {
-        // width: 1000px;
-        // margin: 0 auto;
         position: relative;
         overflow: hidden;
     }
@@ -121,7 +118,7 @@
     }
     
     #nav {
-        height: 70px;
+        height: 140rpx;
         order: 1;
         display: grid;
         &:has(.nav__link:nth-child(2)) {
@@ -139,3 +136,4 @@
         }
     }
 }
+/*#end app*/

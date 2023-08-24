@@ -1,3 +1,4 @@
+/*#start app*/
 @keyframes grow-x {
   from {
     transform: scaleX(0);
@@ -30,6 +31,10 @@
   animation: 0.3s 0.2s ease both grow-x;
 }
 
+.test-750 {
+  width: 750px;
+}
+
 .a-page {
   container-type: inline-size;
   container-name: a_page;
@@ -54,8 +59,8 @@
 .a-page-wrapper {
   height: 100%;
   --page-wrapper-nav-tpl: 1fr 60vw 1fr;
-  --page-wrapper-nav-h: 40px;
-  --page-wrapper-content-h: calc(100% - 40px);
+  --page-wrapper-nav-h: 80px;
+  --page-wrapper-content-h: calc(100% - 80px);
 }
 .a-page-wrapper .page-wrapper__nav {
   align-items: center;
@@ -80,7 +85,7 @@
   width: var(--app-nav-w);
 }
 #nav .nav__link {
-  padding: 10px 0;
+  padding: 20px 0;
   display: flex;
   justify-content: center;
 }
@@ -103,7 +108,7 @@
     --app-nav-w: 100%;
   }
   #nav {
-    height: 70px;
+    height: 140px;
     order: 1;
     display: grid;
     grid-template-columns: 1fr;
@@ -120,3 +125,4 @@
     align-items: center;
   }
 }
+/*#end app*/

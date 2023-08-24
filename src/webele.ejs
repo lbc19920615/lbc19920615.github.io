@@ -88,6 +88,16 @@
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
 
+        let cssFileName = '<%= APP_CSS_PATH %>';
+        if (window.innerWidth === 360) {
+            cssFileName = cssFileName.replace('.css', '_360.css')
+        }
+        const cssModule = await import(cssFileName, {
+            assert: { type: 'css' }
+        });
+        document.adoptedStyleSheets = [cssModule.default];
+
+        // console.log(cssModule);
 
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.1.0'
@@ -186,7 +196,6 @@
         function pageBeforeRender(rooterRootEle, firstBuild) {
             if (firstBuild) {
                 rooterRootEle.classList.add('dis-flex');
-                // rooterRootEle.style.setProperty('--app-nav-w', '90px');
 
                 let nav = document.createElement('div')
                 nav.id = 'nav'
