@@ -827,9 +827,15 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
     // console.log(ret?.dom);
     
     hc2(Text, {args: ['动态string转换为component测试']}, ele);
-    hc2(TextArea1, {args: [code.trim()]}, ele);
-    ele.appendChild(ret.dom);
-    
+    hc2(Column, {
+        attrs: {
+            class: 'main-show-column'
+        },     
+        init(ele){
+            hc2(TextArea1, {args: [code.trim()]}, ele);
+            ele.appendChild(ret.dom);
+        }
+    }, ele)
 
 
     Page({

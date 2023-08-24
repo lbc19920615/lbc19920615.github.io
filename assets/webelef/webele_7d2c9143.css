@@ -31,6 +31,11 @@
   animation: 0.3s 0.2s ease both grow-x;
 }
 
+.a-page {
+  container-type: inline-size;
+  container-name: a_page;
+}
+
 .a-swiper {
   height: var(--swiper-slide-h);
 }
@@ -84,6 +89,12 @@
   color: var(--text-primary-blue);
 }
 
+@media screen and (min-width: 769px) {
+  .a-page {
+    position: relative;
+    overflow: hidden;
+  }
+}
 @media screen and (max-width: 768px) {
   .a-hide-in-mobile {
     display: none !important;

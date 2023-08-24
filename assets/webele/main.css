@@ -1,0 +1,6 @@
+@container a_page (min-width: 720px) {
+    .main-show-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}

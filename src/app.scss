@@ -39,10 +39,14 @@
     animation: 0.3s 0.2s ease both grow-x;
 }
 
+.a-page {
+    container-type: inline-size;
+    container-name: a_page;
+}
+
 .a-swiper {
     height: var(--swiper-slide-h);   
 }
-
 
 .a-btn-radio-group {
     .a-radio1 {
@@ -94,6 +98,15 @@
     }
     .nav--seleted {
         color: var(--text-primary-blue);
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .a-page {
+        // width: 1000px;
+        // margin: 0 auto;
+        position: relative;
+        overflow: hidden;
     }
 }
 
