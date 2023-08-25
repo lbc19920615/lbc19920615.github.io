@@ -13,17 +13,17 @@
     width: 80vw;
 }
 
-
 .shop-page {
     height: 100%;
     --shop-good__item_h: 160px;
     --shop-main-detail-h: 120rpx;
     --shop-main-con-h:  calc(100% - var( --shop-main-detail-h) );
     --shop-main-card-h: 0;
-    &.shop--has-cart {
-        --shop-main-card-h: 100rpx;
-        --shop-main-con-h: calc(100% - var( --shop-main-detail-h) - var(--shop-main-card-h));
-    }
+}
+
+.shop-page.shop--has-cart {
+    --shop-main-card-h: 100rpx;
+    --shop-main-con-h: calc(100% - var( --shop-main-detail-h) - var(--shop-main-card-h));
 }
 
 .shop-cart {
