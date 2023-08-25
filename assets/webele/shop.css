@@ -34,6 +34,8 @@
     width: 100%;
     height: 100%;
     z-index: 2;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
 }
 
 .shop-cart__mask {
@@ -45,6 +47,7 @@
     opacity: 0;
     background-color: var(--shop-cart__mask-bgc, #33333350);
     z-index: -1;
+
 }
 
 .shop-cart__detail {
@@ -63,6 +66,7 @@
     transform: translateY(-100%);
     opacity: 1;
     z-index: 0;
+    transition: opacity ease .5s;
 }
 
 .shop-cart--show-detail .shop-cart__detail {

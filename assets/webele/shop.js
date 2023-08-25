@@ -34,21 +34,24 @@ let ShopCart1 = defComponent({
 
     },
     setup({ getCompCtx, startWatch, args }) {
-        let skuNum = args[0]
+        let skuNum = args[0];
+        let priceNum = args[1];
         let ele = document.createElement('div')
         ele.classList.add('shop-cart');
         ele.style.height = 'var(--shop-main-card-h)';
 
         hc2(Column, {
             attrs: {
-                class: 'shop-cart__action dis-flex'
+                class: 'shop-cart__action'
             },
             init(ele) {
                 let ctx1 = hc2(Text, {args: ['购物篮']}, ele);
                 ctx1.ele.onclick = function() {
                     ShopCart1.showDetail()
                 }
-                hc2(Text, {args: [skuNum]}, ele)
+                hc2(Text, {args: [skuNum]}, ele);
+                hc2(Text, {args: ['&nbsp']}, ele);
+                hc2(Text, {args: [priceNum]}, ele)
             }
         }, ele);
 
@@ -323,7 +326,8 @@ export default function ({ Page }) {
     
     hc2(ShopCart1, {
         args: [
-            vm.skuNumTotal
+            vm.skuNumTotal,
+            vm.skuPriceTotal
         ],
         init() {
 
