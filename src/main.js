@@ -532,7 +532,7 @@ export let g = {
 }
 
 
-export function hc2(ComponentConstruct, { args = [], init = function () { }, attrs = {}, end = function () { }, afterInit, ready } = {}, ele) {
+export function hc2(ComponentConstruct, { args = [], init = function () { }, attrs = {}, props = {}, end = function () { }, afterInit, ready } = {}, ele) {
     let readyFun = ready ? function (ctx) {
         ready(ctx);
         // console.log('ready', ctx);
@@ -555,6 +555,12 @@ export function hc2(ComponentConstruct, { args = [], init = function () { }, att
     if (attrs) {
         Object.keys(attrs).forEach(key => {
             ctx.ele.setAttribute(key, attrs[key])
+        })
+    }
+
+    if (props) {
+        Object.keys(props).forEach(key => {
+            ctx.ele[key] = props[key]
         })
     }
 

@@ -1048,6 +1048,7 @@ function hc2(ComponentConstruct, {
   args = [],
   init = function () {},
   attrs = {},
+  props = {},
   end = function () {},
   afterInit,
   ready
@@ -1070,6 +1071,11 @@ function hc2(ComponentConstruct, {
   if (attrs) {
     Object.keys(attrs).forEach(key => {
       ctx.ele.setAttribute(key, attrs[key]);
+    });
+  }
+  if (props) {
+    Object.keys(props).forEach(key => {
+      ctx.ele[key] = props[key];
     });
   }
   return ctx;

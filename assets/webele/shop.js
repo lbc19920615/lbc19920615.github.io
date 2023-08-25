@@ -63,10 +63,14 @@ let ShopCart1 = defComponent({
                 class: 'shop-cart__action'
             },
             init(ele) {
-                let ctx1 = hc2(Text, {args: ['购物篮']}, ele);
-                ctx1.ele.onclick = function() {
-                    ShopCart1.showDetail()
-                }
+                hc2(Text, {
+                    args: ['购物篮'],
+                    props: {
+                        onclick: function() {
+                            ShopCart1.showDetail()
+                        }
+                    }
+                }, ele);
                 hc2(Text, {args: [skuNum]}, ele);
                 hc2(Text, {args: ['&nbsp']}, ele);
                 hc2(Text, {args: [priceNum]}, ele)
