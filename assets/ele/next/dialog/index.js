@@ -1,7 +1,9 @@
+import {importCssStyleSheet}from '../../frame.js';
 import Base from "../zy-base.js";
 // import "../icon/index.js";
 // import "../loading/index.js";
-import style from "./index.css" assert { type: "css" };
+// import style from "./index.css" assert { type: "css" };
+const style = await importCssStyleSheet(import.meta.resolve("./index.css"));
 
 export default class Dialog extends Base {
     #dialog;

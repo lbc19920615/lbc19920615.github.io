@@ -1,5 +1,7 @@
+import {importCssStyleSheet}from '../../frame.js';
 import Base from "../zy-base.js";
-import style from "./index.css" assert { type: "css" };
+// import style from "./index.css" assert { type: "css" };
+const style = await importCssStyleSheet(import.meta.resolve("./index.css"));
 
 export default class Radio extends Base {
 	#radio;

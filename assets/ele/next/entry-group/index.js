@@ -1,6 +1,10 @@
+import {importCssStyleSheet}from '../../frame.js';
 import Base from "../zy-base.js";
 import "../entry/index.js";
-import style from "./index.css" assert { type: "css" };
+// import style from "./index.css" assert { type: "css" };
+const style = await importCssStyleSheet(import.meta.resolve("./index.css"));
+
+// console.log(style);
 
 // 监听属性
 export default class RadioGroup extends Base {

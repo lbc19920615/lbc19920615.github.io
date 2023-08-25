@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
-    <!-- <link rel="stylesheet" href="/assets/app.css?v=0.0.3" /> -->
-    <script src="/assets/eval5.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jss/10.9.2/jss.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script> -->
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.8.0/dist/es-module-shims.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
     <script>
         if (location.hash === '') {
@@ -85,7 +82,7 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_564beeba.js?v=1692966513068"}
+          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_564beeba.js?v=1693005462413"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -284,6 +281,7 @@
             page.lifeTimes.onReady()
         }
     </script>
+    <script src="/assets/eval5.min.js"></script>
     <script>
         function __load_async_lib() {
             let asyncLib = [

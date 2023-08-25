@@ -13,6 +13,14 @@
     width: 80vw;
 }
 
+
+@media screen and (max-width: 768px) {
+    .shop-dialog-1::part(footer) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 .shop-page {
     height: 100%;
     --shop-good__item_h: 160px;
@@ -25,6 +33,7 @@
     --shop-main-card-h: 100rpx;
     --shop-main-con-h: calc(100% - var( --shop-main-detail-h) - var(--shop-main-card-h));
 }
+
 
 .shop-cart {
     position: relative;
