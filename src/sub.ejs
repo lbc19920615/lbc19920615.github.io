@@ -32,34 +32,35 @@
     </script>
         <script type="module">
 
-        async function importCss(url) {
-            const cssFile = await fetch(url);
-            const css = await cssFile.text();
+            async function importCss(url) {
+                const cssFile = await fetch(url);
+                const css = await cssFile.text();
 
-            let parsedcss = css;
-            let winWidth = window.innerWidth;
+                let parsedcss = css;
+                let winWidth = window.innerWidth;
 
-            if (winWidth > 768) {
-                parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
-                    return pxs.replace('rpx', 'px')
-                });
+                if (winWidth > 768) {
+                    parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function (pxs, ...pxargs) {
+                        return pxs.replace('rpx', 'px')
+                    });
+                }
+                else {
+                    parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function (pxs, ...pxargs) {
+                        let val = pxargs[0]
+                        return pxs.replace('rpx', 'px').replace(val, val / 750 * winWidth)
+                    })
+                }
+
+                // console.log(parsedcss);
+                const myStyleSheet = new CSSStyleSheet();
+                myStyleSheet.replace(parsedcss);
+                return { myStyleSheet, parsedcss };
             }
-            else {
-                parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
-                    let val = pxargs[0]
-                    return pxs.replace('rpx', 'px').replace(val, val / 750 * winWidth)
-                })
-            }
+            window.importCss = importCss;
 
-            // console.log(parsedcss);
-            const myStyleSheet = new CSSStyleSheet();
-            myStyleSheet.replace(parsedcss);
-            return {myStyleSheet, parsedcss};
-        }
-
-        let cssFileName = '<%= APP_CSS_PATH %>';
-        let myStyleSheet = await importCss(cssFileName);
-        document.adoptedStyleSheets.push(myStyleSheet);
+            let cssFileName = '<%= APP_CSS_PATH %>';
+            let {myStyleSheet} = await importCss(cssFileName);
+            document.adoptedStyleSheets.push(myStyleSheet);
 
             // const cssModule = await import(cssFileName, {
             //     assert: { type: 'css' }
@@ -67,7 +68,7 @@
             // document.adoptedStyleSheets = [cssModule.default];
 
 
-             let name = location.hash.slice(2);
+            let name = location.hash.slice(2);
             window.self = window.parent;
             globalThis.VueDemi = self.VueDemi;
             // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
@@ -76,7 +77,7 @@
             let curPageCtx = null;
             let curParams = null;
 
-            window.addEventListener("message",function (e) {
+            window.addEventListener("message", function (e) {
                 if (e.origin === location.origin) {
                     let data = e.data;
                     if (data.type === "__page-params") {
@@ -96,7 +97,7 @@
                         document.getElementById('routerroot').appendChild(innerEle)
                     },
                     onEnd(pageCtx) {
-                        curPageCtx =  pageCtx;
+                        curPageCtx = pageCtx;
                         if (curPageCtx?.lifeTimes?.onReady) {
                             curPageCtx.lifeTimes.onReady()
                         }
@@ -105,10 +106,6 @@
                     }
                 });
             });
-
-
-
-
 
         // console.log(globalThis, window, self);
 
