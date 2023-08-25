@@ -27,6 +27,7 @@
 
 .shop-cart {
     position: relative;
+    overflow: hidden;
 }
 
 .shop-cart__action {
