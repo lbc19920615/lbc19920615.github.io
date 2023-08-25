@@ -87,7 +87,6 @@
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
     <script type="module">
-
         async function importCss(url) {
             const cssFile = await fetch(url);
             const css = await cssFile.text();
@@ -133,7 +132,7 @@
 
         window.getAllComments = getAllComments;
 
-        import { runApp, routes } from "/assets/app.js"
+        import { runApp, routes } from '<%= APP_JS_PATH %>'
 
         let rooterRootEle = document.getElementById("routerroot")
 

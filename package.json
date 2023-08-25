@@ -8,6 +8,7 @@
     "build:dev": "cross-env NODE_ENV=development ./node_modules/.bin/webpack",
     "build": "npm run build:css && rollup --c",
     "build:wle": "rollup --c",
+    "dev:wle": "rollup --c --watch",
     "build:css": "unocss -c ./uno.config.ts",
     "serve": "cross-env NODE_ENV=production npx webpack serve"
   },
@@ -18,6 +19,7 @@
     "marked": "^2.0.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.22.10",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@unocss/cli": "^0.55.0",

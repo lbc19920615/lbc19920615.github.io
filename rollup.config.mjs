@@ -11,6 +11,7 @@ let subFileStr = fs.readFileSync('./src/sub.ejs').toString()
 let imports = {
   // "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
   "async-validator": "https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm",
+  "@webele": "/assets/webele",
   "vue": "https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm",
   "wlepre": "/assets/wle-provider/index.js?v=0.0.3",
   // "pinia": "https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.esm-browser.js",
@@ -19,7 +20,8 @@ let imports = {
 let baseFolder = "assets"
 let lastKeys = [];
 let resources = {
-  cssFiles: []
+  cssFiles: [],
+  jsFiles: []
 }
 
 let mainCssFileName = '';
@@ -67,10 +69,20 @@ function demoWatcherPlugin() {
           })
           links.unshift('<link rel="stylesheet" href="/assets/uno.css" />')
           imports['wle'] =  '/' + baseFolder + '/webelef/' + newFileName + '?v='+ Date.now();
-          let html = ejs.render(mainFileStr, {importmap: JSON.stringify(imports), APP_CSS_PATH, links: links.join('\n')});
+
+
+          let app_file =  '/' + baseFolder + '/webelef/' + resources.jsFiles[0]
+          let compileArg = {
+            importmap: JSON.stringify(imports), 
+            APP_CSS_PATH, 
+            links: links.join('\n'),
+            APP_JS_PATH: app_file
+          }
+
+          let html = ejs.render(mainFileStr, compileArg);
           fs.writeFileSync(`./${baseFolder}/webele.html`, html)
 
-          let html2 = ejs.render(subFileStr, {importmap: JSON.stringify(imports), APP_CSS_PATH, links: links.join('\n')});
+          let html2 = ejs.render(subFileStr, compileArg);
           fs.writeFileSync(`./${baseFolder}/sub.html`, html2)
           setTimeout(() => {
 
@@ -84,15 +96,15 @@ function demoWatcherPlugin() {
 
               // 120 / 750 * 360
 
-              let pcCss = s.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
-                return pxs.replace('rpx', 'px')
-              });
+              // let pcCss = s.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
+              //   return pxs.replace('rpx', 'px')
+              // });
 
               
-              let mbCss = s.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
-                let val = pxargs[0]
-                return pxs.replace('rpx', 'px').replace(val, val / 750 * 360)
-              })
+              // let mbCss = s.replace(/(\d+)(?=rpx)rpx/g, function(pxs, ...pxargs) {
+              //   let val = pxargs[0]
+              //   return pxs.replace('rpx', 'px').replace(val, val / 750 * 360)
+              // })
               // fs.writeFileSync('.' + APP_CSS_PATH, pcCss)
               // fs.writeFileSync('.' + APP_CSS_PATH.replace('.css', '_360.css'), mbCss)
               return ''
@@ -101,8 +113,6 @@ function demoWatcherPlugin() {
               // console.log(trueCssFile);
           }
 
-                        
-          console.log('compile done');
 
           }, 300)
         }
@@ -113,17 +123,29 @@ function demoWatcherPlugin() {
 function demoAppPlugin() {
   return {
     buildStart(){
-      if (!imports.wle) {
-        this.addWatchFile('src/webele.ejs')
-        this.addWatchFile('src/webele.scss')
-        // this.addWatchFile('src/app.scss')
-        movePrevMainFile()
-      }
+      this.addWatchFile('src/webele.ejs')
+      this.addWatchFile('src/webele.scss')
+      // this.addWatchFile('src/app.scss')
+      movePrevMainFile()
     },
     generateBundle(options, bundle, isWrite) {
       let keys = Object.keys(bundle);
-      console.log(keys);
+      // console.log(keys);
       resources.cssFiles  = keys.filter(v => v.endsWith('.css'));
+      resources.jsFiles  = keys.filter(v => v.endsWith('.js'));
+
+      setTimeout(() => {
+        resources.jsFiles.forEach(v => {
+          let filePath = './assets/webelef/' + v;
+          let str = fs.readFileSync(filePath).toString();
+          let newStr = str.replaceAll('@webele', '/assets/webele')
+          // console.log('resources.jsFiles ', v);
+          fs.writeFileSync(filePath, newStr)
+        });
+
+                                
+        console.log('compile done');
+      }, 1000)
     }
   }
 }
@@ -141,7 +163,8 @@ const config = [
       entryFileNames: 'app_[hash].js',
       assetFileNames: 'app_[hash][extname]'
     },
-    plugins: [...commonPlugins, demoAppPlugin()]
+    plugins: [...commonPlugins, demoAppPlugin()],
+    external: ['wle', 'wlepre', '@webele']
   },
   {
     input: 'src/main.js',

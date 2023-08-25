@@ -194,6 +194,7 @@ export function injectStore(name, { partials = [] } = {}) {
 }
 
 export function getStore(key) {
+    let storeToRefs  = window.Pinia.storeToRefs;
     let ins = storeMap.get(key);
     // console.log(ins);
     if (ins) {
