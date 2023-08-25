@@ -3,13 +3,15 @@
     --borderColor:  rgba(0,0,0,.2);
 }
 
+$font: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+
 // reset
 html {
-    font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+    font-family: system-ui;
 }
 
 textarea {
-    font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+    font-family: $font;
 }
 
 my-date-picker.date-picker {

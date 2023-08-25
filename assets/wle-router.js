@@ -94,7 +94,12 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                 lifeTimes,
                 params: {},
                 reload(params) {
-                    pageCtx.params = params
+                    // console.log('reload', params);
+                    pageCtx.params = params;
+                    if (lifeTimes?.beforeReload) {
+                        lifeTimes?.beforeReload(params)
+                    }
+
                     reRender(ele)
                 },
                 reloadFormCache() {
@@ -119,7 +124,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
             }
 
 
-            pageMap.set(nid, pageCtx);
+            pageMap.set(routerName, pageCtx);
 
             if (onEnd) {
                 onEnd(pageCtx)
@@ -152,7 +157,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
 
     window.getCurrentPages = getCurrentPages;
 
-    const pushRoute = (path = '', params = {}, isPush = true, { onEnd } = {}) => {
+    const pushRoute = (path = '', params = {}, isPush = true, { setLoadCache, onEnd } = {}) => {
         // event = event || window.event;
         // event.preventDefault();
         let keys = [...pagesCache.map(v => v[0])];
@@ -168,7 +173,7 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
         handleLocation({
             params,
             stateID,
-            onLoadCache(ret) {
+            onLoadCache: setLoadCache ?? function(ret) {
                 if (Array.isArray(ret) && ret.length == 2) {
                     pagesCache.push(ret)
                 }
@@ -187,6 +192,9 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                     unBindPage(pages[0])
                 }
                 setCurrentPage(pages.length - 1, [nid, pageCtx])
+            },
+            setLoadCache() {
+                // console.log('setLoadCache');
             }
         })
     }
@@ -287,15 +295,17 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
 
         const m = await route(params);
 
-        let nid = stateID ?? Nid()
+        let nid = stateID ?? Nid();
 
-        if (keepLives.includes(nid) && pageMap.get(nid)) {
-            let cached = pageMap.get(nid)
+        // console.log(pageMap);
+
+        if (keepLives.includes(routerName) && pageMap.get(routerName)) {
+            let cached = pageMap.get(routerName)
             cached.reload(params);
             if (onLoadCache) {
-                onLoadCache([nid, cached])
+                // console.log(routerName, onLoadCache)
+                onLoadCache([Nid(), cached])
             }
-            // return [nid, cached]
         } else {
 
             // console.log('ssssssssssssssssssssss');

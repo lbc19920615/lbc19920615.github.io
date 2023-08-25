@@ -32,7 +32,6 @@ export function setGlobal(v) {
 }
 
 
-
 export function Nid(...args) {
     if (glo.__Nid__) {
         return glo.__Nid__(...args)
@@ -125,8 +124,13 @@ function _directive_text(ele, text = '') {
     ele.textContent = text?.__v_isRef ? text.value : text
 }
 
-function _directive_html(ele, text = '') {
-    ele.innerHTML = text?.__v_isRef ? text.value : text
+function _directive_html(ele, text = '', tpl) {
+    let renderText = text?.__v_isRef ? text.value : text;
+    if (tpl) {
+        renderText = tpl.replaceAll('@val', renderText);
+    }
+
+    ele.innerHTML = renderText
 }
 
 
@@ -515,6 +519,12 @@ export function Else(nid = '') {
 }
 customComponents.set('Else', Else)
 
+/**
+ * 
+ * @param {*} buildCtx 
+ * @param {*} runFun 
+ * @returns {{ele: Element}}
+ */
 function defc(buildCtx, runFun) {
     let fun = buildCtx;
     let ctx = fun()
@@ -532,7 +542,26 @@ export let g = {
 }
 
 
-export function hc2(ComponentConstruct, { args = [], init = function () { }, attrs = {}, props = {}, end = function () { }, afterInit, ready } = {}, ele) {
+export const EVENT_NAME = '__on__event__'
+
+/**
+ * 
+ * @param {string} name 
+ * @param {any} detail 
+ */
+export function CompEvent(name, detail) {
+    let ev = new CustomEvent(EVENT_NAME, {
+        detail: {
+            name,
+            detail
+        }
+    });
+    return ev
+}
+
+
+export function hc2(ComponentConstruct, { args = [], init = function () { }, 
+attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } = {}, ele) {
     let readyFun = ready ? function (ctx) {
         ready(ctx);
         // console.log('ready', ctx);
@@ -549,7 +578,6 @@ export function hc2(ComponentConstruct, { args = [], init = function () { }, att
 
     let ret = ComponentConstruct.apply(null, args).init(init);
 
-
     let ctx = defc(ret, readyFun);
 
     if (attrs) {
@@ -561,6 +589,17 @@ export function hc2(ComponentConstruct, { args = [], init = function () { }, att
     if (props) {
         Object.keys(props).forEach(key => {
             ctx.ele[key] = props[key]
+        })
+    }
+
+    if (events && ctx.ele?.addEventListener) {
+        // console.dir( ctx.ele)
+        ctx.ele.addEventListener(EVENT_NAME, function(e) {
+            let detail = e.detail;
+            if (events[detail?.name]) {
+                events[detail?.name](e.detail.detail)
+            }
+            // console.log('events', e);
         })
     }
 
@@ -726,16 +765,19 @@ function __ssr_setup(...args) {
     }
 }
 
-function _text__render(ele, text) {
-    _directive_html(ele, text)
+function _text__render(ele, text, tpl) {
+    let renderText = text;
+    _directive_html(ele, renderText, tpl)
 }
 
 function _text__action(ele, args) {
     const { ref, watch } = glo.VueDemi;
     let text = _utils_getAnyParam(args, '');
+    
+    let tpl = _utils_getAnyParam(args, '', 1);
     if (text.__v_isRef) {
         watch(text, () => {
-            _text__render(ele, text)
+            _text__render(ele, text, tpl)
         })
     }
 }
@@ -743,10 +785,11 @@ function _text__action(ele, args) {
 export let Text = defComponent({
     name: 'Text',
     setup({ getCtx, startWatch, args, isSsrMode }) {
-        let text = _utils_getAnyParam(args, '')
+        let text = _utils_getAnyParam(args, '');
+        let tpl = _utils_getAnyParam(args, '', 1);
         let ele = createElement('div')
         ele.classList.add('text');
-        _text__render(ele, text)
+        _text__render(ele, text, tpl)
         if (!isSsrMode) {
             _text__action(ele, args)
         }

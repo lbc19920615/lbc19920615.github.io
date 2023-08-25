@@ -31,13 +31,42 @@
     overflow: hidden;
 }
 
+.shop-cart .num-text {
+    line-height: 1.5;
+} 
+
+.shop-cart__detail-action {
+    display: grid;   
+    grid-template-columns: auto 1fr repeat(3,auto);
+    padding: 10rpx;
+}
+
+.shop-cart__item {
+    display: grid;   
+    grid-template-columns: auto 1fr repeat(3,auto);
+    padding: 0 10rpx;
+    padding-right: 0;
+    margin-top: 20rpx;
+    align-items: baseline;
+}
+
+.shop-cart__item-act {
+    text-align: center;
+    width: 60rpx;
+    font-size: 20px;
+}
+
 .shop-cart__action {
+    box-sizing: border-box;
+    padding: 0 10rpx;
     position: absolute;
     width: 100%;
     height: 100%;
     z-index: 2;
     display: grid;
-    grid-template-columns: auto auto 1fr auto;
+    grid-template-columns: auto auto 1fr auto auto;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .shop-cart__mask {

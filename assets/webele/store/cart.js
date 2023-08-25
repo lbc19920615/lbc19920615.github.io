@@ -42,7 +42,8 @@ class BaseCart {
     }
 
     delItem(index) {
-        this.items.splice(index, 1)
+        this.items.splice(index, 1);
+        console.log(this.items);
     }
 
     toggleItemChecked(item) {
@@ -122,6 +123,27 @@ class Cart extends BaseCart {
 
     putSku(sku_id = '', item) {
         this.pushItem(sku_id, createBaseListItemConfig(item))
+    }
+
+    delSku(sku_id) {
+        let itemIndex = this.items.findIndex(v => v[0] === sku_id);
+        if (itemIndex > -1) {
+            let item = this.items[itemIndex];
+            if (item[1].num < 2) {
+                this.delItem(itemIndex)
+            }
+            else {
+                this.items[itemIndex][1].num = item[1].num - 1
+            }
+        }
+    }
+
+    addSku(sku_id) {
+        let itemIndex = this.items.findIndex(v => v[0] === sku_id);
+        if (itemIndex > -1) {
+            let item = this.items[itemIndex];
+            this.items[itemIndex][1].num = item[1].num + 1
+        }
     }
 }
 

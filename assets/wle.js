@@ -648,8 +648,12 @@ function _utils_getAnyParam(args = [], defaultVal, index = 0) {
 function _directive_text(ele, text = '') {
   ele.textContent = text?.__v_isRef ? text.value : text;
 }
-function _directive_html(ele, text = '') {
-  ele.innerHTML = text?.__v_isRef ? text.value : text;
+function _directive_html(ele, text = '', tpl) {
+  let renderText = text?.__v_isRef ? text.value : text;
+  if (tpl) {
+    renderText = tpl.replaceAll('@val', renderText);
+  }
+  ele.innerHTML = renderText;
 }
 function _directive_action(ele, name, fun) {
   if (name) {
@@ -1030,6 +1034,13 @@ function Else(nid = '') {
   return fragment;
 }
 customComponents.set('Else', Else);
+
+/**
+ * 
+ * @param {*} buildCtx 
+ * @param {*} runFun 
+ * @returns {{ele: Element}}
+ */
 function defc(buildCtx, runFun) {
   let fun = buildCtx;
   let ctx = fun();
@@ -1044,11 +1055,28 @@ function defc(buildCtx, runFun) {
 let g = {
   defc
 };
+const EVENT_NAME = '__on__event__';
+
+/**
+ * 
+ * @param {string} name 
+ * @param {any} detail 
+ */
+function CompEvent(name, detail) {
+  let ev = new CustomEvent(EVENT_NAME, {
+    detail: {
+      name,
+      detail
+    }
+  });
+  return ev;
+}
 function hc2(ComponentConstruct, {
   args = [],
   init = function () {},
   attrs = {},
   props = {},
+  events = {},
   end = function () {},
   afterInit,
   ready
@@ -1078,6 +1106,17 @@ function hc2(ComponentConstruct, {
       ctx.ele[key] = props[key];
     });
   }
+  if (events && ctx.ele?.addEventListener) {
+    // console.dir( ctx.ele)
+    ctx.ele.addEventListener(EVENT_NAME, function (e) {
+      let detail = e.detail;
+      if (events[detail?.name]) {
+        events[detail?.name](e.detail.detail);
+      }
+      // console.log('events', e);
+    });
+  }
+
   return ctx;
 }
 function hc(ComponentConstruct, {
@@ -1264,8 +1303,9 @@ function __ssr_setup(...args) {
     glo.__onSetup__(...args);
   }
 }
-function _text__render(ele, text) {
-  _directive_html(ele, text);
+function _text__render(ele, text, tpl) {
+  let renderText = text;
+  _directive_html(ele, renderText, tpl);
 }
 function _text__action(ele, args) {
   const {
@@ -1273,9 +1313,10 @@ function _text__action(ele, args) {
     watch
   } = glo.VueDemi;
   let text = _utils_getAnyParam(args, '');
+  let tpl = _utils_getAnyParam(args, '', 1);
   if (text.__v_isRef) {
     watch(text, () => {
-      _text__render(ele, text);
+      _text__render(ele, text, tpl);
     });
   }
 }
@@ -1288,9 +1329,10 @@ let Text = defComponent({
     isSsrMode
   }) {
     let text = _utils_getAnyParam(args, '');
+    let tpl = _utils_getAnyParam(args, '', 1);
     let ele = createElement('div');
     ele.classList.add('text');
-    _text__render(ele, text);
+    _text__render(ele, text, tpl);
     if (!isSsrMode) {
       _text__action(ele, args);
     }
@@ -1312,4 +1354,4 @@ class BaseWleElement extends HTMLElement {
   }
 }
 
-export { BaseVmControl, BaseWleElement, Button, Column, Else, ForEach, If, Modifier, Nid, Text, Utils, buildValidate, createCommonCtx, defComponent, events, g, getAllComments, getConditionMap, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, BaseWleElement, Button, Column, CompEvent, EVENT_NAME, Else, ForEach, If, Modifier, Nid, Text, Utils, buildValidate, createCommonCtx, defComponent, events, g, getAllComments, getConditionMap, getcustomComponents, getscripts, h3, hc, hc2, injectControl, metaCls, setGlobal, useControl };

@@ -110,6 +110,12 @@
     }
 }
 
+.a-placeholder {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
 @media screen and (min-width: 769px) {
     .a-page {
         position: relative;

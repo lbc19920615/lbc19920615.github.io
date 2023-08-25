@@ -1,4 +1,4 @@
-import { Nid, g, hc2, BaseVmControl, injectControl, useControl, Text, ForEach, If, Column, defComponent } from "wle";
+import { Nid, g, hc2, BaseVmControl, CompEvent, Text, ForEach, If, Column, defComponent } from "wle";
 
 
 let ShopDialog1 = defComponent({
@@ -39,7 +39,7 @@ let ShopDetail1 = defComponent({
             attrs: {
             },
             init(ele) {
-                let ctx1 = hc2(Text, { args: ['商店信息'] }, ele);
+                 hc2(Text, { args: ['商店信息'] }, ele);
             }
         }, ele);
 
@@ -52,17 +52,55 @@ let ShopCart1 = defComponent({
         let skuNum = args[0];
         let priceNum = args[1];
         let items = args[2];
-        let ele = document.createElement('div')
+        let argOpt = args[3];
+        let ele = document.createElement('div');
+        let compHostEle = ele;
         ele.classList.add('shop-cart');
         ele.style.height = 'var(--shop-main-card-h)';
 
         function ShopItem(ele, option) {
-            hc2(Text, {
-                args: [option.index + 1]
-            }, ele);
-            hc2(Text, {
-                args: [JSON.stringify(option.item)]
-            }, ele);
+            hc2(Column, {
+                attrs: {
+                    class: 'shop-cart__item'
+                },
+                init(ele) {
+                    hc2(Text, {
+                        args: [option.item[1]?.extra?.sku_name]
+                    }, ele);
+                    hc2(Text, {
+                        args: ['&nbsp;'],
+                    }, ele)
+                    hc2(Text, {
+                        args: ['&#8722;'],
+                        attrs: {
+                            class: 'shop-cart__item-act'
+                        },
+                        props: {
+                            onclick() {
+                               if (argOpt && argOpt.onDel) {
+                                    argOpt.onDel(option.item)
+                               } 
+                            }
+                        }
+                    }, ele);
+                    hc2(Text, {
+                        args: [option.item[1].num]
+                    }, ele);
+                    hc2(Text, {
+                        args: ['&#43;'],
+                        attrs: {
+                            class: 'shop-cart__item-act'
+                        },
+                        props: {
+                            onclick() {
+                               if (argOpt && argOpt.onAdd) {
+                                argOpt.onAdd(option.item)
+                               } 
+                            }
+                        }
+                    }, ele);
+                }
+            }, ele)
         }
 
         hc2(Column, {
@@ -74,12 +112,17 @@ let ShopCart1 = defComponent({
                     args: ['购物篮'],
                     props: {
                         onclick: function () {
-                            ShopCart1.showDetail()
+                            ShopCart1.toggleDetail()
                         }
                     }
                 }, ele);
-                hc2(Text, { args: [skuNum] }, ele);
+                hc2(Text, { args: [skuNum], 
+                    // attrs: {class: 'a-placeholder'}
+                 }, ele);
                 hc2(Text, { args: ['&nbsp'] }, ele);
+                hc2(Text, { args: ['合计'], 
+                    // attrs: {class: 'a-placeholder'}
+                 }, ele);
                 hc2(Text, { args: [priceNum] }, ele)
             }
         }, ele);
@@ -87,6 +130,11 @@ let ShopCart1 = defComponent({
         hc2(Column, {
             attrs: {
                 class: 'shop-cart__mask'
+            },
+            props: {
+                onclick() {
+                    compHostEle.dispatchEvent(new CompEvent('click_mask'))   
+                }
             },
             init(ele) {
             }
@@ -97,12 +145,24 @@ let ShopCart1 = defComponent({
                 class: 'shop-cart__detail'
             },
             init(ele) {
-                // hc2(Text, { args: ['detail'] }, ele);
+                hc2(Column, {
+                    attrs: {
+                        class: 'shop-cart__detail-action'
+                    },
+                    init(ele, option) {
+                        hc2(Text, { args: ['已选商品'] }, ele);
+                        hc2(Text, { args: ['&nbsp'] }, ele);
+                        hc2(Text, { args: ['清空'], props: {
+                            onclick() {
+                                compHostEle.dispatchEvent(new CompEvent('clear_all'))
+                            }
+                        } }, ele);
+                    }
+                }, ele);
 
                 hc2(ForEach, {
                     args: [{ list: items }],
                     init(ele, option) {
-                        // console.log('ssssssssssssssssss');
                         ShopItem(ele, option)
                     }
                 }, ele);
@@ -110,11 +170,15 @@ let ShopCart1 = defComponent({
         }, ele);
 
 
-        ShopCart1.showDetail = function () {
-            ele.style.setProperty('--shop-cart__mask-h', ele.parentElement.scrollHeight + 'px')
+        ShopCart1.toggleDetail = function (flag = true) {
+            if (flag) {
+                ele.style.setProperty('--shop-cart__mask-h', ele.parentElement.scrollHeight + 'px')
+            }
             setTimeout(() => {
                 ele.classList.toggle('shop-cart--show-detail')
-            }, 0)
+            }, 0);
+
+            ele.dispatchEvent(new CompEvent('toggle', flag))
         }
 
 
@@ -234,12 +298,17 @@ let ShopGood1 = defComponent({
 
 export default function ({ Page }) {
 
+    
     let cartStore;
     setTimeout(() => {
         cartStore = window.appConfig.getStore('Cart');
 
-        console.dir(cartStore);
-    }, 30)
+        resetCartDetail()
+
+        // console.dir(cartStore);
+    }, 30);
+
+    const { watch } = globalThis.VueDemi;
 
 
     class ShopVm extends BaseVmControl {
@@ -249,6 +318,11 @@ export default function ({ Page }) {
             item: null
         }
         collect = {}
+        setCollect(obj) {
+            Object.keys(obj).forEach(key => {
+                this.collect[key] = obj[key]
+            })
+        }
         get shopDialogOpen1() {
             return this.shopDialog
         }
@@ -280,19 +354,13 @@ export default function ({ Page }) {
         onDialogSubmit(e) {
             let self = this;
             this.shopDialog = false;
-            addCartStyle();
+            ShopCart1.toggleAction(true);
             let curItem = self.current.item;
             if (!curItem) {
                 return;
             }
-            cartStore.putSku(curItem.dataset.id, { sku_price: 1000 });
-            setTimeout(() => {
-                let obj = cartStore.getCollect();
-                Object.keys(obj).forEach(key => {
-                    self.collect[key] = obj[key]
-                })
-                // console.log(collect);
-            }, 0)
+            cartStore.putSku(curItem.dataset.id, { sku_name: 'good ' + curItem.dataset.id, sku_price: 1000 });
+            resetCartDetail()
             // console.log('onDialogSubmit', e);
         }
     }
@@ -302,18 +370,26 @@ export default function ({ Page }) {
     let vm = window.createControl(ShopVm);
     window.shopVm = vm;
 
+    function resetCartDetail() {
+        const {nextTick} = globalThis.VueDemi;
+        nextTick(() => {
+            let obj = cartStore.getCollect();
+            vm.setCollect(obj);
+        })
+    }
+
     let ele = document.createElement('div');
     ele.classList.add('a-page');
     ele.classList.add('shop-page');
 
 
-    function toggleCartStyle() {
-        ele.classList.toggle('shop--has-cart')
-    }
-
 
     function addCartStyle() {
         ele.classList.toggle('shop--has-cart', true)
+    }
+
+    ShopCart1.toggleAction = function(flag = true) {
+        ele.classList.toggle('shop--has-cart', flag)
     }
 
 
@@ -390,20 +466,59 @@ export default function ({ Page }) {
     })
 
 
+
+
     hc2(ShopCart1, {
         args: [
             vm.skuNumTotal,
             vm.skuPriceTotal,
-            vm.skuItems
+            vm.skuItems,
+            {
+                onDel(item) {
+                    cartStore.delSku(item[0]);
+                    resetCartDetail()
+                },
+                onAdd(item) {
+                    cartStore.addSku(item[0]);
+                    resetCartDetail()
+                }
+            }
         ],
+        events: {
+            toggle() {
+                // console.log('on toggle');
+            },
+            click_mask() {
+                ShopCart1.toggleDetail(false);
+            },
+            clear_all() {
+                cartStore.clearAllItems();
+                resetCartDetail()
+            }
+        },
         init() {
 
         }
-    }, ele)
+    }, ele);
+    
+    watch(vm.skuNumTotal, (newVal) => {
+        console.log('skuNumTotal', newVal);
+        if (newVal < 1) {
+            ShopCart1.toggleDetail(false);
+            ShopCart1.toggleAction(false);
+        }
+        else {
+            // ShopCart1.toggleDetail(false);
+            ShopCart1.toggleAction(true);
+        }
+    })
 
     Page({
         ele,
         lifeTimes: {
+            beforeReload(params) {
+                console.log('beforeReload shop', params);
+            },
             onUnload() {
                 console.log('unload shop');
             }
