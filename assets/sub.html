@@ -29,7 +29,7 @@
 
         <script type="importmap">
         {
-          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","@webele":"/assets/webele","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_09e5fd75.js?v=1692934639923"}
+          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","@webele":"/assets/webele","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_09e5fd75.js?v=1692935699033"}
         }
     </script>
         <script type="module">
@@ -75,7 +75,6 @@
             let name = location.hash.slice(2);
             window.self = window.parent;
             globalThis.VueDemi = self.VueDemi;
-            // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
 
 
             let curPageCtx = null;
@@ -91,24 +90,21 @@
                 }
             })
 
+            self.createPageStyleSheet(name);
 
-            import('/assets/wle-router.js?v=0.1.0').then(m => {
-                m.createStyleSheet(name);
-
-                self.wRoute.loadSubPage({
-                    nid: 'sub', routerName: name,
-                    reRender(innerEle) {
-                        document.getElementById('routerroot').appendChild(innerEle)
-                    },
-                    onEnd(pageCtx) {
-                        curPageCtx = pageCtx;
-                        if (curPageCtx?.lifeTimes?.onReady) {
-                            curPageCtx.lifeTimes.onReady()
-                        }
-                        // console.log(self.__conditionMap__);
-                        // console.log('routerName load end', curPageCtx, curParams);
+            self.wRoute.loadSubPage({
+                nid: 'sub', routerName: name,
+                reRender(innerEle) {
+                    document.getElementById('routerroot').appendChild(innerEle)
+                },
+                onEnd(pageCtx) {
+                    curPageCtx = pageCtx;
+                    if (curPageCtx?.lifeTimes?.onReady) {
+                        curPageCtx.lifeTimes.onReady()
                     }
-                });
+                    // console.log(self.__conditionMap__);
+                    // console.log('routerName load end', curPageCtx, curParams);
+                }
             });
 
         // console.log(globalThis, window, self);

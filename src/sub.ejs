@@ -73,7 +73,6 @@
             let name = location.hash.slice(2);
             window.self = window.parent;
             globalThis.VueDemi = self.VueDemi;
-            // import { createStyleSheet } from '/assets/wle-router.js?v=0.1.0';
 
 
             let curPageCtx = null;
@@ -89,24 +88,21 @@
                 }
             })
 
+            self.createPageStyleSheet(name);
 
-            import('/assets/wle-router.js?v=0.1.0').then(m => {
-                m.createStyleSheet(name);
-
-                self.wRoute.loadSubPage({
-                    nid: 'sub', routerName: name,
-                    reRender(innerEle) {
-                        document.getElementById('routerroot').appendChild(innerEle)
-                    },
-                    onEnd(pageCtx) {
-                        curPageCtx = pageCtx;
-                        if (curPageCtx?.lifeTimes?.onReady) {
-                            curPageCtx.lifeTimes.onReady()
-                        }
-                        // console.log(self.__conditionMap__);
-                        // console.log('routerName load end', curPageCtx, curParams);
+            self.wRoute.loadSubPage({
+                nid: 'sub', routerName: name,
+                reRender(innerEle) {
+                    document.getElementById('routerroot').appendChild(innerEle)
+                },
+                onEnd(pageCtx) {
+                    curPageCtx = pageCtx;
+                    if (curPageCtx?.lifeTimes?.onReady) {
+                        curPageCtx.lifeTimes.onReady()
                     }
-                });
+                    // console.log(self.__conditionMap__);
+                    // console.log('routerName load end', curPageCtx, curParams);
+                }
             });
 
         // console.log(globalThis, window, self);

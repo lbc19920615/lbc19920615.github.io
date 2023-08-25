@@ -16,6 +16,8 @@ export function createStyleSheet(name) {
     // })
 }
 
+window.createPageStyleSheet = createStyleSheet;
+
 
 export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, keepLives = [] } = {}) {
     let pageMap = new Map();
