@@ -1,4 +1,4 @@
-import { defComponent, Utils, hc2, Column, Text, injectControl, BaseWleElement, BaseVmControl } from 'wle';
+import { defComponent, Utils, hc2, Column, Text, injectControl, useControl, BaseWleElement, BaseVmControl } from 'wle';
 import { getStore } from '/assets/webele/frame/storeMan.js';
 
 import('/assets/webele/store/cart.js');
@@ -96,6 +96,15 @@ window.openSubApp = function (routeName, params = {}) {
   } else {
     newPage();
   }
+};
+
+/**
+ * 
+ * @param {class} target 
+ */
+window.createControl = function createControl(target, name = target.name) {
+  injectControl(name)(target);
+  return useControl(name);
 };
 let BaseDir = '/assets/';
 const routes = {

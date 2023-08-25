@@ -223,7 +223,7 @@ export default function ({ Page }) {
     }, 30)
 
 
-    class DomCotnrol extends BaseVmControl {
+    class ShopVm extends BaseVmControl {
         title = ''
         shopDialog = false
         collect = {}
@@ -265,8 +265,9 @@ export default function ({ Page }) {
         }
     }
 
-    injectControl('shopVm')(DomCotnrol);
-    let vm = useControl('shopVm');
+    // injectControl('shopVm')(DomCotnrol);
+    // let vm = useControl('shopVm');
+    let vm = window.createControl(ShopVm);
     window.shopVm = vm;
 
     let ele = document.createElement('div');

@@ -1,6 +1,6 @@
 import "./app.scss"
 
-import {  hc2, BaseWleElement, Utils, defComponent, Column, Text, BaseVmControl, injectControl } from "wle";
+import {  hc2, BaseWleElement, Utils, defComponent, Column, Text, BaseVmControl, injectControl, useControl } from "wle";
 import("@webele/store/cart.js");
 import { getStore } from "@webele/frame/storeMan.js"
 
@@ -32,6 +32,7 @@ class ShopGoodItem extends BaseWleElement {
 if (!customElements.get('shop-good-item')) {
     customElements.define('shop-good-item', ShopGoodItem);
 }
+
 
 let PageWrapper = defComponent({
     name: 'PageWrapper',
@@ -102,7 +103,16 @@ window.openSubApp = function (routeName, params = {}) {
     }
 }
 
-let BaseDir = '/assets/'
+/**
+ * 
+ * @param {class} target 
+ */
+window.createControl = function createControl(target, name = target.name) {
+    injectControl(name)(target);
+    return useControl(name);
+}
+
+let BaseDir = '/assets/';
 export const routes = {
     ['']: (params) => {
         return import(BaseDir + 'webele/main.js?v=' + Date.now())

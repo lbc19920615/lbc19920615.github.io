@@ -16,8 +16,7 @@ let imports = {
   // "pinia": "https://cdn.bootcdn.net/ajax/libs/pinia/2.0.35/pinia.esm-browser.js",
 }
 
-let baseFolder = "assets"
-let lastKeys = [];
+let baseFolder = "assets";
 let resources = {
   cssFiles: [],
   jsFiles: []
