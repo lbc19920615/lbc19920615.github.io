@@ -51,10 +51,10 @@
                 })
             }
 
-
+            // console.log(parsedcss);
             const myStyleSheet = new CSSStyleSheet();
             myStyleSheet.replace(parsedcss);
-            return myStyleSheet;
+            return {myStyleSheet, parsedcss};
         }
 
         let cssFileName = '<%= APP_CSS_PATH %>';

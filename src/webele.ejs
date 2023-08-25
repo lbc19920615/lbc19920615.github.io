@@ -7,15 +7,15 @@
     <title>基于vue reactivity的 webcomponent框架</title>
     <!-- <link rel="stylesheet" href="/assets/app.css?v=0.0.3" /> -->
     <script src="/assets/eval5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jss/10.9.2/jss.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jss/10.9.2/jss.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jss-preset-default@10.9.0/dist/jss-preset-default.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
     <script>
         if (location.hash === '') {
             history.replaceState({path: '', nid: 'main'},'',location.href + '#/')
         }
 
-        window.jssStyleMan = jss.default.setup(jssPresetDefault.default);
+        // window.jssStyleMan = jss.default.setup(jssPresetDefault.default);
         let vueapp = window.Vue.createApp({});
         vueapp.config.devtools = true;
         let VueDemi = (function () {
@@ -110,11 +110,13 @@
             // console.log(parsedcss);
             const myStyleSheet = new CSSStyleSheet();
             myStyleSheet.replace(parsedcss);
-            return myStyleSheet;
+            return {myStyleSheet, parsedcss};
         }
 
+        window.importCss = importCss;
+
         let cssFileName = '<%= APP_CSS_PATH %>';
-        let myStyleSheet = await importCss(cssFileName);
+        let {myStyleSheet} = await importCss(cssFileName);
         document.adoptedStyleSheets.push(myStyleSheet);
 
         import '/assets/ele/index.js?v=0.0.10';

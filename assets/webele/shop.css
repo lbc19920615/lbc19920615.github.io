@@ -12,3 +12,15 @@
 .shop-dialog-1::part(dialog) {
     width: 80vw;
 }
+
+
+.shop-page {
+    height: 100%;
+    --shop-good__item_h: 160px;
+    --shop-main-con-h: 100%;
+    --shop-main-card-h: 0;
+    &.shop--has-cart {
+        --shop-main-card-h: 100rpx;
+        --shop-main-con-h: calc(100% - var(--shop-main-card-h));
+    }
+}

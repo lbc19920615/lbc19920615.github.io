@@ -40,6 +40,8 @@ function movePrevMainFile() {
   })
 }
 
+
+
 function demoWatcherPlugin() {
   return {
       async buildEnd(arg) {
@@ -119,6 +121,7 @@ function demoWatcherPlugin() {
       }
   }
 }
+
 
 function demoAppPlugin() {
   return {

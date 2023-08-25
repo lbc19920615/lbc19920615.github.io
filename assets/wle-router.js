@@ -4,10 +4,16 @@ import Nid from "./nid.browser.js";
 export function createStyleSheet(name) {
     let style = document.createElement('style');
     style.id = 'style-' + name;
-    fetch(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
-        style.innerHTML = cssStr;
+
+    importCss(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(({parsedcss}) => {
+        console.log('parsedcss', parsedcss);
+        style.innerHTML = parsedcss;
         document.head.appendChild(style)
     })
+    // fetch(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(res => res.text()).then((cssStr) => {
+    //     style.innerHTML = cssStr;
+    //     document.head.appendChild(style)
+    // })
 }
 
 

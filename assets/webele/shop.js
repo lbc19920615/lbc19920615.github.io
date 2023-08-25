@@ -41,6 +41,22 @@ let ShopDialog1 = defComponent({
         
         return ele
     }
+});
+
+let ShopCart1 = defComponent({
+    setup({ getCompCtx, startWatch, args }) {
+        let ele = document.createElement('div')
+        ele.classList.add('shop-cart');
+        ele.style.height = 'var(--shop-main-card-h)'
+
+        hc2(Column, {
+            init(ele) {
+                hc2(Text, {args: ['购物篮']}, ele)
+            }
+        }, ele);
+
+        return ele
+    }
 })
 
 let ShopNav1 = defComponent({
@@ -91,10 +107,6 @@ let ShopNav1 = defComponent({
         return ele
     }
 });
-
-
-
-
 
 
 let ShopGood1 = defComponent({
@@ -153,20 +165,18 @@ let ShopGood1 = defComponent({
 
 
 export default function ({ Page }) {
-    
-    const sheet = window.jssStyleMan.createStyleSheet({
-        'shop-page': {
-            'height': '100%',
-            '--shop-good__item_h': '160px'
-        },
-    });
-
-    sheet.attach();
 
     let ele = document.createElement('div');
     ele.classList.add('a-page');
     ele.classList.add('shop-page');
-    ele.classList.add(sheet.classes['shop-page'])
+
+
+    function toggleCartStyle() {
+        ele.classList.toggle('shop--has-cart')
+    }
+
+    window.__toggleCartStyle = toggleCartStyle;
+
 
     g.defc(Column().init(function (ele) {
 
@@ -214,9 +224,19 @@ export default function ({ Page }) {
         column1Ctx.ele.classList.add('overflow-auto');
 
 
+        hc2(ShopCart1, {
+            args: [],
+            init() {
+
+            }
+        }, ele)
+
+
     }), function (ctx) {
-        ctx.height('100%');
+        // ctx.height('100%');
         ctx.done(ele);
+        
+        ctx.ele.style.height = 'var(--shop-main-con-h)'
     })
 
 
@@ -225,7 +245,6 @@ export default function ({ Page }) {
         lifeTimes: {
             onUnload() {
                 console.log('unload shop');
-                sheet.detach()
             }
         }
     })
