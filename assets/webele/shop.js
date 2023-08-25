@@ -51,9 +51,19 @@ let ShopCart1 = defComponent({
     setup({ getCompCtx, startWatch, args }) {
         let skuNum = args[0];
         let priceNum = args[1];
+        let items = args[2];
         let ele = document.createElement('div')
         ele.classList.add('shop-cart');
         ele.style.height = 'var(--shop-main-card-h)';
+
+        function ShopItem(ele, option) {
+            hc2(Text, {
+                args: [option.index + 1]
+            }, ele);
+            hc2(Text, {
+                args: [JSON.stringify(option.item)]
+            }, ele);
+        }
 
         hc2(Column, {
             attrs: {
@@ -87,7 +97,15 @@ let ShopCart1 = defComponent({
                 class: 'shop-cart__detail'
             },
             init(ele) {
-                hc2(Text, { args: ['detail'] }, ele)
+                // hc2(Text, { args: ['detail'] }, ele);
+
+                hc2(ForEach, {
+                    args: [{ list: items }],
+                    init(ele, option) {
+                        // console.log('ssssssssssssssssss');
+                        ShopItem(ele, option)
+                    }
+                }, ele);
             }
         }, ele);
 
@@ -180,6 +198,7 @@ let ShopGood1 = defComponent({
                             let cls = customElements.get('shop-good-item')
                             let item = new cls({ index: i });
                             item.classList.add('shop-good__item');
+                            item.dataset.id = Nid()
                             item.addEventListener('show-buy-item', function () {
                                 if (argOpt?.onBuyItem) {
                                     argOpt.onBuyItem(item, i)
@@ -226,6 +245,9 @@ export default function ({ Page }) {
     class ShopVm extends BaseVmControl {
         title = ''
         shopDialog = false
+        current = {
+            item: null
+        }
         collect = {}
         get shopDialogOpen1() {
             return this.shopDialog
@@ -242,6 +264,12 @@ export default function ({ Page }) {
             }
             return 0
         }
+        get skuItems() {
+            if (this.collect?.items) {
+                return this.collect?.items
+            }
+            return []
+        }
         setTitle(v) {
             this.title = v
         }
@@ -253,7 +281,11 @@ export default function ({ Page }) {
             let self = this;
             this.shopDialog = false;
             addCartStyle();
-            cartStore.putSku(Nid(), { sku_price: 1000 });
+            let curItem = self.current.item;
+            if (!curItem) {
+                return;
+            }
+            cartStore.putSku(curItem.dataset.id, { sku_price: 1000 });
             setTimeout(() => {
                 let obj = cartStore.getCollect();
                 Object.keys(obj).forEach(key => {
@@ -316,8 +348,9 @@ export default function ({ Page }) {
                 hc2(ShopGood1, {
                     args: [
                         {
-                            onBuyItem() {
-                                vm.shopDialog = true
+                            onBuyItem(item) {
+                                vm.shopDialog = true;
+                                vm.current.item = item;
                             }
                         }
                     ],
@@ -360,7 +393,8 @@ export default function ({ Page }) {
     hc2(ShopCart1, {
         args: [
             vm.skuNumTotal,
-            vm.skuPriceTotal
+            vm.skuPriceTotal,
+            vm.skuItems
         ],
         init() {
 
