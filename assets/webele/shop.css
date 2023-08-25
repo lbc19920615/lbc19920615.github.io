@@ -64,6 +64,10 @@
     min-height: 160rpx;
 }
 
+.shop-cart--show-detail {
+    overflow: initial;
+}
+
 .shop-cart--show-detail .shop-cart__mask {
     transform: translateY(-100%);
     opacity: 1;
