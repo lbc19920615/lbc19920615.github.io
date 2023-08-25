@@ -189,7 +189,7 @@ export function injectStore(name, { partials = [] } = {}) {
 
         currentNeedCacheKeys = []
         currentSubStoreKeys = []
-        console.log(target, storeMap);
+        // console.log(target, storeMap);
     }
 }
 

@@ -587,7 +587,7 @@ export let h3 = new Proxy(customComponents, {
             return function (ele, ...args) {
                 // console.dir(ele)
                 return function (init) {
-                    return hc(target.get(key), { args: args.slice(0, args.length), init }, ele)
+                    return hc2(target.get(key), { args: args.slice(0, args.length), init }, ele)
                 }
             }
         }

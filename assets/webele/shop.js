@@ -1,4 +1,4 @@
-import { Nid, g, hc2, BaseVmControl, injectControl, useControl, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+import { Nid, g, hc2, BaseVmControl, injectControl, useControl, Text, ForEach, If, Column, defComponent } from "wle";
 
 
 let ShopDialog1 = defComponent({
@@ -11,20 +11,20 @@ let ShopDialog1 = defComponent({
 
         // console.dir(ele);
         setTimeout(() => {
-            ele.addEventListener('cancel',function(e){
+            ele.addEventListener('cancel', function (e) {
                 if (option?.onClose) {
                     option.onClose()
                 }
             })
 
-            ele.addEventListener('submit',function(e){
+            ele.addEventListener('submit', function (e) {
                 if (option?.onSubmit) {
                     option.onSubmit()
                 }
             })
-            ele.setAttribute('open', true);         
+            ele.setAttribute('open', true);
         }, 0)
-        
+
         return ele
     }
 });
@@ -39,7 +39,7 @@ let ShopDetail1 = defComponent({
             attrs: {
             },
             init(ele) {
-                let ctx1 = hc2(Text, {args: ['商店信息']}, ele);
+                let ctx1 = hc2(Text, { args: ['商店信息'] }, ele);
             }
         }, ele);
 
@@ -48,9 +48,6 @@ let ShopDetail1 = defComponent({
 })
 
 let ShopCart1 = defComponent({
-    afterRender(childEle, option, {ele}) {
-
-    },
     setup({ getCompCtx, startWatch, args }) {
         let skuNum = args[0];
         let priceNum = args[1];
@@ -66,14 +63,14 @@ let ShopCart1 = defComponent({
                 hc2(Text, {
                     args: ['购物篮'],
                     props: {
-                        onclick: function() {
+                        onclick: function () {
                             ShopCart1.showDetail()
                         }
                     }
                 }, ele);
-                hc2(Text, {args: [skuNum]}, ele);
-                hc2(Text, {args: ['&nbsp']}, ele);
-                hc2(Text, {args: [priceNum]}, ele)
+                hc2(Text, { args: [skuNum] }, ele);
+                hc2(Text, { args: ['&nbsp'] }, ele);
+                hc2(Text, { args: [priceNum] }, ele)
             }
         }, ele);
 
@@ -90,12 +87,12 @@ let ShopCart1 = defComponent({
                 class: 'shop-cart__detail'
             },
             init(ele) {
-                hc2(Text, {args: ['detail']}, ele)
+                hc2(Text, { args: ['detail'] }, ele)
             }
         }, ele);
 
 
-        ShopCart1.showDetail = function() {
+        ShopCart1.showDetail = function () {
             ele.style.setProperty('--shop-cart__mask-h', ele.parentElement.scrollHeight + 'px')
             setTimeout(() => {
                 ele.classList.toggle('shop-cart--show-detail')
@@ -114,7 +111,7 @@ let ShopNav1 = defComponent({
 
         hc2(Column, {
             init(ele) {
-                hc(ForEach, {
+                hc2(ForEach, {
                     args: [{ max: 6 }],
                     init(ele, option) {
                         let optionEle = document.createElement('xy-option')
@@ -165,11 +162,11 @@ let ShopGood1 = defComponent({
 
         hc2(Column, {
             init(ele) {
-                hc(ForEach, {
+                hc2(ForEach, {
                     args: [{ max: 6 }],
                     init(ele, option) {
                         let optionEle = document.createElement('div')
-                        
+
                         hc2(Text, {
                             args: [`商品大类${option?.index + 1}`],
                             attrs: {
@@ -177,16 +174,16 @@ let ShopGood1 = defComponent({
                         }, optionEle);
 
                         optionEle.setAttribute('good_item_index', option.index);
-        
-                        
+
+
                         for (let i = 0; i < 5; i++) {
                             let cls = customElements.get('shop-good-item')
-                            let item = new cls({index: i});
+                            let item = new cls({ index: i });
                             item.classList.add('shop-good__item');
-                            item.addEventListener('show-buy-item', function() {
-                               if (argOpt?.onBuyItem) {
+                            item.addEventListener('show-buy-item', function () {
+                                if (argOpt?.onBuyItem) {
                                     argOpt.onBuyItem(item, i)
-                               }
+                                }
                                 // vm.shopDialog = true
                             })
                             optionEle.appendChild(item)
@@ -256,7 +253,7 @@ export default function ({ Page }) {
             let self = this;
             this.shopDialog = false;
             addCartStyle();
-            cartStore.putSku(Nid(), {sku_price: 1000});
+            cartStore.putSku(Nid(), { sku_price: 1000 });
             setTimeout(() => {
                 let obj = cartStore.getCollect();
                 Object.keys(obj).forEach(key => {
@@ -267,7 +264,7 @@ export default function ({ Page }) {
             // console.log('onDialogSubmit', e);
         }
     }
-    
+
     injectControl('shopVm')(DomCotnrol);
     let vm = useControl('shopVm');
     window.shopVm = vm;
@@ -280,8 +277,8 @@ export default function ({ Page }) {
     function toggleCartStyle() {
         ele.classList.toggle('shop--has-cart')
     }
-    
-    
+
+
     function addCartStyle() {
         ele.classList.toggle('shop--has-cart', true)
     }
@@ -299,11 +296,13 @@ export default function ({ Page }) {
     g.defc(Column().init(function (ele) {
 
         let column1Ctx = hc2(Column, {
-            args: [], attrs: {
+            args: [],
+            attrs: {
                 class: 'dis-flex h-full'
-            }, init(ele) {
+            },
+            init(ele) {
 
-                
+
                 hc2(ShopNav1, {
                     args: [],
                     attrs: {
@@ -356,7 +355,7 @@ export default function ({ Page }) {
         ctx.ele.style.height = 'var(--shop-main-con-h)'
     })
 
-    
+
     hc2(ShopCart1, {
         args: [
             vm.skuNumTotal,
