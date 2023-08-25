@@ -31,13 +31,8 @@
         }
     </script>
         <script type="module">
-
-            async function importCss(url) {
-                const cssFile = await fetch(url);
-                const css = await cssFile.text();
-
+            function parseRpx(css = '', winWidth = window.innerWidth) {
                 let parsedcss = css;
-                let winWidth = window.innerWidth;
 
                 if (winWidth > 768) {
                     parsedcss = css.replace(/(\d+)(?=rpx)rpx/g, function (pxs, ...pxargs) {
@@ -50,7 +45,14 @@
                         return pxs.replace('rpx', 'px').replace(val, val / 750 * winWidth)
                     })
                 }
+                return parsedcss;
+            }
+            window.CSS.parseRpx = parseRpx;
+            async function importCss(url) {
+                const cssFile = await fetch(url);
+                const css = await cssFile.text();
 
+                let parsedcss = parseRpx(css);
                 // console.log(parsedcss);
                 const myStyleSheet = new CSSStyleSheet();
                 myStyleSheet.replace(parsedcss);
@@ -59,7 +61,7 @@
             window.importCss = importCss;
 
             let cssFileName = '<%= APP_CSS_PATH %>';
-            let {myStyleSheet} = await importCss(cssFileName);
+            let { myStyleSheet } = await importCss(cssFileName);
             document.adoptedStyleSheets.push(myStyleSheet);
 
             // const cssModule = await import(cssFileName, {
