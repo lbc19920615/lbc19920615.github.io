@@ -1,6 +1,7 @@
 import { es6 } from "../frame/storeMan.js";
 import { deepClone } from "../frame/clone.js";
-
+import { price_transform } from "../frame/price.js";
+import { getObj } from "../frame/collection.js";
 
 let maxSkuBuyTotalNum = 10;
 
@@ -112,7 +113,7 @@ class Cart extends BaseCart {
             item[1].curTotal = curPerPrice * curNum
             num = num + parseFloat(curNum);
             price = price + item[1].curTotal;
-            price_display = transform(price)
+            price_display = price_transform(price)
             // console.log(item[1]);
         })
         // console.log('getSelectedItems', items, res);

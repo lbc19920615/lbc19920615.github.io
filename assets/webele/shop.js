@@ -1,25 +1,6 @@
 import { Nid, g, hc2, BaseVmControl, injectControl, useControl, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
 
 
-class DomCotnrol extends BaseVmControl {
-    title = ''
-    shopDialog = false
-    get shopDialogOpen1() {
-        return this.shopDialog
-    }
-    setTitle(v) {
-        this.title = v
-    }
-    onDialogClose(e) {
-        this.shopDialog = false
-        console.log('onDialogClose', e);
-    }
-}
-
-injectControl('shopVm')(DomCotnrol);
-let vm = useControl('shopVm');
-window.shopVm = vm;
-
 let ShopDialog1 = defComponent({
     name: 'ShopDialog1',
     setup({ setCreated, startWatch, args }) {
@@ -31,9 +12,14 @@ let ShopDialog1 = defComponent({
         // console.dir(ele);
         setTimeout(() => {
             ele.addEventListener('cancel',function(e){
-                //
                 if (option?.onClose) {
                     option.onClose()
+                }
+            })
+
+            ele.addEventListener('submit',function(e){
+                if (option?.onSubmit) {
+                    option.onSubmit()
                 }
             })
             ele.setAttribute('open', true);         
@@ -44,16 +30,53 @@ let ShopDialog1 = defComponent({
 });
 
 let ShopCart1 = defComponent({
+    afterRender(childEle, option, {ele}) {
+
+    },
     setup({ getCompCtx, startWatch, args }) {
+        let skuNum = args[0]
         let ele = document.createElement('div')
         ele.classList.add('shop-cart');
-        ele.style.height = 'var(--shop-main-card-h)'
+        ele.style.height = 'var(--shop-main-card-h)';
 
         hc2(Column, {
+            attrs: {
+                class: 'shop-cart__action dis-flex'
+            },
             init(ele) {
-                hc2(Text, {args: ['购物篮']}, ele)
+                let ctx1 = hc2(Text, {args: ['购物篮']}, ele);
+                ctx1.ele.onclick = function() {
+                    ShopCart1.showDetail()
+                }
+                hc2(Text, {args: [skuNum]}, ele)
             }
         }, ele);
+
+        hc2(Column, {
+            attrs: {
+                class: 'shop-cart__mask'
+            },
+            init(ele) {
+            }
+        }, ele);
+
+        hc2(Column, {
+            attrs: {
+                class: 'shop-cart__detail'
+            },
+            init(ele) {
+                hc2(Text, {args: ['detail']}, ele)
+            }
+        }, ele);
+
+
+        ShopCart1.showDetail = function() {
+            ele.style.setProperty('--shop-cart__mask-h', ele.parentElement.scrollHeight + 'px')
+            setTimeout(() => {
+                ele.classList.toggle('shop-cart--show-detail')
+            }, 0)
+        }
+
 
         return ele
     }
@@ -111,6 +134,7 @@ let ShopNav1 = defComponent({
 
 let ShopGood1 = defComponent({
     setup({ getCompCtx, startWatch, args }) {
+        let argOpt = args[0] ?? {}
         let ele = document.createElement('div')
         ele.classList.add('shop-good')
 
@@ -135,7 +159,10 @@ let ShopGood1 = defComponent({
                             let item = new cls({index: i});
                             item.classList.add('shop-good__item');
                             item.addEventListener('show-buy-item', function() {
-                                vm.shopDialog = true
+                               if (argOpt?.onBuyItem) {
+                                    argOpt.onBuyItem(item, i)
+                               }
+                                // vm.shopDialog = true
                             })
                             optionEle.appendChild(item)
                         }
@@ -166,6 +193,60 @@ let ShopGood1 = defComponent({
 
 export default function ({ Page }) {
 
+    let cartStore;
+    setTimeout(() => {
+        cartStore = window.appConfig.getStore('Cart');
+
+        console.dir(cartStore);
+    }, 30)
+
+
+    class DomCotnrol extends BaseVmControl {
+        title = ''
+        shopDialog = false
+        collect = {}
+        get shopDialogOpen1() {
+            return this.shopDialog
+        }
+        get skuNumTotal() {
+            if (this.collect?.num) {
+                return this.collect?.num
+            }
+            return 0
+        }
+        get skuPriceTotal() {
+            if (this.collect?.price_display) {
+                return this.collect?.price_display
+            }
+            return 0
+        }
+        setTitle(v) {
+            this.title = v
+        }
+        onDialogClose(e) {
+            this.shopDialog = false
+            // console.log('onDialogClose', e);
+        }
+        onDialogSubmit(e) {
+            let self = this;
+            this.shopDialog = false;
+            addCartStyle();
+            cartStore.putSku(Nid(), {sku_price: 1000});
+            setTimeout(() => {
+                let obj = cartStore.getCollect();
+                Object.keys(obj).forEach(key => {
+                    self.collect[key] = obj[key]
+                })
+                // console.log(collect);
+            }, 0)
+            // console.log('onDialogSubmit', e);
+        }
+    }
+    
+    injectControl('shopVm')(DomCotnrol);
+    let vm = useControl('shopVm');
+    window.shopVm = vm;
+
     let ele = document.createElement('div');
     ele.classList.add('a-page');
     ele.classList.add('shop-page');
@@ -174,9 +255,11 @@ export default function ({ Page }) {
     function toggleCartStyle() {
         ele.classList.toggle('shop--has-cart')
     }
-
-    window.__toggleCartStyle = toggleCartStyle;
-
+    
+    
+    function addCartStyle() {
+        ele.classList.toggle('shop--has-cart', true)
+    }
 
     g.defc(Column().init(function (ele) {
 
@@ -195,7 +278,13 @@ export default function ({ Page }) {
                 }, ele);
 
                 hc2(ShopGood1, {
-                    args: [],
+                    args: [
+                        {
+                            onBuyItem() {
+                                vm.shopDialog = true
+                            }
+                        }
+                    ],
                     attrs: {
                         class: 'flex-1 h-full'
                     },
@@ -210,7 +299,9 @@ export default function ({ Page }) {
         g.defc(If(vm.shopDialogOpen1, Nid()).init(function (ele) {
 
             hc2(ShopDialog1, {
-                args: [{ onClose: vm.onDialogClose }],
+                args: [
+                    { onClose: vm.onDialogClose, onSubmit: vm.onDialogSubmit }
+                ],
                 init() {
 
                 }
@@ -224,21 +315,20 @@ export default function ({ Page }) {
         column1Ctx.ele.classList.add('overflow-auto');
 
 
-        hc2(ShopCart1, {
-            args: [],
-            init() {
-
-            }
-        }, ele)
-
-
     }), function (ctx) {
-        // ctx.height('100%');
         ctx.done(ele);
-        
         ctx.ele.style.height = 'var(--shop-main-con-h)'
     })
 
+    
+    hc2(ShopCart1, {
+        args: [
+            vm.skuNumTotal
+        ],
+        init() {
+
+        }
+    }, ele)
 
     Page({
         ele,

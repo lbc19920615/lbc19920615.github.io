@@ -1172,7 +1172,9 @@ function defComponent(option = {}) {
             callback(childEle);
             // currentRoot = childEle
             if (afterRender) {
-              afterRender(childEle, option);
+              afterRender(childEle, option, {
+                ele
+              });
             }
           }, {
             ele,

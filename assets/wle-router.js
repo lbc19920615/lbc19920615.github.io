@@ -6,7 +6,7 @@ export function createStyleSheet(name) {
     style.id = 'style-' + name;
 
     window.importCss(`/assets/webele/${name ? name : 'main'}.css?v=` + Date.now()).then(({parsedcss}) => {
-        console.log('parsedcss', parsedcss);
+        // console.log('parsedcss', parsedcss);
         style.innerHTML = parsedcss;
         document.head.appendChild(style)
     })
