@@ -971,7 +971,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
     Page({
         ele,
         lifeTimes: {
-            onCreated() {
+            onReady() {
                 console.log("main 加载完成");
             },
         }

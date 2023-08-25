@@ -1,7 +1,7 @@
 import { defComponent, Utils, hc2, Column, Text, injectControl, BaseWleElement, BaseVmControl } from 'wle';
-import '/assets/webele/store/cart.js';
 import { getStore } from '/assets/webele/frame/storeMan.js';
 
+import('/assets/webele/store/cart.js');
 class ShopGoodItem extends BaseWleElement {
   constructor(option = {}) {
     super();
@@ -179,10 +179,13 @@ function runApp(Pinia, rooterRootEle) {
               `;
     }
   });
-  let CartCtx = getStore('Cart');
+
+  // let CartCtx = getStore('Cart')
   globalThis.appConfig = {
     useCounterStore,
-    cartStore: CartCtx.ins
+    getStore(name) {
+      return getStore(name).ins;
+    }
   };
 }
 

@@ -120,6 +120,8 @@ function demoWatcherPlugin() {
   }
 }
 
+
+
 function demoAppPlugin() {
   return {
     buildStart(){

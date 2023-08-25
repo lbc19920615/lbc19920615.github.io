@@ -84,7 +84,7 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","@webele":"/assets/webele","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_09e5fd75.js?v=1692922293836"}
+          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","@webele":"/assets/webele","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_09e5fd75.js?v=1692923658925"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
@@ -118,31 +118,19 @@
         let myStyleSheet = await importCss(cssFileName);
         document.adoptedStyleSheets.push(myStyleSheet);
 
-        // const cssModule = await import(cssFileName, {
-        //     assert: { type: 'css' }
-        // });
-        // document.adoptedStyleSheets = [cssModule.default];
-
-
-        // console.log(cssModule);
-
         import '/assets/ele/index.js?v=0.0.10';
         import { routerModule } from '/assets/wle-router.js?v=0.1.0'
 
         const { reactive, onMounted, computed, watchEffect, ref, watch } = globalThis.VueDemi;
         import { Nid, g, hc2, ForEach, Column, Text, BaseVmControl, injectControl, useControl, getAllComments, getcustomComponents } from "wle";
 
-        window.getAllComments = getAllComments;
+        // window.getAllComments = getAllComments;
 
-        import { runApp, routes } from '/assets/webelef/app_46d54a07.js'
+        import { runApp, routes } from '/assets/webelef/app_8ab53093.js'
 
-        let rooterRootEle = document.getElementById("routerroot")
+        let rooterRootEle = document.getElementById("routerroot");
 
-
-
-        let keepLives = [
-            // '404'
-        ]
+        let keepLives = [];
 
         let app = useControl('app');
 
@@ -226,17 +214,17 @@
 
                 let nav = document.createElement('div')
                 nav.id = 'nav'
-                let dom = document.createElement('div')
-                dom.classList.add('a-hide-in-mobile')
-                dom.innerHTML = '切换主题'
-                dom.onclick = function () {
-                    document.documentElement.classList.toggle('theme-dark')
-                }
-                nav.appendChild(dom);
+                // let dom = document.createElement('div')
+                // dom.classList.add('a-hide-in-mobile')
+                // dom.innerHTML = '切换主题'
+                // dom.onclick = function () {
+                //     document.documentElement.classList.toggle('theme-dark')
+                // }
+                // nav.appendChild(dom);
 
                 let routeName = window.wRoute.routeName();
                 currentTabIndex = app.getNavIndex(routeName);
-                console.log(routeName);
+                // console.log(routeName);
 
                 resetNav(app, nav)
 
@@ -250,14 +238,12 @@
                 let vueapphack = document.createElement('div');
                 mainContent.appendChild(vueapphack);
 
-
-
                 rooterRootEle.appendChild(nav)
                 rooterRootEle.appendChild(mainContent);
 
                 setTimeout(() => {
                     vueapp.mount(vueapphack)
-                }, 30);
+                }, 300);
 
                 cachedRootDom = mainContent;
 
@@ -275,25 +261,19 @@
             }
         }
 
-
-
         routerModule(option);
 
         const pinia = Pinia.createPinia()
         vueapp.use(pinia);
 
-        let pages = getCurrentPages();
-        // console.log(pages);
-
         runApp(Pinia, rooterRootEle);
 
+        let pages = getCurrentPages();
         isLoaded = true;
-
-        pages.forEach(page => {
-            if (page?.lifeTimes?.onReady) {
-                page.lifeTimes.onReady(globalThis)
-            }
-        })
+        let page = pages[0];
+        if (page?.lifeTimes?.onReady) {
+            page.lifeTimes.onReady()
+        }
     </script>
     <script>
         function __load_async_lib() {
