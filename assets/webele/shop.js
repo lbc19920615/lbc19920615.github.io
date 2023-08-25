@@ -29,6 +29,24 @@ let ShopDialog1 = defComponent({
     }
 });
 
+let ShopDetail1 = defComponent({
+    setup({ getCompCtx, startWatch, args }) {
+        let ele = document.createElement('div')
+        ele.classList.add('shop-detail');
+        ele.style.height = 'var(--shop-main-detail-h)';
+
+        hc2(Column, {
+            attrs: {
+            },
+            init(ele) {
+                let ctx1 = hc2(Text, {args: ['商店信息']}, ele);
+            }
+        }, ele);
+
+        return ele
+    }
+})
+
 let ShopCart1 = defComponent({
     afterRender(childEle, option, {ele}) {
 
@@ -264,13 +282,24 @@ export default function ({ Page }) {
         ele.classList.toggle('shop--has-cart', true)
     }
 
-    g.defc(Column().init(function (ele) {
 
+    hc2(ShopDetail1, {
+        args: [],
+        attrs: {
+        },
+        init() {
+
+        }
+    }, ele);
+
+    g.defc(Column().init(function (ele) {
 
         let column1Ctx = hc2(Column, {
             args: [], attrs: {
                 class: 'dis-flex h-full'
             }, init(ele) {
+
+                
                 hc2(ShopNav1, {
                     args: [],
                     attrs: {
