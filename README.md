@@ -4,9 +4,13 @@
 android  uniapp  都会做 java 后端也会
 然后再在前端这个专业方向上有更深入的研究
 
-1. 跨平台前端开发 （实现小程序，web端通用，native也部分通用）
+1. <a target="_blank" href="https://lbc19920615.github.io/assets/webele.html#/">基于webcomponent 的框架 </a> 支持RPX
+2. <a target="_blank" href="https://gitee.com/lbc19920615/wx_skyline_template">基于微信skyline的快速开发模板</a>
+3. 实现跨平台前端开发工具 （实现小程序，web端通用，native也部分通用）
+
+<!-- 1. 跨平台前端开发 （实现小程序，web端通用，native也部分通用）
 2. 提升个人的(前端)工作效率和工作质量
-3. 提升用户体验, 通过技术驱动业务, 提升产品价值 -
+3. 提升用户体验, 通过技术驱动业务, 提升产品价值 - -->
 
 <a href="/crm/凌柏超-web前端-个人简历2.pdf" download="凌柏超的个人简历">下载个人简历</a>
 
