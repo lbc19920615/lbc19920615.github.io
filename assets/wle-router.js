@@ -184,18 +184,22 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
     };
 
     const switchTab = (path = '', params = {}) => {
-        pushRoute(path, params, false, {
-            onEnd(pageCtx, nid) {
-                // console.log('onEnd', pageCtx);
-                let pages = window.getCurrentPages();
-                if (pages[0]) {
-                    unBindPage(pages[0])
+        return new Promise((resolve) => {
+            pushRoute(path, params, false, {
+                onEnd(pageCtx, nid) {
+                    // console.log('onEnd', pageCtx);
+                    let pages = window.getCurrentPages();
+                    if (pages[0]) {
+                        unBindPage(pages[0])
+                    }
+                    setCurrentPage(pages.length - 1, [nid, pageCtx]);
+
+                    resolve()
+                },
+                setLoadCache() {
+                    // console.log('setLoadCache');
                 }
-                setCurrentPage(pages.length - 1, [nid, pageCtx])
-            },
-            setLoadCache() {
-                // console.log('setLoadCache');
-            }
+            })
         })
     }
 

@@ -81,7 +81,11 @@ defComponent({
             args: ['home'],
             props: {
               onclick() {
-                wRoute.switchTab('');
+                wRoute.switchTab('').then(() => {
+                  document.dispatchEvent(new CustomEvent('route-change', {
+                    detail: {}
+                  }));
+                });
               }
             }
           }, ele);
