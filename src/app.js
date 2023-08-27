@@ -210,6 +210,6 @@ export function runApp(Pinia, rooterRootEle) {
 
 }
 
-window.addEventListener('resizeend', function() {
-    console.log('window resize end');
-})
+// window.addEventListener('resizeend', function() {
+//     console.log('window resize end');
+// })
