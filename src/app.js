@@ -4,6 +4,41 @@ import {  hc2, BaseWleElement, Utils, defComponent, Column, Text, BaseVmControl,
 import("@webele/store/cart.js");
 import { getStore } from "@webele/frame/storeMan.js"
 
+const APP_TABS = [
+    ['', {
+        label: '首页'
+    }],
+    ['shop', {
+        label: '店铺'
+    }],
+    ['my', {
+        label: '我的'
+    }],
+]
+
+let BaseDir = '/assets/';
+export const routes = {
+    ['']: (params) => {
+        return import(BaseDir + 'webele/main.js?v=' + Date.now())
+    },
+    404: (params) => {
+        return import(BaseDir + 'webele/404.js?v=' + Date.now())
+    },
+    shop: (params) => {
+        return import(BaseDir + 'webele/shop.js?v=' + Date.now())
+    },
+    my: (params) => {
+        return import(BaseDir + 'webele/my.js?v=' + Date.now())
+    },
+    detail: (params) => {
+        return import(BaseDir + 'webele/detail.js?v=' + Date.now())
+    },
+    detail2: (params) => {
+        return import(BaseDir + 'webele/detail2.js?v=' + Date.now())
+    },
+};
+
+
 class ShopGoodItem extends BaseWleElement {
     constructor(option = {}) {
         super();
@@ -34,7 +69,7 @@ if (!customElements.get('shop-good-item')) {
 }
 
 
-let PageWrapper = defComponent({
+defComponent({
     name: 'PageWrapper',
     setup({ getCompCtx, startWatch, args }) {
         let wRoute = window.wRoute;
@@ -46,13 +81,26 @@ let PageWrapper = defComponent({
 
         let PageNav1Ctx = hc2(Column, {
             init(ele) {
-                let backCtx = hc2(Text, { args: ['back'] }, ele);
-                setTimeout(function () {
-                    backCtx.ele.onclick = function () {
-                        // console.log('sssssssss');
-                        wRoute?.back()
-                    }
-                }, 30)
+                if (!APP_TABS.includes(location.hash.slice(2)) && getCurrentPages().length < 2) {
+                    hc2(Text, { 
+                        args: ['home'],
+                        props: {
+                            onclick() {
+                                wRoute.switchTab('')
+                            }
+                        } 
+                    }, ele);
+                }
+                else {
+                    hc2(Text, { 
+                        args: ['back'],
+                        props: {
+                            onclick() {
+                                wRoute.back()
+                            }
+                        } 
+                    }, ele);
+                }
                 hc2(Text, { args: [title], attrs: { class: 'text text-center' } }, ele);
                 hc2(Text, { args: ['&nbsp;'] }, ele);
             },
@@ -71,18 +119,8 @@ let PageWrapper = defComponent({
                 class: 'page-wrapper__content'
             }
         }, ele);
-
         Column1Ctx.ele.style.height = 'var(--page-wrapper-content-h)'
 
-
-        function render(ele) {
-        }
-
-        render(ele)
-
-        startWatch(() => {
-            render(ele)
-        })
 
         return [ele, Column1Ctx.ele]
     }
@@ -112,40 +150,6 @@ window.createControl = function createControl(target, name = target.name) {
     return useControl(name);
 }
 
-let BaseDir = '/assets/';
-export const routes = {
-    ['']: (params) => {
-        return import(BaseDir + 'webele/main.js?v=' + Date.now())
-    },
-    404: (params) => {
-        return import(BaseDir + 'webele/404.js?v=' + Date.now())
-    },
-    shop: (params) => {
-        return import(BaseDir + 'webele/shop.js?v=' + Date.now())
-    },
-    my: (params) => {
-        return import(BaseDir + 'webele/my.js?v=' + Date.now())
-    },
-    detail: (params) => {
-        return import(BaseDir + 'webele/detail.js?v=' + Date.now())
-    },
-    detail2: (params) => {
-        return import(BaseDir + 'webele/detail2.js?v=' + Date.now())
-    },
-};
-
-const APP_TABS = [
-    ['', {
-        label: '首页'
-    }],
-    ['shop', {
-        label: '店铺'
-    }],
-    ['my', {
-        label: '我的'
-    }],
-
-]
 
 class AppCotnrol extends BaseVmControl {
     title = ''
@@ -173,13 +177,10 @@ injectControl('app')(AppCotnrol);
 export function runApp(Pinia, rooterRootEle) {
     const { defineStore } = Pinia;
 
-    // console.log(Provider, Subscriber);
     let useCounterStore = defineStore('counter', {
         state: () => {
             return { count: 0 }
         },
-        // could also be defined as
-        // state: () => ({ count: 0 })
         actions: {
             increment() {
                 this.count++
@@ -188,8 +189,6 @@ export function runApp(Pinia, rooterRootEle) {
     });
 
     let countStore = useCounterStore();
-
-    // console.log(rooterRootEle);
 
     VueDemi.watch(countStore, function (newVal, oldVal) {
 
@@ -202,7 +201,6 @@ export function runApp(Pinia, rooterRootEle) {
         }
     })
 
-    // let CartCtx = getStore('Cart')
     globalThis.appConfig = {
         useCounterStore,
         getStore(name) {
