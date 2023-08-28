@@ -7,6 +7,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>基于vue reactivity的 webcomponent框架</title>
+    <script async src="/assets/es-module-shims.js?v=1.8.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
+    <script>
+        if (location.hash === '') {
+            history.replaceState({path: '', nid: 'main'},'',location.href + '#/')
+        }
+
+        // window.jssStyleMan = jss.default.setup(jssPresetDefault.default);
+        let vueapp = window.Vue.createApp({});
+        vueapp.config.devtools = true;
+        let VueDemi = (function () {
+            var _VueDemi = {}
+            for (var key in Vue) {
+                _VueDemi[key] = Vue[key]
+            }
+            _VueDemi.isVue2 = false
+            _VueDemi.isVue3 = true
+            _VueDemi.install = function () { }
+            _VueDemi.Vue = Vue
+            _VueDemi.Vue2 = undefined
+            _VueDemi.version = Vue.version
+            _VueDemi.set = function (target, key, val) {
+                if (Array.isArray(target)) {
+                    target.length = Math.max(target.length, key)
+                    target.splice(key, 1, val)
+                    return val
+                }
+                target[key] = val
+                return val
+            }
+            _VueDemi.del = function (target, key) {
+                if (Array.isArray(target)) {
+                    target.splice(key, 1)
+                    return
+                }
+                delete target[key]
+            }
+            return _VueDemi
+        })();
+        globalThis.VueDemi = VueDemi;
+    </script>
 </head>
 
 <body>
@@ -51,11 +92,8 @@
 </script>
 <script type="importmap">
     {
-        "imports": {
-            "vue": "https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.esm-browser.js",
-            "wle":"/assets/wle.js?v=1"
-        }
-    }
+        "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_564beeba.js?v=1693114900559"}
+      }
 </script>
 <script type="module">
     import 'https://unpkg.com/xy-ui';
