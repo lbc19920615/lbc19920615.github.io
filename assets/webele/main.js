@@ -1,10 +1,8 @@
 
-import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent, hc } from "wle";
+import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent } from "wle";
 import { parseArkUI } from "/assets/parser.js?v=0.0.3";
 
 const { reactive, computed } = globalThis.VueDemi;
-
-
 
 
 
@@ -122,13 +120,23 @@ let FormItem = defComponent({
             },
         }
 
-        hc(Column, {
-            init(ele) {
-                hc(Text, { args: [label] }, ele)
-                // console.log('init');
+        hc2(Column, {
+            attrs: {
+                class: 'form-item__title'
+            },
+            load(hce) {
+                hce(Text, { 
+                    args: [label]
+                });
+
+                hce.h3.Text('ssss')({
+                    load() {
+                        console.log('sssssssssssssssssssss');
+                    }
+                })
+                // console.log('load', hce);
             },
             ready(ctx) {
-                // console.log('ssssss');
                 ctx.width('100%')
             }
         }, ele)
@@ -263,7 +271,7 @@ let Select1 = defComponent({
         let option = args[0] ?? {}
         let ele = document.createElement('xy-select')
 
-        hc(ForEach, {
+        hc2(ForEach, {
             args: [{ max: 6 }],
             init(ele, option) {
                 let optionEle = document.createElement('xy-option')
@@ -289,7 +297,7 @@ let CheckboxGroup = defComponent({
         let ele = document.createElement('xy-checkbox-group')
         ele.classList.add('checkbox-group')
 
-        hc(ForEach, {
+        hc2(ForEach, {
             args: [{ max: 6 }],
             init(ele, option) {
                 let checkbox = document.createElement('xy-checkbox')
@@ -316,7 +324,7 @@ let RadioboxGroup = defComponent({
         let ele = document.createElement('my-radio-group')
         ele.classList.add('radio-group')
 
-        hc(ForEach, {
+        hc2(ForEach, {
             args: [{ max: 6 }],
             init(ele, option) {
                 let radio = document.createElement('my-radio');
@@ -346,7 +354,7 @@ let EntryboxGroup = defComponent({
 
         let numinputs = []
         let totalMax = 10;
-        hc(ForEach, {
+        hc2(ForEach, {
             args: [{ max: 6 }],
             init(ele, option) {
                 let entry = document.createElement('zy-entry');

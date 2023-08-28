@@ -1075,6 +1075,7 @@ function CompEvent(name, detail) {
 }
 function hc2(ComponentConstruct, {
   args = [],
+  load = function () {},
   init = function () {},
   attrs = {},
   props = {},
@@ -1096,7 +1097,35 @@ function hc2(ComponentConstruct, {
       end(ctx);
     }
   };
-  let ret = ComponentConstruct.apply(null, args).init(init);
+  let ret = ComponentConstruct.apply(null, args).init(function (childEle, option, {
+    initArgs
+  } = {}) {
+    function hce(ComFunc, opt) {
+      hc2(ComFunc, opt, childEle);
+    }
+    hce.h3 = new Proxy(customComponents, {
+      get(target, key) {
+        if (target.has(key)) {
+          return function (...args) {
+            // console.dir(ele)
+            return function (opt = {}) {
+              return hc2(target.get(key), {
+                args: args.slice(0, args.length),
+                ...opt
+              }, childEle);
+            };
+          };
+        }
+      }
+    });
+    init(childEle, option, hce);
+    if (load) {
+      load(hce, {
+        ...option,
+        childEle
+      });
+    }
+  });
   let ctx = defc(ret, readyFun);
   if (attrs) {
     Object.keys(attrs).forEach(key => {
@@ -1140,21 +1169,18 @@ function hc(ComponentConstruct, {
 /**
  * 利用proxy 实现h3.Text 这样简单写法
  */
-let h3 = new Proxy(customComponents, {
-  get(target, key) {
-    if (target.has(key)) {
-      return function (ele, ...args) {
-        // console.dir(ele)
-        return function (init) {
-          return hc2(target.get(key), {
-            args: args.slice(0, args.length),
-            init
-          }, ele);
-        };
-      };
-    }
-  }
-});
+// export let h3 = new Proxy(customComponents, {
+//     get(target, key) {
+//         if (target.has(key)) {
+//             return function (ele, ...args) {
+//                 // console.dir(ele)
+//                 return function (opt = {}) {
+//                     return hc2(target.get(key), { args: args.slice(0, args.length), ...opt }, ele)
+//                 }
+//             }
+//         }
+//     }
+// })
 
 /**
  * 定义Component
@@ -1163,7 +1189,6 @@ let h3 = new Proxy(customComponents, {
  */
 function defComponent(option = {}) {
   const {
-    ref,
     watch
   } = glo.VueDemi;
   let {
@@ -1188,7 +1213,7 @@ function defComponent(option = {}) {
       });
     }
     return {
-      init(callback) {
+      init(callback, ...initArgs) {
         // console.log(callback);
         return function () {
           let _setCreatedCallback = null;
@@ -1216,7 +1241,10 @@ function defComponent(option = {}) {
             if (_setCreatedCallback) {
               _setCreatedCallback(ctx);
             }
-            callback(childEle);
+            callback(childEle, {
+              initArgs,
+              option
+            });
             // currentRoot = childEle
             if (afterRender) {
               afterRender(childEle, option, {
@@ -1378,7 +1406,6 @@ exports.getAllComments = getAllComments;
 exports.getConditionMap = getConditionMap;
 exports.getcustomComponents = getcustomComponents;
 exports.getscripts = getscripts;
-exports.h3 = h3;
 exports.hc = hc;
 exports.hc2 = hc2;
 exports.injectControl = injectControl;
