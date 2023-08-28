@@ -129,11 +129,11 @@ let FormItem = defComponent({
                     args: [label]
                 });
 
-                hce.h3.Text('ssss')({
-                    load() {
-                        console.log('sssssssssssssssssssss');
-                    }
-                })
+                // hce.h3.Text('ssss')({
+                //     load() {
+                //         console.log('sssssssssssssssssssss');
+                //     }
+                // })
                 // console.log('load', hce);
             },
             ready(ctx) {

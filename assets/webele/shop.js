@@ -420,19 +420,14 @@ export default function ({ Page }) {
             attrs: {
                 class: 'dis-flex h-full'
             },
-            init(ele) {
-
-
-                hc2(ShopNav1, {
+            load(hce) {
+                hce(ShopNav1, {
                     args: [],
                     attrs: {
-                    },
-                    init() {
-
                     }
-                }, ele);
+                });
 
-                hc2(ShopGood1, {
+                hce(ShopGood1, {
                     args: [
                         {
                             onBuyItem(item) {
@@ -443,11 +438,8 @@ export default function ({ Page }) {
                     ],
                     attrs: {
                         class: 'flex-1 h-full'
-                    },
-                    init() {
-
                     }
-                }, ele);
+                });
             }
         }, ele);
 
@@ -457,18 +449,12 @@ export default function ({ Page }) {
             hc2(ShopDialog1, {
                 args: [
                     { onClose: vm.onDialogClose, onSubmit: vm.onDialogSubmit }
-                ],
-                init() {
-
-                }
+                ]
             }, ele)
 
         }), function (ctx) {
             ctx.done(ele)
         });
-
-
-        // column1Ctx.ele.classList.add('overflow-auto');
 
 
     }), function (ctx) {
