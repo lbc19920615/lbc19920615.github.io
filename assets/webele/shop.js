@@ -1,6 +1,5 @@
 import { Nid, g, hc2, BaseVmControl, CompEvent, createEle, Text, ForEach, If, View, defComponent } from "wle";
 
-
 let ShopDialog1 = defComponent({
     name: 'ShopDialog1',
     setup({ setCreated, startWatch, args }) {
@@ -31,10 +30,10 @@ let ShopDialog1 = defComponent({
 
 let ShopDetail1 = defComponent({
     setup({ getCompCtx, startWatch, args }) {
-        // let ele = document.createElement('div')
-        // ele.classList.add('shop-detail');
-        // ele.style.height = 'var(--shop-main-detail-h)';
 
+        /**
+         * @type {Element}
+         */
         let ele = createEle('div', {
             attrs: {
                 class: 'shop-detail',
@@ -46,13 +45,12 @@ let ShopDetail1 = defComponent({
             }
         });
 
-        
 
         hc2(View, {
             attrs: {
             },
             load(hce) {
-                 hce(Text, { args: ['商店信息'] } );
+                hce(Text, { args: ['商店信息'] });
             }
         }, ele);
 
@@ -76,42 +74,42 @@ let ShopCart1 = defComponent({
                 attrs: {
                     class: 'shop-cart__item'
                 },
-                init(ele) {
-                    hc2(Text, {
+                load(hce) {
+                    hce(Text, {
                         args: [option.item[1]?.extra?.sku_name]
-                    }, ele);
-                    hc2(Text, {
+                    });
+                    hce(Text, {
                         args: ['&nbsp;'],
-                    }, ele)
-                    hc2(Text, {
+                    })
+                    hce(Text, {
                         args: ['&#8722;'],
                         attrs: {
                             class: 'shop-cart__item-act'
                         },
                         props: {
                             onclick() {
-                               if (argOpt && argOpt.onDel) {
+                                if (argOpt && argOpt.onDel) {
                                     argOpt.onDel(option.item)
-                               } 
+                                }
                             }
                         }
-                    }, ele);
-                    hc2(Text, {
+                    });
+                    hce(Text, {
                         args: [option.item[1].num]
-                    }, ele);
-                    hc2(Text, {
+                    });
+                    hce(Text, {
                         args: ['&#43;'],
                         attrs: {
                             class: 'shop-cart__item-act'
                         },
                         props: {
                             onclick() {
-                               if (argOpt && argOpt.onAdd) {
-                                argOpt.onAdd(option.item)
-                               } 
+                                if (argOpt && argOpt.onAdd) {
+                                    argOpt.onAdd(option.item)
+                                }
                             }
                         }
-                    }, ele);
+                    });
                 }
             }, ele)
         }
@@ -120,23 +118,25 @@ let ShopCart1 = defComponent({
             attrs: {
                 class: 'shop-cart__action'
             },
-            init(ele) {
-                hc2(Text, {
+            load(hce) {
+                hce(Text, {
                     args: ['购物篮'],
                     props: {
                         onclick: function () {
                             ShopCart1.toggleDetail()
                         }
                     }
-                }, ele);
-                hc2(Text, { args: [skuNum], 
+                });
+                hce(Text, {
+                    args: [skuNum],
                     // attrs: {class: 'a-placeholder'}
-                 }, ele);
-                hc2(Text, { args: ['&nbsp'] }, ele);
-                hc2(Text, { args: ['合计'], 
+                });
+                hce(Text, { args: ['&nbsp'] });
+                hce(Text, {
+                    args: ['合计'],
                     // attrs: {class: 'a-placeholder'}
-                 }, ele);
-                hc2(Text, { args: [priceNum] }, ele)
+                });
+                hce(Text, { args: [priceNum] })
             }
         }, ele);
 
@@ -146,10 +146,8 @@ let ShopCart1 = defComponent({
             },
             props: {
                 onclick() {
-                    compHostEle.dispatchEvent(new CompEvent('click_mask'))   
+                    compHostEle.dispatchEvent(new CompEvent('click_mask'))
                 }
-            },
-            init(ele) {
             }
         }, ele);
 
@@ -157,23 +155,26 @@ let ShopCart1 = defComponent({
             attrs: {
                 class: 'shop-cart__detail'
             },
-            init(ele) {
-                hc2(View, {
+            load(hce) {
+                hce(View, {
                     attrs: {
                         class: 'shop-cart__detail-action'
                     },
-                    init(ele, option) {
-                        hc2(Text, { args: ['已选商品'] }, ele);
-                        hc2(Text, { args: ['&nbsp'] }, ele);
-                        hc2(Text, { args: ['清空'], props: {
-                            onclick() {
-                                compHostEle.dispatchEvent(new CompEvent('clear_all'))
+                    load(hce) {
+                        hce(Text, { args: ['已选商品'] });
+                        hce(Text, { args: ['&nbsp'] });
+                        hce(Text, {
+                            args: ['清空'],
+                            props: {
+                                onclick() {
+                                    compHostEle.dispatchEvent(new CompEvent('clear_all'))
+                                }
                             }
-                        } }, ele);
+                        });
                     }
                 }, ele);
 
-                hc2(ForEach, {
+                hce(ForEach, {
                     args: [{ list: items }],
                     init(ele, option) {
                         ShopItem(ele, option)
@@ -271,14 +272,14 @@ let ShopGood1 = defComponent({
                         let ctxText = hc2(Text, {
                             args: [`商品大类${option?.index + 1}`],
                             attrs: {
-                                class:"shop-good__title"
+                                class: "shop-good__title"
                             }
                         }, con);
 
                         let optionEle = document.createElement('div')
 
 
-                    
+
 
                         for (let i = 0; i < 5; i++) {
                             let cls = customElements.get('shop-good-item')
@@ -322,7 +323,7 @@ let ShopGood1 = defComponent({
 
 export default function ({ Page }) {
 
-    
+
     let cartStore;
     setTimeout(() => {
         cartStore = window.appConfig.getStore('Cart');
@@ -395,7 +396,7 @@ export default function ({ Page }) {
     window.shopVm = vm;
 
     function resetCartDetail() {
-        const {nextTick} = globalThis.VueDemi;
+        const { nextTick } = globalThis.VueDemi;
         nextTick(() => {
             let obj = cartStore.getCollect();
             vm.setCollect(obj);
@@ -412,7 +413,7 @@ export default function ({ Page }) {
         ele.classList.toggle('shop--has-cart', true)
     }
 
-    ShopCart1.toggleAction = function(flag = true) {
+    ShopCart1.toggleAction = function (flag = true) {
         ele.classList.toggle('shop--has-cart', flag)
     }
 
@@ -428,7 +429,7 @@ export default function ({ Page }) {
 
     g.defc(View().init(function (ele) {
 
-         hc2(View, {
+        hc2(View, {
             args: [],
             attrs: {
                 class: 'dis-flex h-full'
@@ -510,7 +511,7 @@ export default function ({ Page }) {
 
         }
     }, ele);
-    
+
     watch(vm.skuNumTotal, (newVal) => {
         console.log('skuNumTotal', newVal);
         if (newVal < 1) {

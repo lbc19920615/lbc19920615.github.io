@@ -8,6 +8,7 @@
     "build:dev": "cross-env NODE_ENV=development ./node_modules/.bin/webpack",
     "build": "npm run build:css && rollup --c",
     "build:wle": "rollup --c",
+    "build:dts": " npx -p typescript tsc src/main.js --declaration --allowJs --emitDeclarationOnly --outDir assets/types",
     "dev:wle": "rollup --c --watch",
     "build:css": "unocss -c ./uno.config.ts",
     "serve": "cross-env NODE_ENV=production npx webpack serve"
@@ -37,5 +38,6 @@
     "unocss": "^0.55.0",
     "vue": "^3.3.4",
     "yargs": "^16.2.0"
-  }
+  },
+  "types": "./assets/types/main.d.ts"
 }
