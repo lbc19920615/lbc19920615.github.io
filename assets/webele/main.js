@@ -1,5 +1,5 @@
 
-import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, Column, defComponent } from "wle";
+import { Nid, g, hc2, buildValidate, Modifier, Utils, getcustomComponents, Button, Text, ForEach, If, Else, View, defComponent } from "wle";
 import { parseArkUI } from "/assets/parser.js?v=0.0.3";
 
 const { reactive, computed } = globalThis.VueDemi;
@@ -118,7 +118,7 @@ let FormItem = defComponent({
             },
         }
 
-        hc2(Column, {
+        hc2(View, {
             attrs: {
                 class: 'form-item__title'
             },
@@ -437,7 +437,7 @@ let SwiperNav1 = defComponent({
         ele.classList.add('swiper-nav1');
 
         let childrens = []
-        hc2(Column, {
+        hc2(View, {
             init(ele) {
                 hc2(Text, { args: ['swiper com 1'], attrs: { sindex: 0 } }, ele)
                 hc2(Text, { args: ['swiper com 2'], attrs: { sindex: 1 } }, ele)
@@ -585,7 +585,7 @@ export default function ({ Page }) {
     });
 
 
-    g.defc(Column().init(function (ele) {
+    g.defc(View().init(function (ele) {
         let SwiperNav1Ctx = hc2(SwiperNav1, { args: [] }, ele);
         let SwiperNav1Ele = SwiperNav1Ctx.ele;
         // console.log(SwiperNav1Ele);
@@ -637,7 +637,7 @@ export default function ({ Page }) {
             ctx.done(ele)
         });
 
-        g.defc(Column({ space: 5 }).init(function (ele) {
+        g.defc(View({ space: 5 }).init(function (ele) {
 
             ; g.defc(Button({ text: 'button', action: vm.action }).init(function (ele) { })
                 , function (ctx) {
@@ -717,7 +717,7 @@ export default function ({ Page }) {
 
 
 
-            hc2(Column, {
+            hc2(View, {
                 attrs: {
                     class: 'main-show-column'
                 },
@@ -856,8 +856,8 @@ export default function ({ Page }) {
 
 
     let code = `
-Column({space: 5, modifier: vmmodifierFactory2}) {
-    Column({a: 1, modifier: vmmodifierFactory}) {
+View({space: 5, modifier: vmmodifierFactory2}) {
+    View({a: 1, modifier: vmmodifierFactory}) {
 
         Text().size('100%')
         Text('single string')
@@ -865,8 +865,8 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
         Text(vm.TextDetail)
     }
 
-    Column() {
-        Column() {
+    View() {
+        View() {
     
             Text()
             Text('single string')
@@ -893,7 +893,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
     Button({text: 'change text',  action: vm.action})
 }
 
-Column({space: 5, modifier: vmmodifierFactory2}) {
+View({space: 5, modifier: vmmodifierFactory2}) {
 }
 
     `;
@@ -963,7 +963,7 @@ Column({space: 5, modifier: vmmodifierFactory2}) {
     // console.log(ret?.dom);
 
     hc2(Text, { args: ['动态string转换为component测试'] }, ele);
-    hc2(Column, {
+    hc2(View, {
         attrs: {
             class: 'main-show-column'
         },

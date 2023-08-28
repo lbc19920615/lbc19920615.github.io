@@ -35,7 +35,7 @@ export function parseArkUI(code = '', {glo = globalThis, interpreter, components
     // console.log(code);
     let sssMap = {}
 
-    let sssreg = /(Column)\((.*[\n]*)modifier:/g
+    let sssreg = /(View)\((.*[\n]*)modifier:/g
 
     let ssscode = code.replace(sssreg, function(s, ...args) {
         // console.log('ssss', args[1]);
