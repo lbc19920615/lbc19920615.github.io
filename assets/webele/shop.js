@@ -251,8 +251,9 @@ let ShopGood1 = defComponent({
                     args: [{ max: 6 }],
                     init(ele, option) {
                         let con = document.createElement('div');
-                        con.classList.add('shop-good__section')
-                        
+                        con.classList.add('shop-good__section');
+                        con.setAttribute('good_item_index', option.index);
+
 
                         let ctxText = hc2(Text, {
                             args: [`商品大类${option?.index + 1}`],
@@ -264,8 +265,7 @@ let ShopGood1 = defComponent({
                         let optionEle = document.createElement('div')
 
 
-                        optionEle.setAttribute('good_item_index', option.index);
-
+                    
 
                         for (let i = 0; i < 5; i++) {
                             let cls = customElements.get('shop-good-item')
