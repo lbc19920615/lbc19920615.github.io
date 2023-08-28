@@ -1122,7 +1122,7 @@ function hc2(ComponentConstruct, {
     if (load) {
       load(hce, {
         ...option,
-        childEle
+        ele: childEle
       });
     }
   });

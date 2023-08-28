@@ -598,7 +598,7 @@ attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } =
         init(childEle, option, hce);
 
         if (load) {
-            load(hce, {...option, childEle})
+            load(hce, {...option, ele: childEle})
         }
 
     });
