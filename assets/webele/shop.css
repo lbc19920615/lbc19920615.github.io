@@ -5,8 +5,18 @@
     top: 0;
 }
 
+.shop-good__title {
+    position: sticky;
+    height: 60rpx;
+    top: 0;
+}
+
 .shop-good__item {
     height: var(--shop-good__item_h);
+}
+
+.shop-good__section:last-child {
+    padding-bottom: 120rpx;
 }
 
 .shop-dialog-1::part(dialog) {

@@ -243,17 +243,26 @@ let ShopGood1 = defComponent({
         ele.classList.add('shop-good')
 
         hc2(Column, {
+            attrs: {
+                class: 'h-full overflow-auto'
+            },
             init(ele) {
                 hc2(ForEach, {
                     args: [{ max: 6 }],
                     init(ele, option) {
-                        let optionEle = document.createElement('div')
+                        let con = document.createElement('div');
+                        con.classList.add('shop-good__section')
+                        
 
-                        hc2(Text, {
+                        let ctxText = hc2(Text, {
                             args: [`商品大类${option?.index + 1}`],
                             attrs: {
+                                class:"shop-good__title"
                             }
-                        }, optionEle);
+                        }, con);
+
+                        let optionEle = document.createElement('div')
+
 
                         optionEle.setAttribute('good_item_index', option.index);
 
@@ -272,7 +281,9 @@ let ShopGood1 = defComponent({
                             optionEle.appendChild(item)
                         }
 
-                        option.appendChild(optionEle)
+                        con.appendChild(optionEle);
+
+                        option.appendChild(con)
                     }
                 }, ele);
             },
@@ -404,7 +415,7 @@ export default function ({ Page }) {
 
     g.defc(Column().init(function (ele) {
 
-        let column1Ctx = hc2(Column, {
+         hc2(Column, {
             args: [],
             attrs: {
                 class: 'dis-flex h-full'
@@ -457,7 +468,7 @@ export default function ({ Page }) {
         });
 
 
-        column1Ctx.ele.classList.add('overflow-auto');
+        // column1Ctx.ele.classList.add('overflow-auto');
 
 
     }), function (ctx) {
