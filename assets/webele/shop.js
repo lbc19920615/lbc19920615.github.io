@@ -1,4 +1,4 @@
-import { Nid, g, hc2, BaseVmControl, CompEvent, Text, ForEach, If, Column, defComponent } from "wle";
+import { Nid, g, hc2, BaseVmControl, CompEvent, createEle, Text, ForEach, If, View, defComponent } from "wle";
 
 
 let ShopDialog1 = defComponent({
@@ -31,15 +31,28 @@ let ShopDialog1 = defComponent({
 
 let ShopDetail1 = defComponent({
     setup({ getCompCtx, startWatch, args }) {
-        let ele = document.createElement('div')
-        ele.classList.add('shop-detail');
-        ele.style.height = 'var(--shop-main-detail-h)';
+        // let ele = document.createElement('div')
+        // ele.classList.add('shop-detail');
+        // ele.style.height = 'var(--shop-main-detail-h)';
 
-        hc2(Column, {
+        let ele = createEle('div', {
+            attrs: {
+                class: 'shop-detail',
+            },
+            props: {
+                style: {
+                    height: 'var(--shop-main-detail-h)'
+                }
+            }
+        });
+
+        
+
+        hc2(View, {
             attrs: {
             },
-            init(ele) {
-                 hc2(Text, { args: ['商店信息'] }, ele);
+            load(hce) {
+                 hce(Text, { args: ['商店信息'] } );
             }
         }, ele);
 
@@ -59,7 +72,7 @@ let ShopCart1 = defComponent({
         ele.style.height = 'var(--shop-main-card-h)';
 
         function ShopItem(ele, option) {
-            hc2(Column, {
+            hc2(View, {
                 attrs: {
                     class: 'shop-cart__item'
                 },
@@ -103,7 +116,7 @@ let ShopCart1 = defComponent({
             }, ele)
         }
 
-        hc2(Column, {
+        hc2(View, {
             attrs: {
                 class: 'shop-cart__action'
             },
@@ -127,7 +140,7 @@ let ShopCart1 = defComponent({
             }
         }, ele);
 
-        hc2(Column, {
+        hc2(View, {
             attrs: {
                 class: 'shop-cart__mask'
             },
@@ -140,12 +153,12 @@ let ShopCart1 = defComponent({
             }
         }, ele);
 
-        hc2(Column, {
+        hc2(View, {
             attrs: {
                 class: 'shop-cart__detail'
             },
             init(ele) {
-                hc2(Column, {
+                hc2(View, {
                     attrs: {
                         class: 'shop-cart__detail-action'
                     },
@@ -191,7 +204,7 @@ let ShopNav1 = defComponent({
         let ele = document.createElement('div')
         ele.classList.add('shop-nav')
 
-        hc2(Column, {
+        hc2(View, {
             init(ele) {
                 hc2(ForEach, {
                     args: [{ max: 6 }],
@@ -242,7 +255,7 @@ let ShopGood1 = defComponent({
         let ele = document.createElement('div')
         ele.classList.add('shop-good')
 
-        hc2(Column, {
+        hc2(View, {
             attrs: {
                 class: 'h-full overflow-auto'
             },
@@ -413,9 +426,9 @@ export default function ({ Page }) {
         }
     }, ele);
 
-    g.defc(Column().init(function (ele) {
+    g.defc(View().init(function (ele) {
 
-         hc2(Column, {
+         hc2(View, {
             args: [],
             attrs: {
                 class: 'dis-flex h-full'

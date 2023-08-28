@@ -549,6 +549,44 @@ function useControl(cls) {
   return null;
 }
 
+function setObj(object, path, value) {
+  const parts = path.split('.');
+  const limit = parts.length - 1;
+  for (let i = 0; i < limit; ++i) {
+    const key = parts[i];
+    object = object[key] ?? (object[key] = {});
+  }
+  const key = parts[limit];
+  object[key] = value;
+}
+
+/**
+ * @param ob Object                 The object to flatten
+ * @param prefix String (Optional)  The prefix to add before each key, also used for recursion
+ **/
+function flattenObject(ob, prefix = false, result = null) {
+  result = result || {};
+
+  // Preserve empty objects and arrays, they are lost otherwise
+  if (prefix && typeof ob === 'object' && ob !== null && Object.keys(ob).length === 0) {
+    result[prefix] = Array.isArray(ob) ? [] : {};
+    return result;
+  }
+  prefix = prefix ? prefix + '.' : '';
+  for (const i in ob) {
+    if (Object.prototype.hasOwnProperty.call(ob, i)) {
+      // Only recurse on true objects and arrays, ignore custom classes like dates
+      if (typeof ob[i] === 'object' && (Array.isArray(ob[i]) || Object.prototype.toString.call(ob[i]) === '[object Object]') && ob[i] !== null) {
+        // Recursion on deeper objects
+        flattenObject(ob[i], prefix + i, result);
+      } else {
+        result[prefix + i] = ob[i];
+      }
+    }
+  }
+  return result;
+}
+
 /**
  * 
  * @param {object} descriptor 
@@ -1071,6 +1109,37 @@ function CompEvent(name, detail) {
   });
   return ev;
 }
+
+/**
+ * 
+ * @param {*} ele 
+ * @param {*} option 
+ */
+function setElementOpt(ele, option) {
+  if (option.attrs) {
+    Object.keys(option.attrs).forEach(key => {
+      ele.setAttribute(key, option.attrs[key]);
+    });
+  }
+  if (option.props) {
+    let flatProps = flattenObject(option.props);
+    Object.keys(flatProps).forEach(key => {
+      setObj(ele, key, flatProps[key]);
+    });
+  }
+}
+
+/**
+ * 
+ * @param {string} name 
+ * @param {{attrs: object, props: object}} option 
+ * @returns {Element}
+ */
+function createEle(name, option = {}) {
+  let ele = document.createElement(name);
+  setElementOpt(ele, option);
+  return ele;
+}
 function hc2(ComponentConstruct, {
   args = [],
   load = function () {},
@@ -1125,16 +1194,23 @@ function hc2(ComponentConstruct, {
     }
   });
   let ctx = defc(ret, readyFun);
-  if (attrs) {
-    Object.keys(attrs).forEach(key => {
-      ctx.ele.setAttribute(key, attrs[key]);
-    });
-  }
-  if (props) {
-    Object.keys(props).forEach(key => {
-      ctx.ele[key] = props[key];
-    });
-  }
+  setElementOpt(ctx.ele, {
+    attrs,
+    props
+  });
+
+  // if (attrs) {
+  //     Object.keys(attrs).forEach(key => {
+  //         ctx.ele.setAttribute(key, attrs[key])
+  //     })
+  // }
+
+  // if (props) {
+  //     Object.keys(props).forEach(key => {
+  //         ctx.ele[key] = props[key]
+  //     })
+  // }
+
   if (events && ctx.ele?.addEventListener) {
     // console.dir( ctx.ele)
     ctx.ele.addEventListener(EVENT_NAME, function (e) {
@@ -1326,6 +1402,22 @@ let Column = defComponent({
     return ele;
   }
 });
+let View = defComponent({
+  name: 'View',
+  setup({
+    getCtx,
+    startWatch,
+    args,
+    isSsrMode
+  }) {
+    let firstArg = _utils_getObjectParam(args);
+    let ele = createElement('div');
+    if (firstArg && firstArg?.modifier) {
+      firstArg.modifier(ele);
+    }
+    return ele;
+  }
+});
 function __ssr_setup(...args) {
   if (glo.__onSetup__) {
     glo.__onSetup__(...args);
@@ -1382,4 +1474,4 @@ class BaseWleElement extends HTMLElement {
   }
 }
 
-export { BaseVmControl, BaseWleElement, Button, Column, CompEvent, EVENT_NAME, Else, ForEach, If, Modifier, Nid, Text, Utils, buildValidate, createCommonCtx, defComponent, events, g, getAllComments, getConditionMap, getcustomComponents, getscripts, hc, hc2, injectControl, metaCls, setGlobal, useControl };
+export { BaseVmControl, BaseWleElement, Button, Column, CompEvent, EVENT_NAME, Else, ForEach, If, Modifier, Nid, Text, Utils, View, buildValidate, createCommonCtx, createEle, defComponent, events, g, getAllComments, getConditionMap, getcustomComponents, getscripts, hc, hc2, injectControl, metaCls, setGlobal, useControl };

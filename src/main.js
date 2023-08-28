@@ -4,6 +4,48 @@ import nid from "./nid.browser"
 import Schema from 'async-validator';
 
 
+function setObj(object, path, value) {
+    const parts = path.split('.');
+    const limit = parts.length - 1;
+    for (let i = 0; i < limit; ++i) {
+        const key = parts[i];
+        object = object[key] ?? (object[key] = {});
+    }
+    const key = parts[limit];
+    object[key] = value;
+};
+
+
+/**
+ * @param ob Object                 The object to flatten
+ * @param prefix String (Optional)  The prefix to add before each key, also used for recursion
+ **/
+function flattenObject(ob, prefix = false, result = null) {
+    result = result || {};
+
+    // Preserve empty objects and arrays, they are lost otherwise
+    if (prefix && typeof ob === 'object' && ob !== null && Object.keys(ob).length === 0) {
+        result[prefix] = Array.isArray(ob) ? [] : {};
+        return result;
+    }
+
+    prefix = prefix ? prefix + '.' : '';
+
+    for (const i in ob) {
+        if (Object.prototype.hasOwnProperty.call(ob, i)) {
+            // Only recurse on true objects and arrays, ignore custom classes like dates
+            if (typeof ob[i] === 'object' && (Array.isArray(ob[i]) || Object.prototype.toString.call(ob[i]) === '[object Object]') && ob[i] !== null) {
+                // Recursion on deeper objects
+                flattenObject(ob[i], prefix + i, result);
+            } else {
+                result[prefix + i] = ob[i];
+            }
+        }
+    }
+    return result;
+}
+
+
 /**
  * 
  * @param {object} descriptor 
@@ -559,9 +601,41 @@ export function CompEvent(name, detail) {
     return ev
 }
 
+/**
+ * 
+ * @param {*} ele 
+ * @param {*} option 
+ */
+function setElementOpt(ele, option) {
+    if (option.attrs) {
+        Object.keys(option.attrs).forEach(key => {
+            ele.setAttribute(key, option.attrs[key])
+        })
+    }
 
-export function hc2(ComponentConstruct, { args = [], load = function() {}, init = function () { }, 
-attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } = {}, ele) {
+    if (option.props) {
+        let flatProps = flattenObject(option.props)
+        Object.keys(flatProps).forEach(key => {
+            setObj(ele, key, flatProps[key])
+        })
+    }
+}
+
+/**
+ * 
+ * @param {string} name 
+ * @param {{attrs: object, props: object}} option 
+ * @returns {Element}
+ */
+export function createEle(name, option = {}) {
+    let ele = document.createElement(name);
+    setElementOpt(ele, option);
+    return ele
+}
+
+
+export function hc2(ComponentConstruct, { args = [], load = function () { }, init = function () { },
+    attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } = {}, ele) {
     let readyFun = ready ? function (ctx) {
         ready(ctx);
         // console.log('ready', ctx);
@@ -576,7 +650,7 @@ attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } =
         }
     }
 
-    let ret = ComponentConstruct.apply(null, args).init(function(childEle, option, {initArgs} = {}) {
+    let ret = ComponentConstruct.apply(null, args).init(function (childEle, option, { initArgs } = {}) {
         function hce(ComFunc, opt) {
             hc2(ComFunc, opt, childEle)
         }
@@ -593,33 +667,35 @@ attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } =
                 }
             }
         })
-        
-        
+
+
         init(childEle, option, hce);
 
         if (load) {
-            load(hce, {...option, ele: childEle})
+            load(hce, { ...option, ele: childEle })
         }
 
     });
 
     let ctx = defc(ret, readyFun);
 
-    if (attrs) {
-        Object.keys(attrs).forEach(key => {
-            ctx.ele.setAttribute(key, attrs[key])
-        })
-    }
+    setElementOpt(ctx.ele, {attrs, props});
 
-    if (props) {
-        Object.keys(props).forEach(key => {
-            ctx.ele[key] = props[key]
-        })
-    }
+    // if (attrs) {
+    //     Object.keys(attrs).forEach(key => {
+    //         ctx.ele.setAttribute(key, attrs[key])
+    //     })
+    // }
+
+    // if (props) {
+    //     Object.keys(props).forEach(key => {
+    //         ctx.ele[key] = props[key]
+    //     })
+    // }
 
     if (events && ctx.ele?.addEventListener) {
         // console.dir( ctx.ele)
-        ctx.ele.addEventListener(EVENT_NAME, function(e) {
+        ctx.ele.addEventListener(EVENT_NAME, function (e) {
             let detail = e.detail;
             if (events[detail?.name]) {
                 events[detail?.name](e.detail.detail)
@@ -709,17 +785,17 @@ export function defComponent(option = {}) {
                     if (isSsrMode) {
                         ele.setAttribute('ssr-id', id)
                     }
-;
+                    ;
 
                     ctx = createCommonCtx(function (childEle, option) {
                         if (_setCreatedCallback) {
                             _setCreatedCallback(ctx)
                         }
 
-                        callback(childEle, {initArgs, option})
+                        callback(childEle, { initArgs, option })
                         // currentRoot = childEle
                         if (afterRender) {
-                            afterRender(childEle, option, {ele})
+                            afterRender(childEle, option, { ele })
                         }
                     }, { ele, insertRoot });
 
@@ -784,6 +860,18 @@ export let Column = defComponent({
     },
 })
 
+export let View = defComponent({
+    name: 'View',
+    setup({ getCtx, startWatch, args, isSsrMode }) {
+        let firstArg = _utils_getObjectParam(args);
+        let ele = createElement('div');
+        if (firstArg && firstArg?.modifier) {
+            firstArg.modifier(ele)
+        }
+        return ele
+    },
+})
+
 function __ssr_setup(...args) {
     if (glo.__onSetup__) {
         glo.__onSetup__(...args)
@@ -798,7 +886,7 @@ function _text__render(ele, text, tpl) {
 function _text__action(ele, args) {
     const { ref, watch } = glo.VueDemi;
     let text = _utils_getAnyParam(args, '');
-    
+
     let tpl = _utils_getAnyParam(args, '', 1);
     if (text.__v_isRef) {
         watch(text, () => {
