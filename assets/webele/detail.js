@@ -1,6 +1,6 @@
 
 
-import { Nid, Button, Text, setGlobal,  hc2, defComponent, getcustomComponents, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+import { Nid, Button, Text, setGlobal,  hc2, defComponent, getcustomComponents, View, BaseVmControl, injectControl, useControl, g } from "wle";
 
 setGlobal(window.self);
 
@@ -37,7 +37,7 @@ let Text2 = defComponent({
         let ele = document.createElement('div')
         ele.classList.add('text2')
 
-        hc2(Column, {
+        hc2(View, {
             init(ele)  {
                 hc2(Text, {args: ['text2 com start']}, ele)
                 hc2(Text, {args: args}, ele)

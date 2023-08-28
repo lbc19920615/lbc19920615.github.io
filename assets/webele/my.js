@@ -1,4 +1,4 @@
-import { Nid, Button, Text, ForEach, If,  hc2, defComponent, Column, BaseVmControl, injectControl, useControl, g } from "wle";
+import { Nid, Button, Text,  hc2, View, BaseVmControl, injectControl, useControl, g } from "wle";
 
 
 class DomCotnrol extends BaseVmControl {
@@ -21,12 +21,12 @@ injectControl('my')(DomCotnrol)
 
 
 export default function({Page}) {
-    let ele =  document.createElement('div');
+    let ele = document.createElement('div');
     ele.classList.add('my-page')
     let vm = useControl('my')
 
 
-    g.defc(Column().init(function (ele) {
+    g.defc(View().init(function (ele) {
 
         hc2(Text, {args: [vm.TextDetail]}, ele);
 

@@ -4,8 +4,6 @@ import { parseArkUI } from "/assets/parser.js?v=0.0.3";
 
 const { reactive, computed } = globalThis.VueDemi;
 
-
-
 globalThis.Modifier = Modifier;
 
 function getParentComp(parent, { cls = '' } = {}) {
