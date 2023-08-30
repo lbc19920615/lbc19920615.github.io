@@ -1141,6 +1141,7 @@ function createEle(name, option = {}) {
   return ele;
 }
 function hc2(ComponentConstruct, {
+  objArg = null,
   args = [],
   load = function () {},
   init = function () {},
@@ -1151,6 +1152,9 @@ function hc2(ComponentConstruct, {
   afterInit,
   ready
 } = {}, ele) {
+  if (objArg && args.length < 1) {
+    args = [objArg];
+  }
   let readyFun = ready ? function (ctx) {
     ready(ctx);
     // console.log('ready', ctx);

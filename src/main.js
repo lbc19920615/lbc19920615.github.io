@@ -634,8 +634,13 @@ export function createEle(name, option = {}) {
 }
 
 
-export function hc2(ComponentConstruct, { args = [], load = function () { }, init = function () { },
+export function hc2(ComponentConstruct, { objArg = null, args = [], load = function () { }, init = function () { },
     attrs = {}, props = {}, events = {}, end = function () { }, afterInit, ready } = {}, ele) {
+
+    if (objArg && args.length < 1) {
+        args = [objArg]
+    }
+        
     let readyFun = ready ? function (ctx) {
         ready(ctx);
         // console.log('ready', ctx);

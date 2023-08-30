@@ -83,7 +83,8 @@ export function createEle(name: string, option?: {
     attrs: object;
     props: object;
 }): Element;
-export function hc2(ComponentConstruct: any, { args, load, init, attrs, props, events, end, afterInit, ready }: {
+export function hc2(ComponentConstruct: any, { objArg, args, load, init, attrs, props, events, end, afterInit, ready }: {
+    objArg?: any;
     args?: any[];
     load?: () => void;
     init?: () => void;

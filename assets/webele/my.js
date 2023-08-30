@@ -21,7 +21,7 @@ injectControl('my')(DomCotnrol);
 
 let iframe1 = defComponent({
     name: 'iframe1',
-    setup({getCompCtx, startWatch, args}) {      
+    setup({ getCompCtx, startWatch, args }) {
         let argObj = Utils.getObjectParam(args);
 
         /**
@@ -35,14 +35,14 @@ let iframe1 = defComponent({
             }
         });
 
-        
+
 
         return ele;
     }
 })
 
 
-export default function({Page}) {
+export default function ({ Page }) {
     let ele = document.createElement('div');
     ele.classList.add('my-page')
     let vm = useControl('my')
@@ -50,18 +50,22 @@ export default function({Page}) {
 
     g.defc(View().init(function (ele) {
 
-        hc2(Text, {args: [vm.TextDetail]}, ele);
+        hc2(Text, { args: [vm.TextDetail] }, ele);
 
-        hc2(Button, {args: [{text: 'gen title', action: vm.action2}], ready(ctx) {
-            ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
-        }}, ele);
+        hc2(Button, {
+            // args: [{text: 'gen title', action: vm.action2}]
+            objArg: {
+                text: 'gen title', action: vm.action2
+            },
+            ready(ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+            }
+        }, ele);
 
         hc2(iframe1, {
-            args: [
-                {
-                    src: location.origin + '/assets/three.html?v=' + Date.now()
-                }
-            ],
+            objArg: {
+                src: location.origin + '/assets/three.html?v=' + Date.now()
+            },
             attrs: {
                 style: 'height: 80vh'
             }
@@ -72,11 +76,9 @@ export default function({Page}) {
     Page({
         ele,
         lifeTimes: {
-            onCreated(pageVm, {app} = {}) {
+            onCreated(pageVm, { app } = {}) {
                 console.log("detail 加载完成", pageVm.$getParams());
-                vm.setTitle(JSON.stringify( pageVm.$getParams()))
-            },
-            onReady({appConfig} = {}) {
+                vm.setTitle(JSON.stringify(pageVm.$getParams()))
             },
             onUnload() {
                 console.log("detail 结束");
