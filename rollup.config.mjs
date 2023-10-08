@@ -1,6 +1,7 @@
 import { babel } from '@rollup/plugin-babel';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
+import commonjs from "@rollup/plugin-commonjs";
 import ejs from "ejs"
 import fse from "fs-extra"
 import fs from "node:fs"
@@ -186,7 +187,27 @@ const config = [
     },
     plugins: [...commonPlugins]
   },
-
+  {
+    input: 'src/main.js',
+    output: {
+      dir: 'assets/webelef',
+      format: 'cjs',
+      entryFileNames: 'main_cjs_dev.js',
+      assetFileNames: 'webele_[hash][extname]'
+    },
+    plugins: [...commonPlugins]
+  }, 
+  {
+    input: 'src/lib.js',
+    output: {
+      dir: 'assets/webelef',
+      format: 'umd',
+      name: 'lib',
+      entryFileNames: 'lib_cjs_dev.js',
+      assetFileNames: 'lib_[hash][extname]'
+    },
+    plugins: [nodeResolve(), commonjs(), ...commonPlugins]
+  },
 ];
 
 export default config;

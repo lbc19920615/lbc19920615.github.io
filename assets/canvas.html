@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="my_canvas"></canvas>
+    <script>
+        var my_canvas = document.querySelector('#my_canvas');
+
+        my_canvas.width = window.innerWidth - 20;
+        my_canvas.height = window.innerHeight - 20;
+        var gctx = my_canvas.getContext("2d");
+
+        var gap = 10;
+        let yXAsix = my_canvas.width / 2 - (gap / 2)
+
+        function drawBG() {
+     
+            gctx.beginPath();
+            /////////// Grid ///////
+
+            for (var ver = 0; ver <= my_canvas.width; ver += gap) {
+                gctx.moveTo(ver, 0)
+                gctx.lineTo(ver, my_canvas.height);
+            }
+            for (var ver = 0; ver <= my_canvas.height; ver += gap) {
+                gctx.moveTo(0, ver)
+                gctx.lineTo(my_canvas.width, ver);
+            }
+            gctx.strokeStyle = '#f0f040';
+            gctx.stroke();
+            ////////// Grid end ////////
+
+            /////// Axis //////
+            gctx.beginPath();
+            gctx.lineWidth = 3;
+            gctx.shadowColor = '#ffffff';
+            gctx.strokeStyle = '#0060c0';
+            gctx.moveTo(0, my_canvas.height / 2);
+            gctx.lineTo(my_canvas.width, my_canvas.height / 2); // X Axis
+
+
+            gctx.moveTo(yXAsix, 0);
+            gctx.lineTo(yXAsix, my_canvas.height);  //  Y Axis
+            gctx.stroke();
+            ////////Axis end///
+        }
+
+        let i = 0;
+
+        function drawBoole(left = 0) {
+            drawBG();
+            gctx.save();
+     
+
+            gctx.beginPath();
+   
+
+            for (var xDistanse = 0; xDistanse < my_canvas.width - 5; xDistanse += 5) {
+                var y = my_canvas.height / 2 - 140 * (Math.sin((Math.PI / 180) * xDistanse))
+                var x = yXAsix + xDistanse + left;
+                gctx.lineTo(x, y);
+            }
+            gctx.strokeStyle = '#f00000';
+            gctx.shadowColor = '#303040';
+            gctx.shadowOffsetX = 2;
+            gctx.shadowOffsetY = 2;
+            gctx.shadowBlur = 2;
+            gctx.stroke();
+            gctx.restore();
+
+            
+            return {
+                clear() {
+                    gctx.clearRect(0, 0, my_canvas.width, my_canvas.height);
+                }
+            }
+        }
+
+
+        let obj = {};
+        setInterval(() => {
+            if (obj?.clear) {
+                obj.clear()
+            }
+            obj = drawBoole(gap * i * -1);
+            i = i + 1;
+        }, 1000)
+
+
+    </script>
+</body>
+
+</html>

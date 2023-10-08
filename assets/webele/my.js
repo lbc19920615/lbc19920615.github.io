@@ -80,6 +80,9 @@ export default function ({ Page }) {
                 console.log("detail 加载完成", pageVm.$getParams());
                 vm.setTitle(JSON.stringify(pageVm.$getParams()))
             },
+            onRouteEnter() {
+                console.log('路由onRouteEnter');
+            },
             onUnload() {
                 console.log("detail 结束");
             }

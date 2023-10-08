@@ -16,12 +16,15 @@
   "dependencies": {
     "async-validator": "^4.2.5",
     "fs-extra": "^9.1.0",
+    "konva": "^9.2.1",
     "lodash": "^4.17.21",
-    "marked": "^2.0.1"
+    "marked": "^2.0.1",
+    "vue-konva": "^3.0.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.22.10",
     "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.5",
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@unocss/cli": "^0.55.0",
     "cross-env": "^7.0.3",

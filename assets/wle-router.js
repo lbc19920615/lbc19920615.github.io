@@ -308,7 +308,10 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
             cached.reload(params);
             if (onLoadCache) {
                 // console.log(routerName, onLoadCache)
-                onLoadCache([Nid(), cached])
+                onLoadCache([Nid(), cached]);
+            }
+            if (cached?.lifeTimes?.onRouteEnter) {
+                cached?.lifeTimes?.onRouteEnter()
             }
         } else {
 
@@ -322,12 +325,16 @@ export let routerModule = (function ({ routes, rooterRootEle, pageBeforeRender, 
                     if (onEnd) {
                         onEnd(pageCtx, nid)
                     }
+
+                    
+                    if (pageCtx?.lifeTimes?.onRouteEnter) {
+                        pageCtx?.lifeTimes?.onRouteEnter()
+                    }
                 }
             });
             if (m.default) {
                 m.default({ Page })
             }
-
 
         }
 

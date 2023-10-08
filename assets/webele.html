@@ -83,10 +83,11 @@
     <div id="routerroot" class="h-full"></div>
     <script type="importmap">
         {
-          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_580f21ac.js?v=1693353670991"}
+          "imports": {"async-validator":"https://cdn.jsdelivr.net/npm/async-validator@4.2.5/+esm","vue":"https://cdn.jsdelivr.net/npm/vue@3.3.4/+esm","wlepre":"/assets/wle-provider/index.js?v=0.0.3","wle":"/assets/webelef/main_esm_580f21ac.js?v=1696728108150"}
         }
     </script>
     <script type="module" src="/assets/ele/elastic-textarea.js?v=1.0.7"></script>
+    
     <script type="module">
         function parseRpx(css = '', winWidth = window.innerWidth) {
             let parsedcss = css;
@@ -129,7 +130,7 @@
 
         // window.getAllComments = getAllComments;
 
-        import { runApp, routes } from '/assets/webelef/app_a3934a91.js'
+        import { runApp, routes } from '/assets/webelef/app_1dcdb2a6.js'
 
         let rooterRootEle = document.getElementById("routerroot");
 
@@ -286,6 +287,7 @@
     <script>
         function __load_async_lib() {
             let asyncLib = [
+                '/assets/webelef/lib_cjs_dev.js',
                 '/assets/virtualized-list.min.js',
                 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-element-bundle.min.js',
             ];

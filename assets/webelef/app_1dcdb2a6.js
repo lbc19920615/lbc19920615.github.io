@@ -20,6 +20,9 @@ const routes = {
   shop: params => {
     return import(BaseDir + 'webele/shop.js?v=' + Date.now());
   },
+  vue3: params => {
+    return import(BaseDir + 'webele/vue3.js?v=' + Date.now());
+  },
   my: params => {
     return import(BaseDir + 'webele/my.js?v=' + Date.now());
   },
