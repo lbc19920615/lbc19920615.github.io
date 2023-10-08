@@ -1,4 +1,4 @@
-import { Nid, Text, hc2, View, Button, BaseVmControl, injectControl, useControl, g } from "wle";
+import { Nid, Text, hc2, View, getcustomComponents, BaseVmControl, injectControl, useControl, g } from "wle";
 
 class DomCotnrol extends BaseVmControl {
     title = ''
@@ -21,13 +21,12 @@ injectControl('vue3')(DomCotnrol);
 
 export default function ({ Page }) {
     let ele = document.createElement('div');
+    ele.classList.add('a-page');
     ele.classList.add('vue3-page')
     let vm = useControl('vue3')
 
-
-    g.defc(View().init(function (ele) {
-
-        hc2(Text, { args: [vm.TextDetail] }, ele);
+    let customComponents = getcustomComponents()
+    g.defc(customComponents.get('PageWrapper')({title: 'canvas页'}).init(function (ele) {
 
         const app = Vue.createApp({
             template: /*template*/`<div>1111</div>`
