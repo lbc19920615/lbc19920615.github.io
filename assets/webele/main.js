@@ -508,10 +508,12 @@ export default function ({ Page }) {
                 console.log('onDialogClose');
             },
             action2() {
-                // globalThis.wRoute.push('detail', {
-                //     paramA: Nid()
-                // })
                 window.openSubApp('detail', {
+                    paramA: Nid()
+                })
+            },
+            actionc() {
+                window.openSubApp('canvas', {
                     paramA: Nid()
                 })
             },
@@ -696,7 +698,11 @@ export default function ({ Page }) {
                     ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
                     ctx.done(ele)
                 });
-
+            ; g.defc(Button({ text: 'canvas', action: vm.actionc }).init(function (ele) { })
+            , function (ctx) {
+                ctx.width('100%').height(30).backgroundColor(0xAFEEEE);
+                ctx.done(ele)
+            });
 
             ; g.defc(Text('dialog测试').init(function (ele) {
             }), function (ctx) {
